@@ -1,0 +1,10 @@
+name = "ThreeBodyDecay"
+uuid = "e6563dab-9ca1-5843-bde3-2ccf38d63843"
+authors = ["Misha Mikhasenko <mikhail.mikhasenko@gmail.com>"]
+version = "0.1.0"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
