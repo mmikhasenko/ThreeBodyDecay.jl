@@ -39,8 +39,8 @@ Kibble31(σ3, σ1, tbs::ThreeBodySystem) = Kibble(tbs.s, circle(tbs.msq,1), circ
 Kibble12(σ1, σ2, tbs::ThreeBodySystem) = Kibble(tbs.s, circle(tbs.msq,2), circle([gσ1(σ2,σ3,tbs),σ2,σ3],2))
 #
 σ3of1(σ1,z,tbs::ThreeBodySystem) = σ3of1(tbs.s,       tbs.msq,   σ1,z)
-σ1of2(σ3,z,tbs::ThreeBodySystem) = σ3of1(tbs.s,circle(tbs.msq,1),σ2,z)
-σ2of3(σ2,z,tbs::ThreeBodySystem) = σ3of1(tbs.s,circle(tbs.msq,2),σ3,z)
+σ1of2(σ3,z,tbs::ThreeBodySystem) = σ3of1(tbs.s,circle(tbs.msq,1),σ3,z)
+σ2of3(σ2,z,tbs::ThreeBodySystem) = σ3of1(tbs.s,circle(tbs.msq,2),σ2,z)
 #
 cosθ12(σ1,σ2,tbs::ThreeBodySystem) = cosθ12(tbs.s,       tbs.msq,           [σ1,σ2,gσ3(σ1,σ2,tbs)]   )
 cosθ31(σ3,σ1,tbs::ThreeBodySystem) = cosθ12(tbs.s,circle(tbs.msq,1), circle([σ1,gσ2(σ3,σ1,tbs),σ3],1))
