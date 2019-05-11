@@ -87,9 +87,8 @@ function wignerd_doublearg(two_j, two_m1, two_m2, z)
     hat = wignerd_hat_doublearg(two_j, two_m1, two_m2, z);
     xi = (1-z)^(abs(two_m1-two_m2)/4)*(1+z)^(abs(two_m1+two_m2)/4);
     return hat*xi;
-
 end
 
 function wignerD_doublearg(two_j, two_m1, two_m2, α, cosβ, γ)
-    return wignerd_doublearg(two_j, two_m1, two_m2, α, cosβ, γ) * cis(-two_m1*α/2-two_m2*γ/2);
+    return wignerd_doublearg(two_j, two_m1, two_m2, cosβ) * cis(-two_m1*α/2-two_m2*γ/2);
 end
