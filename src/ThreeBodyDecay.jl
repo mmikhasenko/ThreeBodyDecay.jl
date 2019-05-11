@@ -28,14 +28,15 @@ export pole, BW, BWdw
 export ClGd
 export jacobi_pols,
        wignerd,
+       wignerD,
        wignerd_hat
 export wignerd_hat_doublearg,
-       wignerd_doublearg
+       wignerd_doublearg,
+       wignerD_doublearg
 
  export change_basis_3from1,
         change_basis_1from2,
         change_basis_2from3
-
 
 include("angle_functions.jl")
 include("tbs_struct.jl")
@@ -44,6 +45,5 @@ include("rand_gen.jl")
 include("lineshape.jl")
 include("angular_functions.jl")
 include("cross_channel_relations.jl")
-
 
 end  # module ThreeBodyDecay

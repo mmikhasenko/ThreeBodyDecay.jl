@@ -43,11 +43,14 @@ function wignerd_hat(j, m1, m2, z)
 end
 
 function wignerd(j, m1, m2, z)
-        hat = wignerd_hat(j, m1, m2, z);
-        xi = sqrt(1-z)^abs(Int(m1-m2))*sqrt(1+z)^abs(Int(m1+m2));
-        return hat*xi;
+    hat = wignerd_hat(j, m1, m2, z);
+    xi = sqrt(1-z)^abs(Int(m1-m2))*sqrt(1+z)^abs(Int(m1+m2));
+    return hat*xi;
 end
 
+function wignerD(j, m1, m2, α, cosβ, γ)
+    return wignerd(j, m1, m2, cosβ) * cis(-m1*α-m2*γ);
+end
 
 function ClGd(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
     factor = sqrt(two_j+1)*(mod(two_j1-two_j2+two_m,4)==2 ? -1 : +1)
@@ -81,7 +84,12 @@ function wignerd_hat_doublearg(two_j, two_m1, two_m2, z)
 end
 
 function wignerd_doublearg(two_j, two_m1, two_m2, z)
-        hat = wignerd_hat_doublearg(two_j, two_m1, two_m2, z);
-        xi = (1-z)^(abs(two_m1-two_m2)/4)*(1+z)^(abs(two_m1+two_m2)/4);
-        return hat*xi;
+    hat = wignerd_hat_doublearg(two_j, two_m1, two_m2, z);
+    xi = (1-z)^(abs(two_m1-two_m2)/4)*(1+z)^(abs(two_m1+two_m2)/4);
+    return hat*xi;
+
+end
+
+function wignerD_doublearg(two_j, two_m1, two_m2, α, cosβ, γ)
+    return wignerd_doublearg(two_j, two_m1, two_m2, α, cosβ, γ) * cis(-two_m1*α/2-two_m2*γ/2);
 end
