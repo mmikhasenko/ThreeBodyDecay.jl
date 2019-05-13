@@ -1,4 +1,6 @@
 using ThreeBodyDecay
+using LaTeXStrings
+using Plots
 
 const mDstar = 2.00685 # 2 GeV
 const ΓDstar = 30e-6 # 30 keV
@@ -6,13 +8,11 @@ tbs = let mD = 1.86483, mπ0 = 0.13498
     ThreeBodySystem(mD+mDstar+0.01,mD,mπ0,mD)
 end
 
-using Plots
-
 # amplitude
 
 BWD(σ) = BW(σ,mDstar,100*ΓDstar)
 A(σ3,σ1) = BWD(σ1) + BWD(σ3)
-A(σ3,σ1,ν) = BWD(σ1) * wignerd(1, ν, 0, cosθ23(gσ2(σ3,σ1,tbs),σ3,tbs)) +
+A(σ3,σ1,ν) = BWD(σ1) * wignerd(1, ν, 0, cosθ23(gσ2(σ3,σ1,tbs),σ3,tbs)) -
              BWD(σ3) * sum(wignerd(1, ν, λ, cos_plus_θhat3(σ1,gσ2(σ3,σ1,tbs),tbs)) *
                            wignerd(1, λ, 0, cosθ12(σ1,gσ2(σ3,σ1,tbs),tbs)) for λ=-1:1)
 

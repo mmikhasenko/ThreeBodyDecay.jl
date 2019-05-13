@@ -56,6 +56,6 @@ function change_basis_3from1(σ1, cosθ1, ϕ1, cosθ23, ϕ23,
         return σ3,cosθ3,ϕ3,cosθ12,ϕ12
 end
 
-change_basis_3from1(τ1, tbs::ThreeBodySystem) = change_basis_3from1(τ1...,        tbs.msq...,    tbs.s)
-change_basis_1from2(τ2, tbs::ThreeBodySystem) = change_basis_3from1(τ2..., circle(tbs.msq,1)..., tbs.s)
-change_basis_2from3(τ3, tbs::ThreeBodySystem) = change_basis_3from1(τ3..., circle(tbs.msq,2)..., tbs.s)
+change_basis_3from1(τ1, tbs::ThreeBodySystem) = change_basis_3from1(τ1...,           tbs.msq...,    tbs.s)
+change_basis_1from2(τ2, tbs::ThreeBodySystem) = change_basis_3from1(τ2..., circshift(tbs.msq,-1)..., tbs.s)
+change_basis_2from3(τ3, tbs::ThreeBodySystem) = change_basis_3from1(τ3..., circshift(tbs.msq,-2)..., tbs.s)
