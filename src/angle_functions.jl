@@ -14,7 +14,7 @@ function σ3of1(s,m2s,σi,z)
     return m2s[1]+m2s[2] + (EE4σ + pp4σ*z) / (2σi)
 end
 
-function cosθ12(s,m2s,σs)
+function cosθ23(s,m2s,σs)
     EE4σ = (σs[1]+m2s[2]-m2s[3])*(s-σs[1]-m2s[1])
     pp4σ = sqrt(λ(σs[1],m2s[2],m2s[3])*λ(s,σs[1],m2s[1]))
     rest = σs[3]-m2s[1]-m2s[2]

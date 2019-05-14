@@ -36,4 +36,8 @@ let m1 = 0.938, m2 = 0.49367, m3 = 0.13957, m0 = 2.46867
                   wignerd_doublearg(two_s,two_ν,two_μ,cos_mins_θhat2(σ3,σ1,tbs))*
                   (mod(two_ν-two_μ,4)==2 ? -1 : 1) for two_ν=-two_s:2:s) ≈ wignerD_doublearg(two_s,two_λ,two_μ,τ2[3],τ2[2],τ2[5])
         for two_λ = -two_s:2:two_s, two_μ = -two_s:2:two_s) == (two_s+1)^2
+
+    # implementation of σ3of1 and cosθ12
+    @test τ3[1] ≈ σ3of1(τ1[1],τ1[4],tbs)
+    @test τ3[4] ≈ cosθ12(τ1[1],τ2[1],tbs)
 end
