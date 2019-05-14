@@ -46,5 +46,9 @@ cosθ23(σ2,σ3,tbs::ThreeBodySystem) = cosθ23(tbs.s, tbs.msq,                 
 cosθ31(σ3,σ1,tbs::ThreeBodySystem) = cosθ23(tbs.s,[tbs.msq[2],tbs.msq[3],tbs.msq[1]], [gσ2(σ3,σ1,tbs),σ3,σ1])
 cosθ12(σ1,σ2,tbs::ThreeBodySystem) = cosθ23(tbs.s,[tbs.msq[3],tbs.msq[1],tbs.msq[2]], [gσ3(σ1,σ2,tbs),σ1,σ2])
 #
-cos_mins_θhat2(σ3,σ1,tbs::ThreeBodySystem) = cosθhat12(tbs.s, tbs.msq                          , [σ1,gσ2(σ3,σ1,tbs),σ3])
-cos_plus_θhat3(σ1,σ2,tbs::ThreeBodySystem) = cosθhat12(tbs.s,[tbs.msq[3],tbs.msq[1],tbs.msq[2]], [gσ3(σ1,σ2,tbs),σ1,σ2])
+cosθhat12(σ1,σ2,tbs::ThreeBodySystem) = cosθhat12(tbs.s,  tbs.msq,                           [σ1,σ2,gσ3(σ1,σ2,tbs)])
+cosθhat23(σ2,σ3,tbs::ThreeBodySystem) = cosθhat12(tbs.s, [tbs.msq[2],tbs.msq[3],tbs.msq[1]], [σ2,σ3,gσ1(σ2,σ3,tbs)])
+cosθhat31(σ3,σ1,tbs::ThreeBodySystem) = cosθhat12(tbs.s, [tbs.msq[3],tbs.msq[1],tbs.msq[2]], [σ3,σ1,gσ2(σ3,σ1,tbs)])
+#
+cos_plus_θhat31(σ3,σ1,tbs::ThreeBodySystem) = cosθhat31(σ3,σ1,tbs)
+cos_mins_θhat21(σ1,σ2,tbs::ThreeBodySystem) = cosθhat12(σ1,σ2,tbs)
