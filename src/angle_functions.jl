@@ -34,3 +34,17 @@ function cosβ(s,m2s,σs)
     rest = σs[2]-s-m2s[2]
     return (2m2s[1]*rest+EE4m1sq)/pp4m1sq
 end
+
+function cosθtilde3to1_for1(s,m2s,σs)
+    EE4m1sq = (s+m2s[1]-σs[1])*(σs[3]-m2s[1]-m2s[2])
+    pp4m1sq = sqrt(λ(s,m2s[1],σs[1])*λ(m2s[1],m2s[2],σs[3]))
+    rest = σs[2]-s-m2s[2]
+    return (2m2s[1]*rest+EE4m1sq)/pp4m1sq
+end
+
+function cosθtilde2to3_for1(s,m2s,σs)
+    EE4m1sq = (σs[2]-m2s[3]-m2s[1])*(σs[3]-m2s[1]-m2s[2])
+    pp4m1sq = sqrt(λ(σs[2],m2s[3],m2s[1])*λ(σs[3],m2s[1],m2s[2]))
+    rest = m2s[2]+m2s[3]-σs[1]
+    return (2m2s[1]*rest+EE4m1sq)/pp4m1sq
+end

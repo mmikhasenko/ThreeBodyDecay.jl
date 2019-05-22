@@ -52,3 +52,6 @@ cosθhat31(σ3,σ1,tbs::ThreeBodySystem) = cosθhat12(tbs.s, [tbs.msq[3],tbs.msq
 #
 cos_plus_θhat31(σ3,σ1,tbs::ThreeBodySystem) = cosθhat31(σ3,σ1,tbs)
 cos_mins_θhat21(σ1,σ2,tbs::ThreeBodySystem) = cosθhat12(σ1,σ2,tbs)
+
+cosθtilde3to1_for1(σ3,σ1,tbs::ThreeBodySystem) = cosθtilde3to1_for1(tbs.s,  tbs.msq,                           [σ1,gσ2(σ3,σ1,tbs),σ3])
+cosθtilde1to2_for1(σ1,σ2,tbs::ThreeBodySystem) = cosθtilde3to1_for1(tbs.s, [tbs.msq[1],tbs.msq[3],tbs.msq[2]], [σ1,gσ3(σ1,σ2,tbs),σ2])
