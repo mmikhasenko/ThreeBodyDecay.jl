@@ -20,11 +20,14 @@ export pthsq, pth
 # density
 export getbinned1dDensity,
        getbinned2dDensity
-
 export flatDalitzPlotSample31
+include("rand_corr.jl")
+include("rand_gen.jl")
 
 #lineshape
 export pole, BW, BWdw
+export Lineshape, BreitWigner, amp
+include("lineshape.jl")
 
 # angual_functions
 export ClGd
@@ -46,12 +49,8 @@ export cosθtilde3to1_for1,
 
 include("angle_functions.jl")
 include("tbs_struct.jl")
-include("rand_corr.jl")
-include("rand_gen.jl")
-include("lineshape.jl")
 include("angular_functions.jl")
 include("cross_channel_relations.jl")
-
 
 export jls, twochain
 
