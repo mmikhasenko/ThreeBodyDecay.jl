@@ -52,6 +52,7 @@ include("tbs_struct.jl")
 include("angular_functions.jl")
 include("cross_channel_relations.jl")
 
+#
 export jls, twochain
 
 export coupling_scheme12,
@@ -63,6 +64,13 @@ export two_J,two_L,two_S,
 
 export posibleLS
 
+export HelicityRecoupling,
+       HelicityRecoupling_doublearg
 include("coupling_scheme.jl")
+
+#
+export amp_b2bzz,
+    rate_b2bzz, rateCC_b2bzz
+include("half_to_half_zero_zero.jl")
 
 end  # module ThreeBodyDecay

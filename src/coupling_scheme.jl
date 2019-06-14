@@ -41,3 +41,26 @@ function coupling_scheme23(two_JP,two_jp,two_jps)
 end
 coupling_scheme12(two_JP,two_jp,two_jps) = coupling_scheme23(two_JP,two_jp,[two_jps[3],two_jps[1],two_jps[2]])
 coupling_scheme31(two_JP,two_jp,two_jps) = coupling_scheme23(two_JP,two_jp,[two_jps[2],two_jps[3],two_jps[1]])
+
+#
+function HelicityRecoupling_doublearg(HLSpairs)
+    v = 1.0;
+    for p in HLSpairs
+        (two_j1,two_λ1,two_j2,two_λ2) = p[1]
+        (two_J,two_L,two_S) = p[2]
+        two_λ1_λ2 = two_λ1-two_λ2
+        v *= ClGd(two_j1,two_λ1,two_j2,-two_λ2,two_S,two_λ1_λ2) *
+             ClGd(two_L,0,two_S,two_λ1_λ2,two_J,two_λ1_λ2)
+    end
+    return  v;
+end
+function HelicityRecoupling(HLSpairs)
+    v = 1.0;
+    for p in HLSpairs
+        (j1,λ1,j2,λ2) = p[1]
+        (J,L,S) = p[2]
+        v *= ClGd(2*j1,2*λ1,2*j2,-2*λ2,2*S,2*(λ1-λ2)) *
+             ClGd(2*L,0,2*S,2*(λ1-λ2),2*J,2*(λ1-λ2))
+    end
+    return  v;
+end
