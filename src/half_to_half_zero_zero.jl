@@ -65,7 +65,7 @@ function amp_b2bzz(two_λ,two_Λ,σ3,σ1,Cls,tbs)
     σs = (σ1,σ2,σ3)
     Ds = (D1,D2,D3)
     #
-    val = 0.001im
+    val = 0.000im
     for (k,ξ,chains) in Cls
         length(chains) == 0 && continue
         decay_amp = 0.0im
@@ -103,6 +103,54 @@ function rateCC_b2bzz(σ3,σ1,Cls1,Cls2,tbs)
             for two_λ in -1:2:1
                 for two_Λ in -1:2:1)
 end
+
+```
+A(Λ1)A*(Λ2) summed over the final-state polarization
+ - specific for 1/2 -> (1/2 0 0) final state
+ - with reference to p <--o--> K*
+```
+function rateΛΛ_b2bzz(two_Λ1,two_Λ2,σ3,σ1,Cls,tbs)
+    return sum(
+        amp_b2bzz(two_λ,two_Λ1,σ3,σ1,Cls,tbs) *
+            conj(amp_b2bzz(two_λ,two_Λ2,σ3,σ1,Cls,tbs))
+            for two_λ in -1:2:1)
+end
+
+function polarization_vector(M)
+    P0 = real((M[1,1]+M[2,2]) / 2.0)
+    Pz = real((M[1,1]-M[2,2]) / 2.0 / P0)
+    Px =  real(M[1,2]) / P0
+    Py = -imag(M[1,2]) / P0
+    return (Px,Py,Pz,P0)
+end
+```
+Gives a vector of the the polarization sensetivity
+ - specific for 1/2 -> (1/2 0 0) final state
+ - with reference to p <--o--> K*
+```
+function polSens_b2bzz(σ3,σ1,Cls,tbs)
+    M = [rateΛΛ_b2bzz(two_Λ1,two_Λ2,σ3,σ1,Cls,tbs) for two_Λ1=-1:2:1, two_Λ2=-1:2:1]
+    P = polarization_vector(M)
+    return P
+end
+
+```
+Gives a vector of the the polarization sensetivity
+ - specific for 1/2 -> (1/2 0 0) final state
+ - with reference to p <--o--> K*
+```
+function polSens_b2bzz(Cls,tbs; gridN::Int = 100)
+    σ1v = LinRange(tbs.mthsq[1],tbs.sthsq[1],gridN)
+    σ3v = LinRange(tbs.mthsq[3],tbs.sthsq[3],gridN)
+    #
+    M11 = sum(Kibble31(σ3,σ1,tbs) > 0.0 ? 0.0 : rateΛΛ_b2bzz(-1,-1,σ3,σ1,Cls,tbs) for σ3 in σ3v, σ1 in σ1v)
+    M12 = sum(Kibble31(σ3,σ1,tbs) > 0.0 ? 0.0 : rateΛΛ_b2bzz( 1,-1,σ3,σ1,Cls,tbs) for σ3 in σ3v, σ1 in σ1v)
+    M22 = sum(Kibble31(σ3,σ1,tbs) > 0.0 ? 0.0 : rateΛΛ_b2bzz( 1, 1,σ3,σ1,Cls,tbs) for σ3 in σ3v, σ1 in σ1v)
+    #
+    P = polarization_vector([M11 M12; conj(M12) M22])
+    return P
+end
+
 
 #############################################################################
 

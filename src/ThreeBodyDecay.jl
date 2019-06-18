@@ -70,7 +70,10 @@ include("coupling_scheme.jl")
 
 #
 export amp_b2bzz,
-    rate_b2bzz, rateCC_b2bzz
+    rate_b2bzz, rateCC_b2bzz, rateΛΛ_b2bzz,
+    polSens_b2bzz
+export get_couplings,
+    set_couplings
 include("half_to_half_zero_zero.jl")
 
 end  # module ThreeBodyDecay
