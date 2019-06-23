@@ -8,7 +8,7 @@
 #                                                            _|
 
 pole(σ,mcsq) = 1.0/(mcsq - σ)
-BW(σ,m,Γ) = pole(σ,m^2-1im*m*Γ)
+BW(σ,m,Γ) = m*Γ*pole(σ,m^2-1im*m*Γ)
 
 function BWdw(σ,m,Γ,m1,m2)
     √σ < (m1+m2) && return 0.0im
@@ -20,7 +20,7 @@ end
 struct Lineshape
     itype::Int
     type::String
-    pars::Vector{Float64}
+    pars::Vector{Real}
 end
 
 # Breit-Wigner with constant width
