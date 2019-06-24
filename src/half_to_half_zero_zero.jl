@@ -15,7 +15,7 @@ function RkΛsτ(k,two_λp,two_Λ,two_τ,chains,W)
     (k==1) && return R1Λsτ(two_λp,two_Λ,two_τ,chains,W)
     (k==2) && return R2Λsτ(two_λp,two_Λ,two_τ,chains,W)
     (k==3) && return R3Λsτ(two_λp,two_Λ,two_τ,chains,W)
-    return 0.0im
+    return zero(W[1])
 end
 
 # angular functions
@@ -66,18 +66,18 @@ function amp_b2bzz(two_λ,two_Λ,σ3,σ1,CS,tbs,Cs)
     σs = (σ1,σ2,σ3)
     Ds = (D1,D2,D3)
     #
-    val = 0.000im
+    val = zero(Cs[1][1,1]+0.0im)
     for (cs,W) in zip(CS, Cs) # coupling scheme and couplings
         (k,ξ,chains) = cs
         length(chains) == 0 && continue
-        decay_amp = 0.0im
+        decay_amp = zero(Cs[1][1,1]+0.0im)
         for two_τ in -two_j(chains[1]):2:two_j(chains[1]), two_λp = -1:2:1
-            Wc = [W[i,1] + 1im * W[i,2] for i in 1:size(W,1)]
+            Wc = [v1+v2*1im for (v1,v2) in zip(W[:,1],W[:,1])]
             decay_amp += RkΛsτ(k,two_λp,two_Λ,two_τ,chains, Wc) *
                     ZkΛsτ(k,two_λp,two_Λ,two_j(chains[1]),two_τ,σ3,σ1,tbs) *
                     Ds[k][div(two_λp+3,2)]
         end
-        val += amp(σs[k],ξ) * decay_amp
+        val += decay_amp * amp(σs[k],ξ)
     end
     return val;
 end
