@@ -17,10 +17,10 @@ function BWdw(σ,m,Γ,m1,m2)
     pole(σ,m^2-1im*m*Γ*ρσ/ρ0)
 end
 
-struct Lineshape
+struct Lineshape{T<:Real}
     itype::Int
     type::String
-    pars::Vector{Real}
+    pars::Vector{T}
 end
 
 # Breit-Wigner with constant width
