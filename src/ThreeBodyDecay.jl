@@ -1,6 +1,7 @@
 module ThreeBodyDecay
 
 using GSL
+# using WignerSymbols
 
 export gσ1, gσ2, gσ3,
        σ3of1, σ1of2, σ2of3,

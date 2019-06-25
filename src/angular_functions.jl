@@ -57,6 +57,16 @@ function ClGd(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
     three_j = sf_coupling_3j(two_j1,two_j2,two_j,two_m1,two_m2,-two_m)
     return factor*three_j;
 end
+# function ClGd(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
+#     # factor = sqrt(two_j+1)*(mod(two_j1-two_j2+two_m,4)==2 ? -1 : +1)
+#     # three_j = sf_coupling_3j(two_j1,two_j2,two_j,two_m1,two_m2,-two_m)
+#     abs(two_m1) > two_j1 && return 0.0;
+#     abs(two_m2) > two_j2 && return 0.0;
+#     abs(two_m)  > two_j  && return 0.0;
+#     return clebschgordan(HalfInteger(two_j1,2),HalfInteger(two_m1,2),
+#                          HalfInteger(two_j2,2),HalfInteger(two_m2,2),
+#                          HalfInteger(two_j,2), HalfInteger(two_m,2))
+# end
 
 
 ###########
