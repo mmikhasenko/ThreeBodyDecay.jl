@@ -5,9 +5,8 @@ function ChewMandestam(s,m1sq,m2sq)
     λh = sqrt(spth-s)*sqrt(sth-s)
     #
     val = 1/(π) * (
-        λh/s*log((m1sq+m2sq-s+λh)/(2*m1*m2))+
-            (m1sq+m2sq)/(m1sq-m2sq)*log(m1/m2) -
-            (m1sq-m2sq)/s*log(m1/m2) - 1
+        λh/s*log((m1sq+m2sq-s+λh)/(2*m1*m2))-
+            (m1sq-m2sq) * (1.0/s - 1/sth) * log(m1/m2)
     )
     return val
 end
