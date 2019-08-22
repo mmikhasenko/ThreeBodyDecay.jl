@@ -28,6 +28,7 @@ include("rand_gen.jl")
 #lineshape
 export pole, BW, BWdw
 export Lineshape, BreitWigner, amp
+export iRho, ChewMandestam
 include("lineshape.jl")
 
 # angual_functions
