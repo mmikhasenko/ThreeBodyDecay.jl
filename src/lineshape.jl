@@ -52,3 +52,26 @@ function amp(s,lsh::Lineshape)
     error("No itype #$(lsh.itype) found")
     return 0.0im
 end
+
+
+#            _|
+#  _|_|_|    _|_|_|          _|_|_|  _|_|_|
+#  _|    _|  _|    _|      _|_|      _|    _|
+#  _|    _|  _|    _|          _|_|  _|    _|
+#  _|_|_|    _|    _|  _|  _|_|_|    _|_|_|    _|
+#  _|                                _|
+#  _|                                _|
+
+iRhoQTB(s,m1,m2,Γ1,m1th) = √s < (m2+m1th) ? 0.0 : 1im/s*quadgk(σ->sqrt((s-(√σ+m2)^2)*(s-(√σ-m2)^2)) * m1*Γ1 / π / ((m1^2-σ)^2+(m1*Γ1)^2), m1th^2, (√s-m2)^2)[1]
+
+
+
+# k(s,m1,m2) = sqrt(s-(m1+m2)^2)
+# kapp(s,m1,m2,Γ1,m1th) = real(k(s,m1-1im*Γ1/2,m2)-k((m1th+m2)^2,m1-1im*Γ1/2,m2))
+# function discretise(f, xmin, xmax; npoints=50)
+#     ev = LinRange(xmin, xmax, npoints)
+#     calv = f.(ev)
+#     return interpolate((ev,), calv, Gridded(Linear()))
+# end
+# calv = map(e->kint(e^2,mρ,mJpsi,0.15,2mπ), ev)
+# plot(e->itp0(e),mJpsi+2mπ, 4.3)

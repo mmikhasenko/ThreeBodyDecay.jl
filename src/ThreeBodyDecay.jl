@@ -1,6 +1,7 @@
 module ThreeBodyDecay
 
 using GSL
+using QuadGK
 # using WignerSymbols
 
 export gσ1, gσ2, gσ3,
@@ -29,6 +30,7 @@ include("rand_gen.jl")
 export pole, BW, BWdw
 export Lineshape, BreitWigner, amp
 export iRho, ChewMandestam
+export iRhoQTB
 include("lineshape.jl")
 
 # angual_functions
