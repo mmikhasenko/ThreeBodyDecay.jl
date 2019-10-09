@@ -48,11 +48,11 @@ function ZkΛsτ(k,two_λ,two_Λ,two_s,two_τ,σ3,σ1,tbs)
     return 0.0
 end
 
-```
+"""
 Full amplitude
  - specific for 1/2 -> (1/2 0 0) final state
  - with reference to p <--o--> K*
-```
+"""
 function amp_b2bzz(two_λ,two_Λ,σ3,σ1,CS,tbs,Cs)
     σ2 = gσ2(σ3,σ1,tbs)
     # Wigner rotations
@@ -82,11 +82,11 @@ function amp_b2bzz(two_λ,two_Λ,σ3,σ1,CS,tbs,Cs)
     return val;
 end
 
-```
+"""
 Squared amplitude summed over polarization of initial and final state
  - specific for 1/2 -> (1/2 0 0) final state
  - with reference to p <--o--> K*
-```
+"""
 function rate_b2bzz(σ3,σ1,CS,tbs,Cs)
     return sum(
         abs2(amp_b2bzz(two_λ,two_Λ,σ3,σ1,CS,tbs,Cs))
@@ -94,11 +94,11 @@ function rate_b2bzz(σ3,σ1,CS,tbs,Cs)
                 for two_Λ in -1:2:1)
 end
 
-```
+"""
 A(C1)A*(C1) summed over polarization of initial and final state
  - specific for 1/2 -> (1/2 0 0) final state
  - with reference to p <--o--> K*
-```
+"""
 function rateCC_b2bzz(σ3,σ1,CS,tbs,Cs1,Cs2)
     return sum(
         amp_b2bzz(two_λ,two_Λ,σ3,σ1,CS,tbs,Cs1) *
@@ -107,11 +107,11 @@ function rateCC_b2bzz(σ3,σ1,CS,tbs,Cs1,Cs2)
                 for two_Λ in -1:2:1)
 end
 
-```
+"""
 A(Λ1)A*(Λ2) summed over the final-state polarization
  - specific for 1/2 -> (1/2 0 0) final state
  - with reference to p <--o--> K*
-```
+"""
 function rateΛΛ_b2bzz(two_Λ1,two_Λ2,σ3,σ1,CS,tbs)
     return sum(
         amp_b2bzz(two_λ,two_Λ1,σ3,σ1,CS,tbs,Cs) *
@@ -126,22 +126,23 @@ function polarization_vector(M)
     Py = -imag(M[1,2]) / P0
     return (Px,Py,Pz,P0)
 end
-```
+
+"""
 Gives a vector of the the polarization sensetivity
  - specific for 1/2 -> (1/2 0 0) final state
  - with reference to p <--o--> K*
-```
+"""
 function polSens_b2bzz(σ3,σ1,CS,tbs,Cs)
     M = [rateΛΛ_b2bzz(two_Λ1,two_Λ2,σ3,σ1,CS,tbs,Cs) for two_Λ1=-1:2:1, two_Λ2=-1:2:1]
     P = polarization_vector(M)
     return P
 end
 
-```
+"""
 Gives a vector of the the polarization sensetivity
  - specific for 1/2 -> (1/2 0 0) final state
  - with reference to p <--o--> K*
-```
+"""
 function polSens_b2bzz(CS,tbs, Cs; gridN::Int = 100)
     σ1v = LinRange(tbs.mthsq[1],tbs.sthsq[1],gridN)
     σ3v = LinRange(tbs.mthsq[3],tbs.sthsq[3],gridN)
