@@ -39,21 +39,22 @@ Kibble31(σ3, σ1, tbs::ThreeBodySystem) = Kibble(tbs.s, [tbs.msq[2],tbs.msq[3],
 Kibble12(σ1, σ2, tbs::ThreeBodySystem) = Kibble(tbs.s, [tbs.msq[3],tbs.msq[1],tbs.msq[2]], [gσ3(σ1,σ2,tbs),σ1,σ2])
 #
 σ3of1(σ1,z,tbs::ThreeBodySystem) = σ3of1(tbs.s, tbs.msq,                          σ1,z)
-σ1of2(σ2,z,tbs::ThreeBodySystem) = σ3of1(tbs.s,[tbs.msq[2],tbs.msq[3],tbs.msq[1]],σ2,z)
-σ2of3(σ3,z,tbs::ThreeBodySystem) = σ3of1(tbs.s,[tbs.msq[3],tbs.msq[1],tbs.msq[2]],σ3,z)
+σ1of2(σ2,z,tbs::ThreeBodySystem) = σ3of1(tbs.s,[tbs.msq[2],tbs.msq[3],tbs.msq[1]],σ2,z) # (123) permutation
+σ2of3(σ3,z,tbs::ThreeBodySystem) = σ3of1(tbs.s,[tbs.msq[3],tbs.msq[1],tbs.msq[2]],σ3,z) # (123)^2 permutation
 #
 cosθ23(σ2,σ3,tbs::ThreeBodySystem) = cosθ23(tbs.s, tbs.msq,                           [gσ1(σ2,σ3,tbs),σ2,σ3])
-cosθ31(σ3,σ1,tbs::ThreeBodySystem) = cosθ23(tbs.s,[tbs.msq[2],tbs.msq[3],tbs.msq[1]], [gσ2(σ3,σ1,tbs),σ3,σ1])
-cosθ12(σ1,σ2,tbs::ThreeBodySystem) = cosθ23(tbs.s,[tbs.msq[3],tbs.msq[1],tbs.msq[2]], [gσ3(σ1,σ2,tbs),σ1,σ2])
+cosθ31(σ3,σ1,tbs::ThreeBodySystem) = cosθ23(tbs.s,[tbs.msq[2],tbs.msq[3],tbs.msq[1]], [gσ2(σ3,σ1,tbs),σ3,σ1]) # (123) permutation
+cosθ12(σ1,σ2,tbs::ThreeBodySystem) = cosθ23(tbs.s,[tbs.msq[3],tbs.msq[1],tbs.msq[2]], [gσ3(σ1,σ2,tbs),σ1,σ2]) # (123)^2 permutation
 #
 cosθhat12(σ1,σ2,tbs::ThreeBodySystem) = cosθhat12(tbs.s,  tbs.msq,                           [σ1,σ2,gσ3(σ1,σ2,tbs)])
-cosθhat23(σ2,σ3,tbs::ThreeBodySystem) = cosθhat12(tbs.s, [tbs.msq[2],tbs.msq[3],tbs.msq[1]], [σ2,σ3,gσ1(σ2,σ3,tbs)])
-cosθhat31(σ3,σ1,tbs::ThreeBodySystem) = cosθhat12(tbs.s, [tbs.msq[3],tbs.msq[1],tbs.msq[2]], [σ3,σ1,gσ2(σ3,σ1,tbs)])
+cosθhat23(σ2,σ3,tbs::ThreeBodySystem) = cosθhat12(tbs.s, [tbs.msq[2],tbs.msq[3],tbs.msq[1]], [σ2,σ3,gσ1(σ2,σ3,tbs)]) # (123) permutation
+cosθhat31(σ3,σ1,tbs::ThreeBodySystem) = cosθhat12(tbs.s, [tbs.msq[3],tbs.msq[1],tbs.msq[2]], [σ3,σ1,gσ2(σ3,σ1,tbs)]) # (123)^2 permutation
 #
 cos_plus_θhat31(σ3,σ1,tbs::ThreeBodySystem) = cosθhat31(σ3,σ1,tbs)
 cos_mins_θhat21(σ1,σ2,tbs::ThreeBodySystem) = cosθhat12(σ1,σ2,tbs)
 
 cosζ31_for1(σ3,σ1,tbs::ThreeBodySystem) = cosζ31_for1(tbs.s,  tbs.msq,                           [σ1,gσ2(σ3,σ1,tbs),σ3])
+# (23) permutation
 cosζ12_for1(σ1,σ2,tbs::ThreeBodySystem) = cosζ31_for1(tbs.s, [tbs.msq[1],tbs.msq[3],tbs.msq[2]], [σ1,gσ3(σ1,σ2,tbs),σ2])
 #
 cosζ32_for1(σ3,σ2,tbs::ThreeBodySystem) = cosζ31_for1(tbs.s,  tbs.msq,                           [gσ1(σ2,σ3,tbs),σ2,σ3])
