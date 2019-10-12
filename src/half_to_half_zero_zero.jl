@@ -58,9 +58,9 @@ function amp_b2bzz(two_λ,two_Λ,σ3,σ1,CS,tbs,Cs)
     # Wigner rotations
     D1 = [two_λ==two_λp ? 1.0 : 0.0 for two_λp=-1:2:1]
     D2 = [((two_λp-two_λ) % 4 == 2 ? -1 : 1) *
-        wignerd_doublearg(1,two_λp,two_λ,cosθtilde1to2_for1(σ1,σ2,tbs))
+        wignerd_doublearg(1,two_λp,two_λ,cosζ12_for1(σ1,σ2,tbs))
             for two_λp=-1:2:1]
-    D3 = [wignerd_doublearg(1,two_λp,two_λ,cosθtilde3to1_for1(σ3,σ1,tbs))
+    D3 = [wignerd_doublearg(1,two_λp,two_λ,cosζ31_for1(σ3,σ1,tbs))
             for two_λp=-1:2:1]
     #
     σs = (σ1,σ2,σ3)

@@ -12,7 +12,6 @@ export gσ1, gσ2, gσ3,
        cosθhat31,
        cos_plus_θhat31,
        cos_mins_θhat21,
-       cosβ,
        λ,
        Kibble, Kibble23, Kibble12, Kibble31
 
@@ -47,9 +46,9 @@ export wignerd_hat_doublearg,
         change_basis_1from2,
         change_basis_2from3
 
-export cosθtilde3to1_for1,
-       cosθtilde2to3_for1,
-       cosθtilde1to2_for1
+export cosζ31_for1,
+       cosζ23_for1,
+       cosζ12_for1
 
 include("angle_functions.jl")
 include("tbs_struct.jl")
