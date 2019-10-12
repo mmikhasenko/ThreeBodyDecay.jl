@@ -1,3 +1,5 @@
+using Test
+using ThreeBodyDecay
 
 @testset "Coupling schemes" begin
     # final state particles

@@ -1,16 +1,17 @@
-using ThreeBodyDecay
-using Test
+using SafeTestsets
 
 # ThreeBodyDecay structure
-include("test_ranges.jl")
+@safetestset "Test of the tbs structure" begin include("test_ranges.jl") end
 
 # angular functions
-include("circle_relations.jl")
-include("representaiton_property.jl")
-include("check_lineshape_functions.jl")
+@safetestset "Angular Functions block" begin
+    include("circle_relations.jl")
+    include("representaiton_property.jl")
+    include("check_lineshape_functions.jl")
+end
 
 # JPC functions
-include("test_couplings.jl")
+@safetestset "Couplings" begin include("test_couplings.jl") end
 
 # examples
-include("test_Xic_decay.jl")
+@safetestset "Complete example" begin include("test_Xic_decay.jl") end
