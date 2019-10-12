@@ -42,11 +42,12 @@ function plot_dalitz_with_projections(f=(σ3,σ1)->1.0)
     plot!(σ1v, sum(calz, dims=1)[1,:], lab="", yaxis=false, l=(2,:black), sp=3)
 end
 
+
 ############################################################
 
 function A(σ3,σ1, CS, Cs)
     σ = [σ1, 0.0, σ3]
-    sum(c*amp(σ[ch[1]], ch[2])  for (ch,c) in zip(CS,Cs))
+    return sum(c*amp(σ[ch[1]], ch[2]) for (ch,c) in zip(CS,Cs))
 end
 
 I(σ3,σ1, CS, Cs) = abs2(A(σ3,σ1, CS, Cs))
@@ -63,8 +64,16 @@ model = [(1,Λ1405),
  (1,Λ1810),
  (3,BreitWigner(4.45,0.06))]
 
-let
-    plot_dalitz_with_projections((σ3,σ1)->I(σ3,σ1,
-        model,
-        [0.9, 1.0, 0.7, 0.2, 0.3, 0.2im]))
-end
+
+σ3v, σ1v = flatDalitzPlotSample31(tbs; Nev=1000)
+
+
+I(σ3v[1],σ1v[1],
+    model,
+    [0.9, 1.0, 0.7, 0.2, 0.3, 0.2im])
+
+# let
+#     plot_dalitz_with_projections((σ3,σ1)->I(σ3,σ1,
+#         model,
+#         [0.9, 1.0, 0.7, 0.2, 0.3, 0.2im]))
+# end
