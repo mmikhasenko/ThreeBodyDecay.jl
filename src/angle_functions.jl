@@ -44,9 +44,9 @@ end
 # end
 
 """
-    Wigner angle of particle 1 to relate chain-3 to chain-1
+    Wigner angle of particle 1 to relate chain-1 to chain-3
 """
-function cosζ31_for1(s,m2s,σs)
+function cosζ13_for1(s,m2s,σs)
     EE4m1sq = (s+m2s[1]-σs[1])*(σs[3]-m2s[1]-m2s[2])
     pp4m1sq = sqrt(λ(s,m2s[1],σs[1])*λ(m2s[1],m2s[2],σs[3]))
     rest = σs[2]-s-m2s[2]
@@ -56,7 +56,7 @@ end
 """
     Wigner angle of particle 1 to relate chain-3 to chain-2
 """
-function cosζ32_for1(s,m2s,σs)
+function cosζ23_for1(s,m2s,σs)
     EE4m1sq = (σs[2]-m2s[3]-m2s[1])*(σs[3]-m2s[1]-m2s[2])
     pp4m1sq = sqrt(λ(σs[2],m2s[3],m2s[1])*λ(σs[3],m2s[1],m2s[2]))
     rest = m2s[2]+m2s[3]-σs[1]

@@ -22,29 +22,26 @@ end
 # specific for 1/2 -> (1/2 0 0) final state
 # with reference to p <--o--> K*
 #
-function Z1Λsτ(two_λ,two_Λ,two_s,two_τ,σ3,σ1,tbs)
-    σ2 = gσ2(σ3,σ1,tbs)
+function Z1Λsτ(two_λ,two_Λ,two_s,two_τ,dpp,tbs)
     return two_Λ!=(two_τ-two_λ) ? 0.0 :
-        sqrt(2)*sqrt(two_s+1)*wignerd_doublearg(two_s,two_τ,0,cosθ23(σ2,σ3,tbs))
+        sqrt(2)*sqrt(two_s+1)*wignerd_doublearg(two_s,two_τ,0,cosθ23(dpp,tbs))
 end
 #
-function Z2Λsτ(two_λ,two_Λ,two_s,two_τ,σ3,σ1,tbs)
-    σ2 = gσ2(σ3,σ1,tbs)
-    return sqrt(2) * wignerd_doublearg(1,two_Λ,two_τ,cosθhat31(σ3,σ1,tbs)) *
+function Z2Λsτ(two_λ,two_Λ,two_s,two_τ,dpp,tbs)
+    return sqrt(2) * wignerd_doublearg(1,two_Λ,two_τ,cosθhat31(dpp,tbs)) *
         ((two_τ+two_λ) % 4 == 2 ? -1 : 1)*
-        sqrt(two_s+1)*wignerd_doublearg(two_s,two_τ,-two_λ,cosθ31(σ3,σ1,tbs))
+        sqrt(two_s+1)*wignerd_doublearg(two_s,two_τ,-two_λ,cosθ31(dpp,tbs))
 end
 #
-function Z3Λsτ(two_λ,two_Λ,two_s,two_τ,σ3,σ1,tbs)
-    σ2 = gσ2(σ3,σ1,tbs)
-    return sqrt(2) * wignerd_doublearg(1,two_Λ,two_τ,cosθhat12(σ1,σ2,tbs)) *
-        sqrt(two_s+1)*wignerd_doublearg(two_s,two_τ,-two_λ,cosθ12(σ1,σ2,tbs))
+function Z3Λsτ(two_λ,two_Λ,two_s,two_τ,dpp,tbs)
+    return sqrt(2) * wignerd_doublearg(1,two_Λ,two_τ,cosθhat12(dpp,tbs)) *
+        sqrt(two_s+1)*wignerd_doublearg(two_s,two_τ,-two_λ,cosθ12(dpp,tbs))
 end
 #
-function ZkΛsτ(k,two_λ,two_Λ,two_s,two_τ,σ3,σ1,tbs)
-    (k==1) && return Z1Λsτ(two_λ,two_Λ,two_s,two_τ,σ3,σ1,tbs)
-    (k==2) && return Z2Λsτ(two_λ,two_Λ,two_s,two_τ,σ3,σ1,tbs)
-    (k==3) && return Z3Λsτ(two_λ,two_Λ,two_s,two_τ,σ3,σ1,tbs)
+function ZkΛsτ(k,two_λ,two_Λ,two_s,two_τ,dpp,tbs)
+    (k==1) && return Z1Λsτ(two_λ,two_Λ,two_s,two_τ,dpp,tbs)
+    (k==2) && return Z2Λsτ(two_λ,two_Λ,two_s,two_τ,dpp,tbs)
+    (k==3) && return Z3Λsτ(two_λ,two_Λ,two_s,two_τ,dpp,tbs)
     return 0.0
 end
 
@@ -53,17 +50,15 @@ Full amplitude
  - specific for 1/2 -> (1/2 0 0) final state
  - with reference to p <--o--> K*
 """
-function amp_b2bzz(two_λ,two_Λ,σ3,σ1,CS,tbs,Cs)
-    σ2 = gσ2(σ3,σ1,tbs)
+function amp_b2bzz(two_λ,two_Λ,dpp,CS,tbs,Cs)
     # Wigner rotations
     D1 = [two_λ==two_λp ? 1.0 : 0.0 for two_λp=-1:2:1]
-    D2 = [((two_λp-two_λ) % 4 == 2 ? -1 : 1) *
-        wignerd_doublearg(1,two_λp,two_λ,cosζ12_for1(σ1,σ2,tbs))
+    D2 = [wignerd_doublearg(1,two_λp,two_λ,cosζ21_for1(dpp,tbs))
             for two_λp=-1:2:1]
-    D3 = [wignerd_doublearg(1,two_λp,two_λ,cosζ31_for1(σ3,σ1,tbs))
+    D3 = [((two_λp-two_λ) % 4 == 2 ? -1 : 1) *
+        wignerd_doublearg(1,two_λp,two_λ,cosζ13_for1(dpp,tbs))
             for two_λp=-1:2:1]
     #
-    σs = (σ1,σ2,σ3)
     Ds = (D1,D2,D3)
     #
     val = zero(Cs[1][1,1]+0.0im)
@@ -74,10 +69,10 @@ function amp_b2bzz(two_λ,two_Λ,σ3,σ1,CS,tbs,Cs)
         for two_τ in -two_j(chains[1]):2:two_j(chains[1]), two_λp = -1:2:1
             Wc = [v1+v2*1im for (v1,v2) in zip(W[:,1],W[:,1])]
             decay_amp += RkΛsτ(k,two_λp,two_Λ,two_τ,chains, Wc) *
-                    ZkΛsτ(k,two_λp,two_Λ,two_j(chains[1]),two_τ,σ3,σ1,tbs) *
+                    ZkΛsτ(k,two_λp,two_Λ,two_j(chains[1]),two_τ,dpp,tbs) *
                     Ds[k][div(two_λp+3,2)]
         end
-        val += decay_amp * amp(σs[k],ξ)
+        val += decay_amp * amp(dpp.σ123[k],ξ)
     end
     return val;
 end
@@ -87,9 +82,9 @@ Squared amplitude summed over polarization of initial and final state
  - specific for 1/2 -> (1/2 0 0) final state
  - with reference to p <--o--> K*
 """
-function rate_b2bzz(σ3,σ1,CS,tbs,Cs)
+function rate_b2bzz(dpp,CS,tbs,Cs)
     return sum(
-        abs2(amp_b2bzz(two_λ,two_Λ,σ3,σ1,CS,tbs,Cs))
+        abs2(amp_b2bzz(two_λ,two_Λ,dpp,CS,tbs,Cs))
             for two_λ in -1:2:1
                 for two_Λ in -1:2:1)
 end
@@ -99,10 +94,10 @@ A(C1)A*(C1) summed over polarization of initial and final state
  - specific for 1/2 -> (1/2 0 0) final state
  - with reference to p <--o--> K*
 """
-function rateCC_b2bzz(σ3,σ1,CS,tbs,Cs1,Cs2)
+function rateCC_b2bzz(dpp,CS,tbs,Cs1,Cs2)
     return sum(
-        amp_b2bzz(two_λ,two_Λ,σ3,σ1,CS,tbs,Cs1) *
-            conj(amp_b2bzz(two_λ,two_Λ,σ3,σ1,CS,tbs,Cs2))
+        amp_b2bzz(two_λ,two_Λ,dpp,CS,tbs,Cs1) *
+            conj(amp_b2bzz(two_λ,two_Λ,dpp,CS,tbs,Cs2))
             for two_λ in -1:2:1
                 for two_Λ in -1:2:1)
 end
@@ -112,10 +107,10 @@ A(Λ1)A*(Λ2) summed over the final-state polarization
  - specific for 1/2 -> (1/2 0 0) final state
  - with reference to p <--o--> K*
 """
-function rateΛΛ_b2bzz(two_Λ1,two_Λ2,σ3,σ1,CS,tbs)
+function rateΛΛ_b2bzz(two_Λ1,two_Λ2,dpp,CS,tbs)
     return sum(
-        amp_b2bzz(two_λ,two_Λ1,σ3,σ1,CS,tbs,Cs) *
-            conj(amp_b2bzz(two_λ,two_Λ2,σ3,σ1,CS,tbs,Cs))
+        amp_b2bzz(two_λ,two_Λ1,dpp,CS,tbs,Cs) *
+            conj(amp_b2bzz(two_λ,two_Λ2,dpp,CS,tbs,Cs))
             for two_λ in -1:2:1)
 end
 
@@ -132,8 +127,8 @@ Gives a vector of the the polarization sensetivity
  - specific for 1/2 -> (1/2 0 0) final state
  - with reference to p <--o--> K*
 """
-function polSens_b2bzz(σ3,σ1,CS,tbs,Cs)
-    M = [rateΛΛ_b2bzz(two_Λ1,two_Λ2,σ3,σ1,CS,tbs,Cs) for two_Λ1=-1:2:1, two_Λ2=-1:2:1]
+function polSens_b2bzz(dpp,CS,tbs,Cs)
+    M = [rateΛΛ_b2bzz(two_Λ1,two_Λ2,dpp,CS,tbs,Cs) for two_Λ1=-1:2:1, two_Λ2=-1:2:1]
     P = polarization_vector(M)
     return P
 end
@@ -147,9 +142,9 @@ function polSens_b2bzz(CS,tbs, Cs; gridN::Int = 100)
     σ1v = LinRange(tbs.mthsq[1],tbs.sthsq[1],gridN)
     σ3v = LinRange(tbs.mthsq[3],tbs.sthsq[3],gridN)
     #
-    M11 = sum(Kibble31(σ3,σ1,tbs) > 0.0 ? 0.0 : rateΛΛ_b2bzz(-1,-1,σ3,σ1,CS,tbs,Cs) for σ3 in σ3v, σ1 in σ1v)
-    M12 = sum(Kibble31(σ3,σ1,tbs) > 0.0 ? 0.0 : rateΛΛ_b2bzz( 1,-1,σ3,σ1,CS,tbs,Cs) for σ3 in σ3v, σ1 in σ1v)
-    M22 = sum(Kibble31(σ3,σ1,tbs) > 0.0 ? 0.0 : rateΛΛ_b2bzz( 1, 1,σ3,σ1,CS,tbs,Cs) for σ3 in σ3v, σ1 in σ1v)
+    M11 = sum(Kibble(dpp,tbs) > 0.0 ? 0.0 : rateΛΛ_b2bzz(-1,-1,dpp,CS,tbs,Cs) for σ3 in σ3v, σ1 in σ1v)
+    M12 = sum(Kibble(dpp,tbs) > 0.0 ? 0.0 : rateΛΛ_b2bzz( 1,-1,dpp,CS,tbs,Cs) for σ3 in σ3v, σ1 in σ1v)
+    M22 = sum(Kibble(dpp,tbs) > 0.0 ? 0.0 : rateΛΛ_b2bzz( 1, 1,dpp,CS,tbs,Cs) for σ3 in σ3v, σ1 in σ1v)
     #
     P = polarization_vector([M11 M12; conj(M12) M22])
     return P

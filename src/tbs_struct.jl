@@ -7,18 +7,18 @@
 #              _|_|
 
 
-struct ThreeBodySystem
+struct ThreeBodySystem # immutable
     e::Float64
     s::Float64
     #
-    m::Vector{Float64}
-    msq::Vector{Float64}
+    m::SVector{3,Float64}
+    msq::SVector{3,Float64}
     #
-    mth::Vector{Float64}
-    mthsq::Vector{Float64}
+    mth::SVector{3,Float64}
+    mthsq::SVector{3,Float64}
     #
-    sth::Vector{Float64}
-    sthsq::Vector{Float64}
+    sth::SVector{3,Float64}
+    sthsq::SVector{3,Float64}
 end
 
 ThreeBodySystem(e,m1,m2,m3) = ThreeBodySystem(e, e^2, [m1,m2,m3], [m1,m2,m3].^2,
@@ -37,24 +37,33 @@ gσ3(σ1,σ2,tbs) = tbs.s+sum(tbs.msq)-σ1-σ2
 Kibble23(σ2, σ3, tbs::ThreeBodySystem) = Kibble(tbs.s,  tbs.msq,                           [gσ1(σ2,σ3,tbs),σ2,σ3])
 Kibble31(σ3, σ1, tbs::ThreeBodySystem) = Kibble(tbs.s, [tbs.msq[2],tbs.msq[3],tbs.msq[1]], [gσ2(σ3,σ1,tbs),σ3,σ1])
 Kibble12(σ1, σ2, tbs::ThreeBodySystem) = Kibble(tbs.s, [tbs.msq[3],tbs.msq[1],tbs.msq[2]], [gσ3(σ1,σ2,tbs),σ1,σ2])
+
 #
 σ3of1(σ1,z,tbs::ThreeBodySystem) = σ3of1(tbs.s, tbs.msq,                          σ1,z)
 σ1of2(σ2,z,tbs::ThreeBodySystem) = σ3of1(tbs.s,[tbs.msq[2],tbs.msq[3],tbs.msq[1]],σ2,z) # (123) permutation
 σ2of3(σ3,z,tbs::ThreeBodySystem) = σ3of1(tbs.s,[tbs.msq[3],tbs.msq[1],tbs.msq[2]],σ3,z) # (123)^2 permutation
-#
-cosθ23(σ2,σ3,tbs::ThreeBodySystem) = cosθ23(tbs.s, tbs.msq,                           [gσ1(σ2,σ3,tbs),σ2,σ3])
-cosθ31(σ3,σ1,tbs::ThreeBodySystem) = cosθ23(tbs.s,[tbs.msq[2],tbs.msq[3],tbs.msq[1]], [gσ2(σ3,σ1,tbs),σ3,σ1]) # (123) permutation
-cosθ12(σ1,σ2,tbs::ThreeBodySystem) = cosθ23(tbs.s,[tbs.msq[3],tbs.msq[1],tbs.msq[2]], [gσ3(σ1,σ2,tbs),σ1,σ2]) # (123)^2 permutation
-#
-cosθhat12(σ1,σ2,tbs::ThreeBodySystem) = cosθhat12(tbs.s,  tbs.msq,                           [σ1,σ2,gσ3(σ1,σ2,tbs)])
-cosθhat23(σ2,σ3,tbs::ThreeBodySystem) = cosθhat12(tbs.s, [tbs.msq[2],tbs.msq[3],tbs.msq[1]], [σ2,σ3,gσ1(σ2,σ3,tbs)]) # (123) permutation
-cosθhat31(σ3,σ1,tbs::ThreeBodySystem) = cosθhat12(tbs.s, [tbs.msq[3],tbs.msq[1],tbs.msq[2]], [σ3,σ1,gσ2(σ3,σ1,tbs)]) # (123)^2 permutation
-#
-cos_plus_θhat31(σ3,σ1,tbs::ThreeBodySystem) = cosθhat31(σ3,σ1,tbs)
-cos_mins_θhat21(σ1,σ2,tbs::ThreeBodySystem) = cosθhat12(σ1,σ2,tbs)
 
-cosζ31_for1(σ3,σ1,tbs::ThreeBodySystem) = cosζ31_for1(tbs.s,  tbs.msq,                           [σ1,gσ2(σ3,σ1,tbs),σ3])
-# (23) permutation
-cosζ12_for1(σ1,σ2,tbs::ThreeBodySystem) = cosζ31_for1(tbs.s, [tbs.msq[1],tbs.msq[3],tbs.msq[2]], [σ1,gσ3(σ1,σ2,tbs),σ2])
-#
-cosζ32_for1(σ3,σ2,tbs::ThreeBodySystem) = cosζ31_for1(tbs.s,  tbs.msq,                           [gσ1(σ2,σ3,tbs),σ2,σ3])
+# Dynamic variables
+
+struct DalitzPlotPoint
+    σ123::SVector{3,Float64}
+    σ312::SVector{3,Float64}
+    σ231::SVector{3,Float64}
+end
+
+DalitzPlotPoint(σ1,σ2,σ3) = DalitzPlotPoint(SVector(σ1,σ2,σ3), SVector(σ3,σ1,σ2), SVector(σ2,σ3,σ1))
+
+# scattering angle
+cosθ23(dpp::DalitzPlotPoint,tbs::ThreeBodySystem) = cosθ23(tbs.s, tbs.msq,                           dpp.σ123)
+cosθ31(dpp::DalitzPlotPoint,tbs::ThreeBodySystem) = cosθ23(tbs.s,[tbs.msq[2],tbs.msq[3],tbs.msq[1]], dpp.σ231) # (123) permutation
+cosθ12(dpp::DalitzPlotPoint,tbs::ThreeBodySystem) = cosθ23(tbs.s,[tbs.msq[3],tbs.msq[1],tbs.msq[2]], dpp.σ312) # (123)^2 permutation
+
+# particle-0 Wigner angle
+cosθhat12(dpp::DalitzPlotPoint,tbs::ThreeBodySystem) = cosθhat12(tbs.s,  tbs.msq,                           dpp.σ123)
+cosθhat23(dpp::DalitzPlotPoint,tbs::ThreeBodySystem) = cosθhat12(tbs.s, [tbs.msq[2],tbs.msq[3],tbs.msq[1]], dpp.σ231) # (123) permutation
+cosθhat31(dpp::DalitzPlotPoint,tbs::ThreeBodySystem) = cosθhat12(tbs.s, [tbs.msq[3],tbs.msq[1],tbs.msq[2]], dpp.σ312) # (123)^2 permutation
+
+# particle-1 Wigner angle
+cosζ13_for1(dpp::DalitzPlotPoint,tbs::ThreeBodySystem) = cosζ13_for1(tbs.s,  tbs.msq,                           dpp.σ123)
+cosζ21_for1(dpp::DalitzPlotPoint,tbs::ThreeBodySystem) = cosζ13_for1(tbs.s, [tbs.msq[1],tbs.msq[3],tbs.msq[2]], SVector(dpp.σ123[1],dpp.σ123[3],dpp.σ123[2]))
+cosζ23_for1(dpp::DalitzPlotPoint,tbs::ThreeBodySystem) = cosζ23_for1(tbs.s,  tbs.msq,                           dpp.σ123)

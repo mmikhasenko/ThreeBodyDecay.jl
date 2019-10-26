@@ -2,6 +2,7 @@ module ThreeBodyDecay
 
 using GSL
 using QuadGK
+using StaticArrays
 # using WignerSymbols
 
 export gσ1, gσ2, gσ3,
@@ -14,9 +15,16 @@ export gσ1, gσ2, gσ3,
        cos_mins_θhat21,
        λ,
        Kibble, Kibble23, Kibble12, Kibble31
+export cosζ13_for1,
+       cosζ23_for1,
+       cosζ21_for1
+include("angle_functions.jl")
 
-export ThreeBodySystem
+
+export ThreeBodySystem,
+    DalitzPlotPoint
 export pthsq, pth
+include("tbs_struct.jl")
 
 # density
 export getbinned1dDensity,
@@ -41,18 +49,12 @@ export jacobi_pols,
 export wignerd_hat_doublearg,
        wignerd_doublearg,
        wignerD_doublearg
+include("angular_functions.jl")
 
- export change_basis_3from1,
+export change_basis_3from1,
         change_basis_1from2,
         change_basis_2from3
 
-export cosζ31_for1,
-       cosζ23_for1,
-       cosζ12_for1
-
-include("angle_functions.jl")
-include("tbs_struct.jl")
-include("angular_functions.jl")
 include("cross_channel_relations.jl")
 
 #

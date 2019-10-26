@@ -42,7 +42,7 @@ end
 coupling_scheme12(two_JP,two_jp,two_jps) = coupling_scheme23(two_JP,two_jp,[two_jps[3],two_jps[1],two_jps[2]])
 coupling_scheme31(two_JP,two_jp,two_jps) = coupling_scheme23(two_JP,two_jp,[two_jps[2],two_jps[3],two_jps[1]])
 
-#
+#(j1λ1j2λ2,JLS)
 function HelicityRecoupling_doublearg(HLSpairs)
     v = 1.0;
     for p in HLSpairs

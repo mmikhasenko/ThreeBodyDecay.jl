@@ -11,8 +11,8 @@ using Test
         BreitWigner(0.77,0.15),
         [twochain(jls(1,2,1),jls(2,2,0))])]
 
-    amplitude(two_λ,two_Λ,σ3,σ1,Cs) = amp_b2bzz(two_λ,two_Λ,σ3,σ1,CS,tbs,Cs)
-    intensity(σ3,σ1,Cs) = rate_b2bzz(σ3,σ1,CS,tbs,Cs)
+    amplitude(two_λ,two_Λ,dpp,Cs) = amp_b2bzz(two_λ,two_Λ,dpp,CS,tbs,Cs)
+    intensity(σ3,σ1,Cs) = rate_b2bzz(DalitzPlotPoint(σ1,gσ2(σ3,σ1,tbs),σ3),CS,tbs,Cs)
 
     sample = flatDalitzPlotSample31(tbs)
 

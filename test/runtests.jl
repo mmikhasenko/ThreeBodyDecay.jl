@@ -10,6 +10,8 @@ using SafeTestsets
     include("check_lineshape_functions.jl")
 end
 
+@safetestset "Sum rule" begin include("wigner_angle_sumrules.jl") end
+
 # JPC functions
 @safetestset "Couplings" begin include("test_couplings.jl") end
 
