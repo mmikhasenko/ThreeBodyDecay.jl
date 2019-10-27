@@ -23,13 +23,14 @@ export cosζk1_for1,
        cosζk3_for3,
        cosθhatk1,
        cosθij
+export phase
 include("angle_functions.jl")
 
 
 export ThreeBodySystem,
        DalitzPlotPoint,
        randomPoint
-export pthsq, pth
+export s,m0,m1,m2,m3
 include("tbs_struct.jl")
 
 # density
@@ -78,6 +79,10 @@ export posibleLS
 export HelicityRecoupling,
        HelicityRecoupling_doublearg
 include("coupling_scheme.jl")
+
+#
+export Zsτ
+include("general_case.jl")
 
 #
 export amp_b2bzz,

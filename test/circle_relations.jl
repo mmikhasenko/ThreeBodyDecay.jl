@@ -13,14 +13,14 @@ using ThreeBodyDecay
     @test sum(τ1p .≈ τ1) == 5
 
     #
-    @test τ1[1] ≈ σ1of2(τ2[1],τ2[4],tbs)
-    @test τ3[1] ≈ σ3of1(τ1[1],τ1[4],tbs)
-    @test τ2[1] ≈ σ2of3(τ3[1],τ3[4],tbs)
+    @test τ1[1] ≈ σ1of2(τ2[4],τ2[1],tbs.msq)
+    @test τ3[1] ≈ σ3of1(τ1[4],τ1[1],tbs.msq)
+    @test τ2[1] ≈ σ2of3(τ3[4],τ3[1],tbs.msq)
     #
     # implementation cosθ12
     dpp = DalitzPlotPoint(τ1[1],τ2[1],τ3[1])
-    @test τ3[4] ≈ cosθ12(dpp,tbs)
-    @test τ1[4] ≈ cosθ23(dpp,tbs)
-    @test τ2[4] ≈ cosθ31(dpp,tbs)
+    @test τ3[4] ≈ cosθ12(dpp.σ123,tbs.msq)
+    @test τ1[4] ≈ cosθ23(dpp.σ123,tbs.msq)
+    @test τ2[4] ≈ cosθ31(dpp.σ123,tbs.msq)
     #
 end
