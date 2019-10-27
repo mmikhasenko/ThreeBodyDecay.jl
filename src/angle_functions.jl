@@ -5,18 +5,18 @@
 #    _|      _|    _|  _|    _|  _|          _|      _|  _|    _|  _|    _|      _|_|
 #    _|        _|_|_|  _|    _|    _|_|_|      _|_|  _|    _|_|    _|    _|  _|_|_|
 
-gσ1(σ2,σ3,tbs) = sum(tbs.msq)-σ2-σ3
-gσ2(σ3,σ1,tbs) = sum(tbs.msq)-σ3-σ1
-gσ3(σ1,σ2,tbs) = sum(tbs.msq)-σ1-σ2
+gσ1(σ2,σ3,msq) = sum(msq)-σ2-σ3
+gσ2(σ3,σ1,msq) = sum(msq)-σ3-σ1
+gσ3(σ1,σ2,msq) = sum(msq)-σ1-σ2
 
 #
 
 λ(x,y,z) = x^2+y^2+z^2 - 2x*y - 2y*z - 2z*x
 Kibble(σs,m2s) = (2σs[2]*(m2s[1]+m2s[4]-σs[1])-(m2s[4]+σs[2]-m2s[2])*(σs[2]+m2s[1]-m2s[3]))^2 - λ(m2s[4],σs[2],m2s[2])*λ(σs[2],m2s[1],m2s[3])
 #
-Kibble23(σ2, σ3, m2s) = Kibble(SVector(gσ1(σ2,σ3,tbs),σ2,σ3), tbs.msq)
-Kibble31(σ3, σ1, m2s) = Kibble(SVector(gσ2(σ3,σ1,tbs),σ3,σ1), SVector(tbs.msq[2],tbs.msq[3],tbs.msq[1],tbs.msq[4]))
-Kibble12(σ1, σ2, m2s) = Kibble(SVector(gσ3(σ1,σ2,tbs),σ1,σ2), SVector(tbs.msq[3],tbs.msq[1],tbs.msq[2],tbs.msq[4]))
+Kibble23(σ2, σ3, m2s) = Kibble(SVector(gσ1(σ2,σ3,msq),σ2,σ3), tbs.msq)
+Kibble31(σ3, σ1, m2s) = Kibble(SVector(gσ2(σ3,σ1,msq),σ3,σ1), SVector(tbs.msq[2],tbs.msq[3],tbs.msq[1],tbs.msq[4]))
+Kibble12(σ1, σ2, m2s) = Kibble(SVector(gσ3(σ1,σ2,msq),σ1,σ2), SVector(tbs.msq[3],tbs.msq[1],tbs.msq[2],tbs.msq[4]))
 
 
 function σkofi(k,z,σi,m2s)

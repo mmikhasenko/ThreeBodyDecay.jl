@@ -27,10 +27,11 @@ export phase
 include("angle_functions.jl")
 
 
-export ThreeBodySystem,
-       DalitzPlotPoint,
+export ThreeBodySystem, DalitzPlotPoint,
+       DalitzPlotPoint12, DalitzPlotPoint23, DalitzPlotPoint31,
        randomPoint
 export s,m0,m1,m2,m3
+export two_J, two_Λ
 include("tbs_struct.jl")
 
 # density

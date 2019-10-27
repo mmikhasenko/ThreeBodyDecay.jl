@@ -24,18 +24,18 @@ end
 #
 function Z1Λsτ(two_λ,two_Λ,two_s,two_τ,dpp,tbs)
     return two_Λ!=(two_τ-two_λ) ? 0.0 :
-        sqrt(2)*sqrt(two_s+1)*wignerd_doublearg(two_s,two_τ,0,cosθ23(dpp.σ123,tbs.msq))
+        sqrt(2)*sqrt(two_s+1)*wignerd_doublearg(two_s,two_τ,0,cosθ23(dpp.σs,tbs.msq))
 end
 #
 function Z2Λsτ(two_λ,two_Λ,two_s,two_τ,dpp,tbs)
-    return sqrt(2) * wignerd_doublearg(1,two_Λ,two_τ,cosθhat31(dpp.σ123,tbs.msq)) *
+    return sqrt(2) * wignerd_doublearg(1,two_Λ,two_τ,cosθhat31(dpp.σs,tbs.msq)) *
         ((two_τ+two_λ) % 4 == 2 ? -1 : 1)*
-        sqrt(two_s+1)*wignerd_doublearg(two_s,two_τ,-two_λ,cosθ31(dpp.σ123,tbs.msq))
+        sqrt(two_s+1)*wignerd_doublearg(two_s,two_τ,-two_λ,cosθ31(dpp.σs,tbs.msq))
 end
 #
 function Z3Λsτ(two_λ,two_Λ,two_s,two_τ,dpp,tbs)
-    return sqrt(2) * wignerd_doublearg(1,two_Λ,two_τ,cosθhat12(dpp.σ123,tbs.msq)) *
-        sqrt(two_s+1)*wignerd_doublearg(two_s,two_τ,-two_λ,cosθ12(dpp.σ123,tbs.msq))
+    return sqrt(2) * wignerd_doublearg(1,two_Λ,two_τ,cosθhat12(dpp.σs,tbs.msq)) *
+        sqrt(two_s+1)*wignerd_doublearg(two_s,two_τ,-two_λ,cosθ12(dpp.σs,tbs.msq))
 end
 #
 function ZkΛsτ(k,two_λ,two_Λ,two_s,two_τ,dpp,tbs)
@@ -53,10 +53,10 @@ Full amplitude
 function amp_b2bzz(two_λ,two_Λ,dpp,CS,tbs,Cs)
     # Wigner rotations
     D1 = [two_λ==two_λp ? 1.0 : 0.0 for two_λp=-1:2:1]
-    D2 = [wignerd_doublearg(1,two_λp,two_λ,cosζ21_for1(dpp.σ123,tbs.msq))
+    D2 = [wignerd_doublearg(1,two_λp,two_λ,cosζ21_for1(dpp.σs,tbs.msq))
             for two_λp=-1:2:1]
     D3 = [((two_λp-two_λ) % 4 == 2 ? -1 : 1) *
-        wignerd_doublearg(1,two_λp,two_λ,cosζ13_for1(dpp.σ123,tbs.msq))
+        wignerd_doublearg(1,two_λp,two_λ,cosζ13_for1(dpp.σs,tbs.msq))
             for two_λp=-1:2:1]
     #
     Ds = (D1,D2,D3)
@@ -72,7 +72,7 @@ function amp_b2bzz(two_λ,two_Λ,dpp,CS,tbs,Cs)
                     ZkΛsτ(k,two_λp,two_Λ,two_j(chains[1]),two_τ,dpp,tbs) *
                     Ds[k][div(two_λp+3,2)]
         end
-        val += decay_amp * amp(dpp.σ123[k],ξ)
+        val += decay_amp * amp(dpp.σs[k],ξ)
     end
     return val;
 end
@@ -142,9 +142,9 @@ function polSens_b2bzz(CS,tbs, Cs; gridN::Int = 100)
     σ1v = LinRange(tbs.mthsq[1],tbs.sthsq[1],gridN)
     σ3v = LinRange(tbs.mthsq[3],tbs.sthsq[3],gridN)
     #
-    M11 = sum(Kibble(dpp.σ123,tbs.msq) > 0.0 ? 0.0 : rateΛΛ_b2bzz(-1,-1,dpp,CS,tbs,Cs) for σ3 in σ3v, σ1 in σ1v)
-    M12 = sum(Kibble(dpp.σ123,tbs.msq) > 0.0 ? 0.0 : rateΛΛ_b2bzz( 1,-1,dpp,CS,tbs,Cs) for σ3 in σ3v, σ1 in σ1v)
-    M22 = sum(Kibble(dpp.σ123,tbs.msq) > 0.0 ? 0.0 : rateΛΛ_b2bzz( 1, 1,dpp,CS,tbs,Cs) for σ3 in σ3v, σ1 in σ1v)
+    M11 = sum(Kibble(dpp.σs,tbs.msq) > 0.0 ? 0.0 : rateΛΛ_b2bzz(-1,-1,dpp,CS,tbs,Cs) for σ3 in σ3v, σ1 in σ1v)
+    M12 = sum(Kibble(dpp.σs,tbs.msq) > 0.0 ? 0.0 : rateΛΛ_b2bzz( 1,-1,dpp,CS,tbs,Cs) for σ3 in σ3v, σ1 in σ1v)
+    M22 = sum(Kibble(dpp.σs,tbs.msq) > 0.0 ? 0.0 : rateΛΛ_b2bzz( 1, 1,dpp,CS,tbs,Cs) for σ3 in σ3v, σ1 in σ1v)
     #
     P = polarization_vector([M11 M12; conj(M12) M22])
     return P

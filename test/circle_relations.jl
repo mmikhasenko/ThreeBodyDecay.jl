@@ -18,9 +18,9 @@ using ThreeBodyDecay
     @test τ2[1] ≈ σ2of3(τ3[4],τ3[1],tbs.msq)
     #
     # implementation cosθ12
-    dpp = DalitzPlotPoint(τ1[1],τ2[1],τ3[1])
-    @test τ3[4] ≈ cosθ12(dpp.σ123,tbs.msq)
-    @test τ1[4] ≈ cosθ23(dpp.σ123,tbs.msq)
-    @test τ2[4] ≈ cosθ31(dpp.σ123,tbs.msq)
+    σs = (τ1[1],τ2[1],τ3[1])
+    @test τ3[4] ≈ cosθ12(σs,tbs.msq)
+    @test τ1[4] ≈ cosθ23(σs,tbs.msq)
+    @test τ2[4] ≈ cosθ31(σs,tbs.msq)
     #
 end
