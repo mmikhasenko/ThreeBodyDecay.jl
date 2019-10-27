@@ -82,7 +82,7 @@ export HelicityRecoupling,
 include("coupling_scheme.jl")
 
 #
-export Zsτ
+export Zksτ
 include("general_case.jl")
 
 #

@@ -1,5 +1,5 @@
 
-function Zsτ(k,two_s,two_τ,dpp,tbs)
+function Zksτ(k,two_s,two_τ,dpp,tbs)
     (i,j) = (k==1 ? (2,3) : (k==2 ? (3,1) : (1,2)))
     #
     val = 0.0;
