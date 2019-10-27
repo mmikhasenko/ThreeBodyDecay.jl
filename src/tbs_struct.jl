@@ -19,11 +19,19 @@ struct ThreeBodySystem # immutable
     #
     sth::SVector{3,Float64}
     sthsq::SVector{3,Float64}
+    #
+    two_js::SVector{3,Int}
+    Ps::SVector{3,Char}
+    #
+    two_J::Int
+    P::Char
 end
 
-ThreeBodySystem(e,m1,m2,m3) = ThreeBodySystem(e, e^2, [m1,m2,m3], [m1,m2,m3].^2,
-                                            [m2+m3,m3+m1,m1+m2], [m2+m3,m3+m1,m1+m2].^2,
-                                            [e-m1,e-m2,e-m3], [e-m1,e-m2,e-m3].^2);
+ThreeBodySystem(e,m1,m2,m3; two_jps = ([0,0,0], ['+','+','+']), two_JP=(0,'+')) =
+    ThreeBodySystem(e, e^2, [m1,m2,m3], [m1,m2,m3].^2,
+                            [m2+m3,m3+m1,m1+m2], [m2+m3,m3+m1,m1+m2].^2,
+                            [e-m1,e-m2,e-m3], [e-m1,e-m2,e-m3].^2,
+                            two_jps[1], two_jps[2], two_JP[1], two_JP[2]);
 #
 # circle(v,i) = (i>0) ? [v[(i+1):end]..., v[1:i]...] : [v[(end+i+1):end]..., v[1:(end+i)]...]
 #
@@ -52,6 +60,12 @@ struct DalitzPlotPoint
 end
 
 DalitzPlotPoint(σ1,σ2,σ3) = DalitzPlotPoint(SVector(σ1,σ2,σ3), SVector(σ3,σ1,σ2), SVector(σ2,σ3,σ1))
+function randomPoint(tbs::ThreeBodySystem)
+    σ1 = tbs.mthsq[1] + rand()*(tbs.sthsq[1]-tbs.mthsq[1])
+    σ3 = σ3of1(σ1,2rand()-1,tbs)
+    σ2 = gσ2(σ3,σ1,tbs)
+    return DalitzPlotPoint(σ1,σ2,σ3)
+end
 
 # scattering angle
 cosθ23(dpp::DalitzPlotPoint,tbs::ThreeBodySystem) = cosθ23(tbs.s, tbs.msq,                           dpp.σ123)

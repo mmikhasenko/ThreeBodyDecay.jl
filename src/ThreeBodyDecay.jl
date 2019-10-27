@@ -18,11 +18,17 @@ export gσ1, gσ2, gσ3,
 export cosζ13_for1,
        cosζ23_for1,
        cosζ21_for1
+export cosζk1_for1,
+       cosζk2_for2,
+       cosζk3_for3,
+       cosθhatk1,
+       cosθij
 include("angle_functions.jl")
 
 
 export ThreeBodySystem,
-    DalitzPlotPoint
+       DalitzPlotPoint,
+       randomPoint
 export pthsq, pth
 include("tbs_struct.jl")
 
