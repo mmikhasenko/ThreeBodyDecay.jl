@@ -17,13 +17,13 @@ two_j(ch::twochain) = ch.second.two_j
 two_l(ch::twochain) = ch.second.two_l
 two_s(ch::twochain) = ch.second.two_s
 
-function posibleLS(two_jp,two_jp1,two_jp2)
+function possibleLS(two_jp,two_jp1,two_jp2)
     two_ls = Vector{Tuple{Int,Int}}(undef,0)
     for two_s in abs(two_jp1[1]-two_jp2[1]):2:abs(two_jp1[1]+two_jp2[1])
         for two_l in abs(two_jp[1]-two_s):2:abs(two_jp[1]+two_s)
-            if (two_jp1[2] == "+" ? 1 : -1) *
-               (two_jp2[2] == "+" ? 1 : -1) *
-               (two_jp[2]  == "+" ? 1 : -1) == (two_l % 4 == 2  ? -1 : 1)
+            if (two_jp1[2] == '+' ? 1 : -1) *
+               (two_jp2[2] == '+' ? 1 : -1) *
+               (two_jp[2]  == '+' ? 1 : -1) == (two_l % 4 == 2  ? -1 : 1)
                 push!(two_ls, (two_l,two_s))
             end
         end
@@ -31,16 +31,36 @@ function posibleLS(two_jp,two_jp1,two_jp2)
     return two_ls
 end
 
-function coupling_scheme23(two_JP,two_jp,two_jps)
-    pls = posibleLS(two_jp,two_jps[2],two_jps[3])
-    length(pls) != 1 && error("length(pls) = $(length(pls)) != 1 for the second decay: $(two_jp...)=>$(two_jps[2]...),$(two_jps[3]...). Check quantum numbers!");
+[i+j for i=1:3 for j=2:4]
+
+function coupling_schemek(k,two_jp,two_jps)
+    (i,j) = (k==1 ? (2,3) : (k==2 ? (3,1) : (1,2)))
+    #
+    # length(pls) != 1 && error("length(pls) = $(length(pls)) != 1 for the second decay: $(two_jp...)=>$(two_jps[2]...),$(two_jps[3]...). Check quantum numbers!");
     return [twochain(
-                jls(two_JP[1],two_LS...),  # JLS
-                jls(two_jp[1],pls[1]...))  # jls
-                    for two_LS in posibleLS(two_JP,two_jp,two_jps[1])]
+                jls(two_jps[4][1],two_LS...),  # JLS
+                jls(two_jp[1],two_ls...))  # jls
+                    for two_LS in possibleLS(two_jps[4],two_jp,two_jps[k])
+                    for two_ls in possibleLS(two_jp,two_jps[i],two_jps[j])]
 end
-coupling_scheme12(two_JP,two_jp,two_jps) = coupling_scheme23(two_JP,two_jp,[two_jps[3],two_jps[1],two_jps[2]])
-coupling_scheme31(two_JP,two_jp,two_jps) = coupling_scheme23(two_JP,two_jp,[two_jps[2],two_jps[3],two_jps[1]])
+coupling_scheme23(two_jp,two_jps) = coupling_schemek(1,two_jp,two_jps)
+coupling_scheme12(two_jp,two_jps) = coupling_schemek(3,two_jp,two_jps)
+coupling_scheme31(two_jp,two_jps) = coupling_schemek(2,two_jp,two_jps)
+
+
+function clebsch_for_chaink(k, two_s_int, two_τ, chain, two_λs, two_js)
+    (i,j) = (k==1 ? (2,3) : (k==2 ? (3,1) : (1,2)))
+    #
+    v = 1.0;
+    two_λi_λj = two_λs[i]-two_λs[j]
+    v *= ClGd(two_js[i],two_λs[i],two_js[j],-two_λs[j],two_s(chain),two_λi_λj) *
+         ClGd(two_l(chain),0,two_s(chain),two_λi_λj,two_s_int,two_λi_λj)
+    #
+    two_τ_λk = two_τ - two_λs[k]
+    v *= ClGd(two_s_int,two_τ,two_js[k],-two_λs[k],two_S(chain),two_τ_λk) *
+         ClGd(two_L(chain),0,two_S(chain),two_τ_λk,two_J(chain),two_τ_λk)
+    return v
+end
 
 #(j1λ1j2λ2,JLS)
 function HelicityRecoupling_doublearg(HLSpairs)

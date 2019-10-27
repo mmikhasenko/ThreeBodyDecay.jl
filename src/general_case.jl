@@ -17,3 +17,19 @@ function Zksτ(k,two_s,two_τ,dpp,tbs)
     end
     return val
 end
+
+function Rksτ(k,two_s,two_τ,coupls,CScheme,dpp,tbs)
+    sum(c*clebsch_for_chaink(k, two_s,two_τ, CS, dpp.two_λs, tbs.two_js) for (c,CS) in zip(coupls,CScheme))
+end
+
+function Ask(k,two_s,coupls,CScheme,dpp,tbs)
+    return sum(Zksτ(k,two_s,two_τ,dpp,tbs) * Rksτ(k,two_s,two_τ,coupls,CScheme,dpp,tbs) for two_τ=-two_s:2:two_τ)
+end
+
+function Asummed(setup,dpp,tbs)
+    return sum(RZsk(k,two_s,coupls,CScheme,dpp,tbs) for (k,two_s,coupls,CScheme) in setup)
+end
+
+function Asq(setup,dpp,tbs)
+    return sum(abs2(Asummed(setup,dpp_λs,tbs)) for dpp_λs in possible_helicities(dpp,tbs))
+end

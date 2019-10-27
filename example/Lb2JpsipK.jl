@@ -12,8 +12,8 @@ I(cosθ,two_j,two_s,two_l,two_L) = sum(abs2,
     H2(two_μ,two_λ,two_j,two_s,two_l) for two_μ=-2:2:2, two_λ=-1:2:1, two_τ=(-two_j):2:two_j)
 
 let jp = (3,"-")
-    ( :LS=>posibleLS((1,"+"),jp,(0,"-")),
-      :ls=>posibleLS(jp,(2,"-"),(1,"+")) )
+    ( :LS=>possibleLS((1,"+"),jp,(0,"-")),
+      :ls=>possibleLS(jp,(2,"-"),(1,"+")) )
 end
 
 let

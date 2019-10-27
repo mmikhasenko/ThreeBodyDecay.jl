@@ -43,8 +43,13 @@ change_basis_3from1(τ1, tbs::ThreeBodySystem) = change_basis_3from1(τ1..., tbs
 change_basis_1from2(τ2, tbs::ThreeBodySystem) = change_basis_3from1(τ2..., tbs.msq[2],tbs.msq[3],tbs.msq[1], tbs.msq[4])
 change_basis_2from3(τ3, tbs::ThreeBodySystem) = change_basis_3from1(τ3..., tbs.msq[3],tbs.msq[1],tbs.msq[2], tbs.msq[4])
 
-# Dynamic variables
+# coupling scheme
+coupling_schemek(k,two_jp,tbs::ThreeBodySystem) = coupling_schemek(k,two_jp,collect(zip(tbs.two_js,tbs.Ps)))
+coupling_scheme23(two_jp,tbs::ThreeBodySystem) = coupling_schemek(1,two_jp,tbs)
+coupling_scheme12(two_jp,tbs::ThreeBodySystem) = coupling_schemek(3,two_jp,tbs)
+coupling_scheme31(two_jp,tbs::ThreeBodySystem) = coupling_schemek(2,two_jp,tbs)
 
+# Dynamic variables
 struct DalitzPlotPoint
     σs::SVector{3,Float64}
     two_λs::SVector{4,Int}
@@ -66,4 +71,12 @@ function randomPoint(tbs::ThreeBodySystem)
     σ3 = σ3of1(2rand()-1, σ1, tbs.msq)
     σ2 = gσ2(σ3,σ1,tbs.msq)
     return DalitzPlotPoint(σ1,σ2,σ3; two_λs=SVector([rand(-j:2:j) for j in tbs.two_js]...))
+end
+
+function possible_helicities(dpp,tbs)
+    [DalitzPlotPoint(dpp.σs...; two_λs = SVector(two_λs...))
+        for two_λs = Iterators.product(-tbs.two_js[1]:2:tbs.two_js[1],
+                      -tbs.two_js[2]:2:tbs.two_js[2],
+                      -tbs.two_js[3]:2:tbs.two_js[3],
+                      -tbs.two_js[4]:2:tbs.two_js[4])]
 end

@@ -32,6 +32,7 @@ export ThreeBodySystem, DalitzPlotPoint,
        randomPoint
 export s,m0,m1,m2,m3
 export two_J, two_Λ
+export possible_helicities
 include("tbs_struct.jl")
 
 # density
@@ -68,14 +69,15 @@ include("cross_channel_relations.jl")
 #
 export jls, twochain
 
-export coupling_scheme12,
-       coupling_scheme23,
-       coupling_scheme31
+export coupling_scheme, coupling_schemek,
+       coupling_scheme12, coupling_scheme23, coupling_scheme31
+
+export clebsch_for_chaink
 
 export two_J,two_L,two_S,
        two_j,two_l,two_s
 
-export posibleLS
+export possibleLS
 
 export HelicityRecoupling,
        HelicityRecoupling_doublearg
