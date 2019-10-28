@@ -31,8 +31,6 @@ function possibleLS(two_jp,two_jp1,two_jp2)
     return two_ls
 end
 
-[i+j for i=1:3 for j=2:4]
-
 function coupling_schemek(k,two_jp,two_jps)
     (i,j) = (k==1 ? (2,3) : (k==2 ? (3,1) : (1,2)))
     #
