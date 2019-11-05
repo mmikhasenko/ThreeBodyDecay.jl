@@ -11,13 +11,15 @@ function ChewMandestam(s,m1sq,m2sq)
     return val
 end
 
-function iRho(s,m1sq,m2sq)
+function Rho(s,m1sq,m2sq)
     m1, m2 = sqrt(m1sq), sqrt(m2sq)
     #
     sth,spth = (m1+m2)^2, (m1-m2)^2;
     λh = sqrt(s-sth)*sqrt(s-spth)
-    return 1im*λh/s
+    return λh/s
 end
+iRho(s,m1sq,m2sq) = 1im*Rho(s,m1sq,m2sq)
+
 
 #  _|  _|                                _|
 #  _|      _|_|_|      _|_|      _|_|_|  _|_|_|      _|_|_|  _|_|_|      _|_|
@@ -28,7 +30,7 @@ end
 #                                                            _|
 
 pole(σ,mcsq) = 1.0/(mcsq - σ)
-BW(σ,m,Γ) = m*Γ*pole(σ,m^2-1im*m*Γ)
+BW(σ,m,Γ) = pole(σ,m^2-1im*m*Γ)
 
 function BWdw(σ,m,Γ,m1,m2)
     √σ < (m1+m2) && return 0.0im
@@ -62,9 +64,8 @@ end
 #  _|                                _|
 #  _|                                _|
 
-iRhoQTB(s,m1,m2,Γ1,m1th) = √s < (m2+m1th) ? 0.0 : 1im/s*quadgk(σ->sqrt((s-(√σ+m2)^2)*(s-(√σ-m2)^2)) * m1*Γ1 / π / ((m1^2-σ)^2+(m1*Γ1)^2), m1th^2, (√s-m2)^2)[1]
-
-
+RhoQTB(s,m1,m2,Γ1,m1th) = √s < (m2+m1th) ? 0.0 : 1.0/s*quadgk(σ->sqrt((s-(√σ+m2)^2)*(s-(√σ-m2)^2)) * m1*Γ1 / π / ((m1^2-σ)^2+(m1*Γ1)^2), m1th^2, (√s-m2)^2)[1]
+iRhoQTB(s,m1,m2,Γ1,m1th) = 1im*RhoQTB(s,m1,m2,Γ1,m1th)
 
 # k(s,m1,m2) = sqrt(s-(m1+m2)^2)
 # kapp(s,m1,m2,Γ1,m1th) = real(k(s,m1-1im*Γ1/2,m2)-k((m1th+m2)^2,m1-1im*Γ1/2,m2))
