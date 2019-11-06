@@ -40,6 +40,9 @@ export getbinned1dDensity,
        getbinned2dDensity
 export flatDalitzPlotSample31
 include("rand_corr.jl")
+
+export rotz!, roty!, roty_cos!, boostz!
+export four_vectors_in_binary_decay
 include("rand_gen.jl")
 
 #lineshape

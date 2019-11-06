@@ -14,3 +14,67 @@ function flatDalitzPlotSample31(tbs; Nev::Int=10000, σ3bins::Int=500)
     σ3 = [σ3of1(2*rand()-1,σ,tbs.msq) for σ in σ1]
     return (σ3, σ1)
 end
+
+function four_vectors_in_binary_decay(cosθ, ϕ;
+        m1sq::Real=error("give mass 1 squared"),
+        m2sq::Real=error("give mass 2 squared"),
+        m0sq::Real=error("give decay mass squared"))
+    E1 = (m0sq+m1sq-m2sq)/(2sqrt(m0sq));
+    E2 = (m0sq-m1sq+m2sq)/(2sqrt(m0sq));
+    p = sqrt(λ(m0sq,m1sq,m2sq))/(2sqrt(m0sq));
+    #
+    sinθ = sqrt(1-cosθ^2)
+    p1 = [p*sinθ*cos(ϕ), p*sinθ*sin(ϕ), p*cosθ, E1]
+    p2 = [-p*sinθ*cos(ϕ), -p*sinθ*sin(ϕ), -p*cosθ, E2]
+    [p1, p2]
+end
+
+function four_vectors_in_binary_decay(p0,cosθ,ϕ;
+        m1sq::Real=error("give mass 1 squared"),
+        m2sq::Real=error("give mass 2 squared"))
+    psq = sum(abs2,p0[1:3])
+    m0sq = p0[4]^2-psq
+    #
+    γ = p0[4]/sqrt(m0sq)
+    cosθ0 = p0[3]/sqrt(psq)
+    ϕ0 = atan(p0[2],p0[1])
+    #
+    p1, p2 = four_vectors_in_binary_decay(cosθ,ϕ; m1sq=m1sq, m2sq=m2sq, m0sq=m0sq)
+    boostz!(p1,γ); roty_cos!(p1,cosθ0); rotz!(p1, ϕ0)
+    boostz!(p2,γ); roty_cos!(p2,cosθ0); rotz!(p2, ϕ0)
+    #
+    return [p1, p2]
+end
+
+# some more
+# [invmasssq(p1+p2+p3) for (p1,p2,p3) in momenta] .≈ mBsq
+
+function rotz!(p,θ)
+    c, s = cos(θ), sin(θ)
+    p[1], p[2] = [c -s; s c]*[p[1], p[2]]
+    return
+end
+function roty!(p,θ)
+    c, s = cos(θ), sin(θ)
+    p[1], p[3] = [c s; -s c]*[p[1], p[3]]
+    return
+end
+function roty_cos!(p,cosθ)
+    c, s = cosθ, sqrt(1-cosθ^2)
+    p[1], p[3] = [c s; -s c]*[p[1], p[3]]
+    return
+end
+function boostz!(p,γ)
+    γ, βγ = γ*sign(γ), sqrt(γ^2-1)*sign(γ)
+    p[3], p[4] = [γ βγ; βγ γ]*[p[3], p[4]]
+    return
+end
+
+# move to tests
+# pρ = [1,2,3,sqrt(4^2+15^2)]
+# p1_, p2_ = four_vectors_in_binary_decay(0.3,0.5; m1sq=1.2, m2sq=1.8, m0sq = 4^2)
+# p1_, p2_ = four_vectors_in_binary_decay(pρ,0.3,0.5; m1sq=1.2, m2sq=1.8)
+# sum(p1_ + p2_ .≈ pρ)
+# sum(p1_ + p2_ .≈ pρ)
+# p1_[4]^2-sum(abs2,p1_[1:3])
+# p2_[4]^2-sum(abs2,p2_[1:3])

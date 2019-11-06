@@ -3,6 +3,8 @@ using SafeTestsets
 # ThreeBodyDecay structure
 @safetestset "Test of the tbs structure" begin include("test_ranges.jl") end
 
+@safetestset "four vectors" begin include("test_generation.jl") end
+
 # angular functions
 @safetestset "Angular Functions block" begin
     include("circle_relations.jl")
