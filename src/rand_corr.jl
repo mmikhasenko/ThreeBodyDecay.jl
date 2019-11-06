@@ -32,11 +32,13 @@ struct binned2dDensity
     density
 end
 
-xlim(binned2dDensity) = (binned2dDensity.grid[1,1][1],binned2dDensity.grid[end,end][1])
-ylim(binned2dDensity) = (binned2dDensity.grid[1,1][2],binned2dDensity.grid[end,end][2])
+arg1_lims(binned2dDensity) = (binned2dDensity.grid[1,1][1],binned2dDensity.grid[end,end][1])
+arg2_lims(binned2dDensity) = (binned2dDensity.grid[1,1][2],binned2dDensity.grid[end,end][2])
 
-function getbinned2dDensity(g, xlim, ylim,  Nrows, Ncols)
-    grid = hcat([[[si,σi] for σi=LinRange(xlim[1], xlim[2], Nrows)] for si=LinRange(ylim[1], ylim[2], Ncols)]...)
+function getbinned2dDensity(g, arg1_lims, arg2_lims,  N1, N2)
+    grid = hcat([[[x1,x2]
+        for x2=range(arg2_lims[1], arg2_lims[2], length=N1)]
+        for x1=range(arg1_lims[1], arg1_lims[2], length=N2)]...)
     #
     weights = [g(v...) for v in (grid[2:end,2:end] .+ grid[1:end-1,1:end-1]) ./ 2]
     # normalize by the cell size
