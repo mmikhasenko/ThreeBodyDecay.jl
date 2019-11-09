@@ -46,8 +46,9 @@ function four_vectors_in_binary_decay(p0,cosθ,ϕ;
     return [p1, p2]
 end
 
-# some more
-# [invmasssq(p1+p2+p3) for (p1,p2,p3) in momenta] .≈ mBsq
+
+
+invmasssq(p) = p[4]^2-sum(abs2, p[1:3])
 
 function rotz!(p,θ)
     c, s = cos(θ), sin(θ)
@@ -69,12 +70,3 @@ function boostz!(p,γ)
     p[3], p[4] = [γ βγ; βγ γ]*[p[3], p[4]]
     return
 end
-
-# move to tests
-# pρ = [1,2,3,sqrt(4^2+15^2)]
-# p1_, p2_ = four_vectors_in_binary_decay(0.3,0.5; m1sq=1.2, m2sq=1.8, m0sq = 4^2)
-# p1_, p2_ = four_vectors_in_binary_decay(pρ,0.3,0.5; m1sq=1.2, m2sq=1.8)
-# sum(p1_ + p2_ .≈ pρ)
-# sum(p1_ + p2_ .≈ pρ)
-# p1_[4]^2-sum(abs2,p1_[1:3])
-# p2_[4]^2-sum(abs2,p2_[1:3])
