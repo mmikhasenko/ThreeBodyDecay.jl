@@ -22,3 +22,5 @@ end
 
 # examples
 @safetestset "Complete example" begin include("test_Xic_decay.jl") end
+
+@safetestset "Complete example" begin include("ls_amplitude.jl") end

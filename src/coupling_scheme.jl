@@ -6,18 +6,18 @@ struct jls
 end
 
 struct twochain
-    first::jls
-    second::jls
+    to_isobar::jls
+    from_isobar::jls
 end
 
-two_J(ch::twochain) = ch.first.two_j
-two_L(ch::twochain) = ch.first.two_l
-two_S(ch::twochain) = ch.first.two_s
-two_j(ch::twochain) = ch.second.two_j
-two_l(ch::twochain) = ch.second.two_l
-two_s(ch::twochain) = ch.second.two_s
+two_J(ch::twochain) = ch.to_isobar.two_j
+two_L(ch::twochain) = ch.to_isobar.two_l
+two_S(ch::twochain) = ch.to_isobar.two_s
+two_j(ch::twochain) = ch.from_isobar.two_j
+two_l(ch::twochain) = ch.from_isobar.two_l
+two_s(ch::twochain) = ch.from_isobar.two_s
 
-function possibleLS(two_jp,two_jp1,two_jp2)
+function possibleLS(two_jp1,two_jp2,two_jp) # expects tuples
     two_ls = Vector{Tuple{Int,Int}}(undef,0)
     for two_s in abs(two_jp1[1]-two_jp2[1]):2:abs(two_jp1[1]+two_jp2[1])
         for two_l in abs(two_jp[1]-two_s):2:abs(two_jp[1]+two_s)
@@ -32,22 +32,25 @@ function possibleLS(two_jp,two_jp1,two_jp2)
 end
 
 function coupling_schemek(k,two_jp,two_jps)
-    (i,j) = (k==1 ? (2,3) : (k==2 ? (3,1) : (1,2)))
+    (i,j) = ij_from_k(k)
     #
     # length(pls) != 1 && error("length(pls) = $(length(pls)) != 1 for the second decay: $(two_jp...)=>$(two_jps[2]...),$(two_jps[3]...). Check quantum numbers!");
     return [twochain(
                 jls(two_jps[4][1],two_LS...),  # JLS
                 jls(two_jp[1],two_ls...))  # jls
-                    for two_LS in possibleLS(two_jps[4],two_jp,two_jps[k])
-                    for two_ls in possibleLS(two_jp,two_jps[i],two_jps[j])]
+                    for two_LS in possibleLS(two_jp,two_jps[k],two_jps[4])
+                    for two_ls in possibleLS(two_jps[i],two_jps[j],two_jp)]
 end
 coupling_scheme23(two_jp,two_jps) = coupling_schemek(1,two_jp,two_jps)
 coupling_scheme12(two_jp,two_jps) = coupling_schemek(3,two_jp,two_jps)
 coupling_scheme31(two_jp,two_jps) = coupling_schemek(2,two_jp,two_jps)
 
+jls_coupling(two_j1, two_λ1, two_j2, two_λ2, two_j, two_l, two_s) =
+    ClGd(two_j1, two_λ1, two_j2, -two_λ2, two_s, two_λ1-two_λ2) *
+        ClGd(two_l, 0, two_s, two_λ1-two_λ2, two_j, two_λ1-two_λ2)
 
 function clebsch_for_chaink(k, two_s_int, two_τ, chain, two_λs, two_js)
-    (i,j) = (k==1 ? (2,3) : (k==2 ? (3,1) : (1,2)))
+    (i,j) = ij_from_k(k)
     #
     v = 1.0;
     two_λi_λj = two_λs[i]-two_λs[j]

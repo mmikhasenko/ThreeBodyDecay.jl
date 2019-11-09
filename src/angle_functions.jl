@@ -17,10 +17,11 @@ Kibble(σs,m2s) = (2σs[2]*(m2s[1]+m2s[4]-σs[1])-(m2s[4]+σs[2]-m2s[2])*(σs[2]
 Kibble23(σ2, σ3, m2s) = Kibble(SVector(gσ1(σ2,σ3,msq),σ2,σ3), tbs.msq)
 Kibble31(σ3, σ1, m2s) = Kibble(SVector(gσ2(σ3,σ1,msq),σ3,σ1), SVector(tbs.msq[2],tbs.msq[3],tbs.msq[1],tbs.msq[4]))
 Kibble12(σ1, σ2, m2s) = Kibble(SVector(gσ3(σ1,σ2,msq),σ1,σ2), SVector(tbs.msq[3],tbs.msq[1],tbs.msq[2],tbs.msq[4]))
-
-
+#
+ij_from_k(k) = (k==1 ? (2,3) : (k==2 ? (3,1) : (1,2)))
+#
 function σkofi(k,z,σi,m2s)
-    (i,j) = (k==1 ? (2,3) : (k==2 ? (3,1) : (1,2)))
+    (i,j) = ij_from_k(k)
     #
     s = m2s[4]
     EE4σ = (σi+m2s[j]-m2s[k])*(s-σi-m2s[i])
@@ -38,7 +39,7 @@ end
     Isobar decay angle for the chain-1, i.e. an angle of between \vec p_2 and -\vec p_1 in the (23) rest frame.
 """
 function cosθij(k,σs,m2s)
-    (i,j) = (k==1 ? (2,3) : (k==2 ? (3,1) : (1,2)))
+    (i,j) = ij_from_k(k)
     #
     s = m2s[4]
     EE4σ = (σs[k]+m2s[i]-m2s[j])*(s-σs[k]-m2s[k])

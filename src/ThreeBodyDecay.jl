@@ -24,6 +24,7 @@ export cosζk1_for1,
        cosθhatk1,
        cosθij
 export phase
+export ij_from_k
 include("angle_functions.jl")
 
 
@@ -76,7 +77,7 @@ export jls, twochain
 export coupling_scheme, coupling_schemek,
        coupling_scheme12, coupling_scheme23, coupling_scheme31
 
-export clebsch_for_chaink
+export clebsch_for_chaink, jls_coupling
 
 export two_J,two_L,two_S,
        two_j,two_l,two_s
@@ -89,6 +90,7 @@ include("coupling_scheme.jl")
 
 #
 export Zksτ
+export decay_chain, amplitude
 include("general_case.jl")
 
 #
