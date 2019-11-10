@@ -121,7 +121,7 @@ amplitude(dpp, dc) = amplitude(dpp.σs, dpp.two_λs, dc)
 
 #
 summed_over_polarization(fn, tbs) =
-    σs->sum(abs2(fn(σs,two_λs)) for two_λs in Iterators.product(
+    σs->sum(fn(σs,two_λs) for two_λs in Iterators.product(
         -tbs.two_js[1]:2:tbs.two_js[1],
         -tbs.two_js[2]:2:tbs.two_js[2],
         -tbs.two_js[3]:2:tbs.two_js[3],
