@@ -64,7 +64,16 @@ end
 #  _|                                _|
 #  _|                                _|
 
-RhoQTB(s,m1,m2,Γ1,m1th) = √s < (m2+m1th) ? 0.0 : 1.0/s*quadgk(σ->sqrt((s-(√σ+m2)^2)*(s-(√σ-m2)^2)) * m1*Γ1 / π / ((m1^2-σ)^2+(m1*Γ1)^2), m1th^2, (√s-m2)^2)[1]
+function RhoQTB(s,Xlineshape,msq)
+    m1sq, m2sq, m3sq = msq
+    m1, m2, m3 = sqrt.(msq)
+    #
+    √s < (m1+m2+m3) && return 0.0
+    val = quadgk(σ1->abs2(Xlineshape(s,σ1))*sqrt(λ(s,σ1,m1sq)*λ(σ1,m2sq,m3sq))/σ1, (√m2sq+√m3sq)^2, (√s-√m1sq)^2)[1]
+    return val / s # /(2π*(8π)^2)
+end
+
+RhoQTB(s,m1,m2,Γ1,m1th) = RhoQTB(s,(s,σ)->BW(σ,m1,Γ1),[m2,m1th/2,m1th/2].^2)
 iRhoQTB(s,m1,m2,Γ1,m1th) = 1im*RhoQTB(s,m1,m2,Γ1,m1th)
 
 # k(s,m1,m2) = sqrt(s-(m1+m2)^2)
