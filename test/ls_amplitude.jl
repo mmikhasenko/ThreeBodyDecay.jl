@@ -11,7 +11,7 @@ using Test
     # testing something else?
 end
 
-@testset "LS amplitude integer spin" begin
+@testset "LS amplitude half-integer spin" begin
     tbs = ThreeBodySystem(6, 2, 1, 1.5;
         two_jps = ([1, 0, 0, 1], ['+','-','-','+']))  # 1/2+ 0- 0- 1/2+
     dpp = randomPoint(tbs)
