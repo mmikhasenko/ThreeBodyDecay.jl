@@ -25,5 +25,9 @@ end
     include("sum_over_polarization.jl")
 end
 
+# Integrals
+@safetestset "Integrals" begin
+    include("three_body_phase_space_integral.jl")
+end
 # examples
 @safetestset "Complete example" begin include("test_Xic_decay.jl") end

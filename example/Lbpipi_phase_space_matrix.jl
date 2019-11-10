@@ -26,26 +26,6 @@ full_Af0(σs,two_λs)   = amplitude(σs, two_λs, dc_f0)
 
 ####
 
-using Cuba
-
-function three_body_phase_space_integral(function_σs, tbs)
-    msq = tbs.msq
-    m1sq,m2sq,m3sq,s = msq
-    #
-    σ1min,σ1max = tbs.mthsq[1],tbs.sthsq[1]
-    function integrand(x,f)
-        σ1 = σ1min + x[1]*(σ1max-σ1min)
-        z = 2*x[2]-1
-        σ3 = σ3of1(z,σ1,msq); σ2 = gσ2(σ3,σ1,msq)
-        σs = [σ1, σ2, σ3]
-        #
-        r = function_σs(σs) *
-            sqrt(λ(s,σ1, m1sq)*λ(σ1,m2sq,m3sq))/σ1
-        f[1],f[2] = reim(r)
-    end
-    return complex(cuhre(integrand,2,2)[1]...) / s # /(2π*(8π)^2)
-end
-
 Φij = let
     As = [full_AΣb, full_AΣb_x, full_Af0]
     [let

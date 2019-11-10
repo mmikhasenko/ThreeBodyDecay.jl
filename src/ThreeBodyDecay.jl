@@ -3,6 +3,7 @@ module ThreeBodyDecay
 using GSL
 using QuadGK
 using StaticArrays
+using Cuba
 # using WignerSymbols
 
 export gσ1, gσ2, gσ3,
@@ -31,7 +32,6 @@ include("angle_functions.jl")
 export ThreeBodySystem, DalitzPlotPoint,
        DalitzPlotPoint12, DalitzPlotPoint23, DalitzPlotPoint31,
        randomPoint
-export s,m0,m1,m2,m3
 export two_J, two_Λ
 export possible_helicities
 include("tbs_struct.jl")
@@ -52,6 +52,8 @@ export pole, BW, BWdw
 export Lineshape, BreitWigner, amp
 export Rho, iRho, ChewMandestam
 export RhoQTB, iRhoQTB
+#
+export three_body_phase_space_integral
 include("lineshape.jl")
 
 # angual_functions

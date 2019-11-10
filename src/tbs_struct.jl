@@ -21,12 +21,6 @@ struct ThreeBodySystem # immutable
     Ps::SVector{4,Char}
 end
 
-s(tbs::ThreeBodySystem) = tbs.msq[4]
-m0(tbs::ThreeBodySystem) = tbs.m[4]
-m1(tbs::ThreeBodySystem) = tbs.m[1]
-m2(tbs::ThreeBodySystem) = tbs.m[2]
-m3(tbs::ThreeBodySystem) = tbs.m[3]
-
 two_J(tbs::ThreeBodySystem) = tbs.two_js[4]
 two_j1(tbs::ThreeBodySystem) = tbs.two_js[1]
 two_j2(tbs::ThreeBodySystem) = tbs.two_js[2]

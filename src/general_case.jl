@@ -104,6 +104,7 @@ end
 function amplitude(σs, two_λs, dc)
     k = dc.k; i,j = ij_from_k(k);
     tbs = dc.tbs
+    s = tbs.msq[4]
     #
     two_s = dc.two_s
     two_js = tbs.two_js
