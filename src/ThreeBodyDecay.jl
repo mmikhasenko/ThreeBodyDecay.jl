@@ -94,6 +94,7 @@ include("coupling_scheme.jl")
 export Zksτ
 export decay_chain, amplitude
 export summed_over_polarization
+export QTB_mismatch_factor
 include("general_case.jl")
 
 #
