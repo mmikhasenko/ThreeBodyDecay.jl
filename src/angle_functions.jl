@@ -110,5 +110,5 @@ end
 function phase(i,j,two_λ1,two_λ2)
     (i==j) && return (two_λ1 == two_λ2 ? 1.0 : 0.0)
     ((i,j)==(1,2) || (i,j)==(2,3) || (i,j)==(3,1)) && return 1.0
-    return ((two_λ1-two_λ2) % 4 == 2 ? -1.0 : 1.0)
+    return (abs(two_λ1-two_λ2) % 4 == 2 ? -1.0 : 1.0)
 end
