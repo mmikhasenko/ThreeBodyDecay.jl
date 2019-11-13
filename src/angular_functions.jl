@@ -8,7 +8,7 @@ function jacobi_pols(n, a, b, z)
     end
 
     # special case when I can not calculate log
-    if (z == 1) || (z == -1)
+    if (z ≈ 1) || (z ≈ -1)
         return sum((s % 2 == 0 ? 1.0 : -1.0) *
                 exp(logfact[n+a+1] + logfact[n+b+1]-logfact[n-s+1]-logfact[a+s+1]-logfact[s+1]-logfact[n+b-s+1])*
                 ((1-z)/2.0)^s*((1+z)/2.0)^(n-s) for s = 0:n)
@@ -42,7 +42,11 @@ function wignerd_hat(j, m1, m2, z)
                jacobi_pols(Int(j-M), Int(abs(m1-m2)), Int(abs(m1+m2)), z);
 end
 
+
 function wignerd(j, m1, m2, z)
+    (z ≈ 1) && return m1 == m2 ? 1.0 : 0.0
+    (z ≈ -1) && return m1 == -m2 ? (iseven(j-m2) ? 1.0 : -1.0) : 0.0
+    #
     hat = wignerd_hat(j, m1, m2, z);
     xi = sqrt(1-z)^abs(Int(m1-m2))*sqrt(1+z)^abs(Int(m1+m2));
     return hat*xi;
@@ -94,6 +98,9 @@ function wignerd_hat_doublearg(two_j, two_m1, two_m2, z)
 end
 
 function wignerd_doublearg(two_j, two_m1, two_m2, z)
+    (z ≈ 1) && return two_m1 == two_m2 ? 1.0 : 0.0
+    (z ≈ -1) && return two_m1 == -two_m2 ? (iseven(div(two_j-two_m2,2)) ? 1.0 : -1.0) : 0.0
+    #
     hat = wignerd_hat_doublearg(two_j, two_m1, two_m2, z);
     xi = (1-z)^(abs(two_m1-two_m2)/4)*(1+z)^(abs(two_m1+two_m2)/4);
     return hat*xi;
