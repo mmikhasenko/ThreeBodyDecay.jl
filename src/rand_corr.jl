@@ -68,3 +68,19 @@ function rand(bD::binned2dDensity)
     bD.density(s,σ) == 0.0 && return rand(bD)
     return [s, σ]
 end
+
+function gridded_density_function(x, bD::binned2dDensity)
+    (s,σ) = x
+    (bD.grid[1,1][1] > s || s > bD.grid[1,end][1]) && return 0.0
+    (bD.grid[1,1][2] > σ || σ > bD.grid[end,1][2]) && return 0.0
+    #
+    mp_s = map(x->x[1], bD.grid[1,:])
+    i0 = findfirst(mp_s .> s)
+    s0 = (mp_s[i0]+mp_s[i0-1])/2
+    #
+    mp_σ = map(x->x[2], bD.grid[:,1])
+    j0 = findfirst(mp_σ .> σ)
+    σ0 = (mp_σ[j0]+mp_σ[j0-1])/2
+    #
+    return bD.density(s0,σ0)!=0.0 ?  bD.density(s0,σ0) : 0.0;
+end

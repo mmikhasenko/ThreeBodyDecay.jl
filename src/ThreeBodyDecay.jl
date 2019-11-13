@@ -17,8 +17,8 @@ export gσ1, gσ2, gσ3,
        λ,
        Kibble, Kibble23, Kibble12, Kibble31
 export cosζ13_for1,
-       cosζ23_for1,
        cosζ21_for1
+export cosζ23_for1, cosζ31_for2, cosζ12_for3
 export cosζk1_for1,
        cosζk2_for2,
        cosζk3_for3,
@@ -40,6 +40,7 @@ include("tbs_struct.jl")
 export getbinned1dDensity,
        getbinned2dDensity
 export flatDalitzPlotSample31
+export gridded_density_function
 include("rand_corr.jl")
 
 export rotz!, roty!, roty_cos!, boostz!
