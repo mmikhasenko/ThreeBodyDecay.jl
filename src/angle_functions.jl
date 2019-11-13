@@ -14,9 +14,9 @@ gσ3(σ1,σ2,msq) = sum(msq)-σ1-σ2
 λ(x,y,z) = x^2+y^2+z^2 - 2x*y - 2y*z - 2z*x
 Kibble(σs,m2s) = (2σs[2]*(m2s[1]+m2s[4]-σs[1])-(m2s[4]+σs[2]-m2s[2])*(σs[2]+m2s[1]-m2s[3]))^2 - λ(m2s[4],σs[2],m2s[2])*λ(σs[2],m2s[1],m2s[3])
 #
-Kibble23(σ2, σ3, m2s) = Kibble(SVector(gσ1(σ2,σ3,msq),σ2,σ3), tbs.msq)
-Kibble31(σ3, σ1, m2s) = Kibble(SVector(gσ2(σ3,σ1,msq),σ3,σ1), SVector(tbs.msq[2],tbs.msq[3],tbs.msq[1],tbs.msq[4]))
-Kibble12(σ1, σ2, m2s) = Kibble(SVector(gσ3(σ1,σ2,msq),σ1,σ2), SVector(tbs.msq[3],tbs.msq[1],tbs.msq[2],tbs.msq[4]))
+Kibble23(σ2, σ3, msq) = Kibble(SVector(gσ1(σ2,σ3,msq),σ2,σ3), msq)
+Kibble31(σ3, σ1, msq) = Kibble(SVector(gσ2(σ3,σ1,msq),σ3,σ1), SVector(msq[2],msq[3],msq[1],msq[4]))
+Kibble12(σ1, σ2, msq) = Kibble(SVector(gσ3(σ1,σ2,msq),σ1,σ2), SVector(msq[3],msq[1],msq[2],msq[4]))
 #
 ij_from_k(k) = (k==1 ? (2,3) : (k==2 ? (3,1) : (1,2)))
 #
@@ -65,8 +65,12 @@ function cosθhatk1(k,σs,m2s)
     rest = σs[j]-m2s[i]-m2s[k]
     return (EE4s-2s*rest)/pp4s
 end
-cosθhat12(σs,m2s) = cosθhatk1(2,σs,m2s)
+cosθhatk2(k,σs,m2s) = cosθhatk1(mod(k-2,3)+1, SVector(σs[2],σs[3],σs[1]), SVector(m2s[2],m2s[3],m2s[1],m2s[4]))
+cosθhatk3(k,σs,m2s) = cosθhatk1(mod(k,3)+1,   SVector(σs[3],σs[1],σs[2]), SVector(m2s[3],m2s[1],m2s[2],m2s[4]))
+#
 cosθhat31(σs,m2s) = cosθhatk1(3,σs,m2s)
+cosθhat12(σs,m2s) = cosθhatk1(2,σs,m2s)
+cosθhat23(σs,m2s) = cosθhatk2(3,σs,m2s)
 
 """
     Wigner angle of particle 1 to relate chain-1 to chain-3
@@ -97,12 +101,15 @@ cosζ13_for3(σs,m2s) = cosζk2_for2(1,σs,m2s)
     Wigner angle of particle 1 to relate chain-3 to chain-2
 """
 function cosζ23_for1(σs,m2s)
+    m2s[1] ≈ 0 && return 1.0
     s = m2s[4]
     EE4m1sq = (σs[2]-m2s[3]-m2s[1])*(σs[3]-m2s[1]-m2s[2])
     pp4m1sq = sqrt(λ(σs[2],m2s[3],m2s[1])*λ(σs[3],m2s[1],m2s[2]))
     rest = m2s[2]+m2s[3]-σs[1]
     return (2m2s[1]*rest+EE4m1sq)/pp4m1sq
 end
+cosζ31_for2(σs,m2s) = cosζ23_for1(SVector(σs[2],σs[3],σs[1]), SVector(m2s[2],m2s[3],m2s[1],m2s[4]))
+cosζ12_for3(σs,m2s) = cosζ23_for1(SVector(σs[3],σs[1],σs[2]), SVector(m2s[3],m2s[1],m2s[2],m2s[4]))
 
 """
     Phase for wigner d-functions for clockwise rotations
