@@ -94,7 +94,7 @@ function decay_chain(k, Xlineshape;
     #
     used_two_LS = two_LS
     if two_LS[1] < 0
-        println("Possible (L,S) for a decay to isobar-spectator: ",possible_ls,"\nI use the first one: ", possible_ls[1],"\n")
+        println("Possible (L,S) for a decay to isobar-spectator: ",possible_LS,"\nI use the first one: ", possible_LS[1],"\n")
         used_two_LS = possible_LS[1]
     end
     return decay_chain(k, two_s, used_two_ls, used_two_LS, tbs, Xlineshape)
