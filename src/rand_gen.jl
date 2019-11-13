@@ -25,9 +25,9 @@ function four_vectors_in_binary_decay(cosθ, ϕ;
     p = sqrt(λ(m0sq,m1sq,m2sq))/(2sqrt(m0sq));
     #
     sinθ = sqrt(1-cosθ^2)
-    p1 = [p*sinθ*cos(ϕ), p*sinθ*sin(ϕ), p*cosθ, E1]
-    p2 = [-p*sinθ*cos(ϕ), -p*sinθ*sin(ϕ), -p*cosθ, E2]
-    [p1, p2]
+    p1 = MVector( p*sinθ*cos(ϕ),  p*sinθ*sin(ϕ),  p*cosθ, E1)
+    p2 = MVector(-p*sinθ*cos(ϕ), -p*sinθ*sin(ϕ), -p*cosθ, E2)
+    return (p1, p2)
 end
 
 function four_vectors_in_binary_decay(p0,cosθ,ϕ;
@@ -44,10 +44,8 @@ function four_vectors_in_binary_decay(p0,cosθ,ϕ;
     boostz!(p1,γ); roty_cos!(p1,cosθ0); rotz!(p1, ϕ0)
     boostz!(p2,γ); roty_cos!(p2,cosθ0); rotz!(p2, ϕ0)
     #
-    return [p1, p2]
+    return (p1, p2)
 end
-
-
 
 invmasssq(p) = p[4]^2-sum(abs2, p[1:3])
 
