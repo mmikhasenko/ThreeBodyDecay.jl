@@ -30,7 +30,7 @@ full_Af0(σs,two_λs)   = amplitude(σs, two_λs, dc_f0)
     As = [full_AΣb, full_AΣb_x, full_Af0]
     [let
         Aij(σs,two_λs)=Ai(σs,two_λs) * conj(Aj(σs,two_λs))
-        I = summed_over_polarization(Aij, tbs)
+        I = summed_over_polarization(Aij, tbs.two_js)
         three_body_phase_space_integral(I, tbs)
         end for (Ai,Aj) in Iterators.product(As,As)]
 end
@@ -40,3 +40,19 @@ using LinearAlgebra
     d = sqrt.(diag(Φij))
     Φij ./ d ./ d'
 end
+
+###
+one_AΣb(σs,two_λs)   = amplitude(σs, two_λs, dc_Σb1)
+one_AΣb_x(σs,two_λs) = amplitude(σs, two_λs, dc_Σb_x1)
+
+Φ0ij = let
+    As = [one_AΣb, one_AΣb_x, full_Af0]
+    [let
+        Aij(σs,two_λs)=Ai(σs,two_λs) * conj(Aj(σs,two_λs))
+        I = summed_over_polarization(Aij, tbs.two_js)
+        three_body_phase_space_integral(I, tbs)
+        end for (Ai,Aj) in Iterators.product(As,As)]
+end
+
+Φ0ij_n = Φ0ij .* [√2; √2; 1] .* [√2 √2 1]
+Φ0ij_n

@@ -30,6 +30,6 @@ using ThreeBodyDecay
         -tbs.two_js[3]:2:tbs.two_js[3],
         -tbs.two_js[4]:2:tbs.two_js[4]))
 
-    test_I = summed_over_polarization((σs,two_λs)->abs2(full_a(σs,two_λs)),tbs)
+    test_I = summed_over_polarization((σs,two_λs)->abs2(full_a(σs,two_λs)),tbs.two_js)
     @test test_I(dpp.σs) == total_I(dpp.σs)
 end

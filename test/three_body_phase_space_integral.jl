@@ -14,7 +14,7 @@ end
   tbs = ThreeBodySystem(6,1,1.5,2, two_jps=([0,0,0,0],['+','+','+','+']))
   #
   ch = decay_chain(1,(s,σ)->1.0; two_s=2, tbs=tbs, parity='-')
-  sp = summed_over_polarization((σs,two_λ)->abs2(amplitude(σs,two_λ,ch)), tbs)
+  sp = summed_over_polarization((σs,two_λ)->abs2(amplitude(σs,two_λ,ch)), tbs.two_js)
   #
   v_qtv = RhoQTB(tbs.msq[4],(s,σ)->1.0, tbs.msq)
   v_qtv *= QTB_mismatch_factor(ch) # helicity couplings
@@ -30,7 +30,7 @@ end
   tbs = ThreeBodySystem(6,1,1.5,2, two_jps=([0, 1, 0, 1], ['-','+','-','+']))
   #
   ch = decay_chain(1,(s,σ)->1.0; two_s=1, tbs=tbs, parity='-')
-  sp = summed_over_polarization((σs,two_λ)->abs2(amplitude(σs,two_λ,ch)), tbs)
+  sp = summed_over_polarization((σs,two_λ)->abs2(amplitude(σs,two_λ,ch)), tbs.two_js)
   #
   v_qtv = RhoQTB(tbs.msq[4],(s,σ)->1.0, tbs.msq)
   v_qtv *= QTB_mismatch_factor(ch) # helicity couplings
@@ -45,7 +45,7 @@ end
   tbs = ThreeBodySystem(6,1,1.5,2, two_jps=([0, 1, 0, 1], ['-','+','-','+']))
   #
   ch = decay_chain(1,(s,σ)->1.0; two_s=1, tbs=tbs, parity='+')
-  sp = summed_over_polarization((σs,two_λ)->abs2(amplitude(σs,two_λ,ch)), tbs)
+  sp = summed_over_polarization((σs,two_λ)->abs2(amplitude(σs,two_λ,ch)), tbs.two_js)
   # sp = σs->abs2(amplitude(σs,[0,0,0,0],ch))
   #
   v_qtv = RhoQTB(tbs.msq[4],(s,σ)->1.0, tbs.msq)
