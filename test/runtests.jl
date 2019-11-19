@@ -17,6 +17,12 @@ end
 
 @safetestset "Sum rule" begin include("wigner_angle_sumrules.jl") end
 
+# Lineshapes
+@safetestset "Lineshapes" begin
+    # include("breit-wigner.jl")
+    include("scattering_length_X3872.jl")
+end
+
 # JPC functions
 @safetestset "Couplings" begin include("test_couplings.jl") end
 

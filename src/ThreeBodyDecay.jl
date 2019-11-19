@@ -51,6 +51,7 @@ include("rand_gen.jl")
 #lineshape
 export pole, BW, BWdw
 export Lineshape, BreitWigner, amp
+export ScattLenApproximation, ScattLen
 export Rho, iRho, ChewMandestam
 export RhoQTB, iRhoQTB
 #

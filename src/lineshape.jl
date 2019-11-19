@@ -45,16 +45,31 @@ struct Lineshape{T<:Real}
     pars::Vector{T}
 end
 
+
 # Breit-Wigner with constant width
 Lineshape(m,Γ) = Lineshape(0,"BW",[m,Γ])
 BreitWigner(m,Γ) = Lineshape(0,"BW",[m,Γ])
 
 function amp(s,lsh::Lineshape)
     (lsh.itype == 0) && return BW(s,lsh.pars[1],lsh.pars[2])
+    (lsh.itype == 9) && return ScattLenT11(s,lsh.pars[1:3],lsh.pars[4:5],lsh.pars[6:7])
     error("No itype #$(lsh.itype) found")
     return 0.0im
 end
 
+# Scattering length approximation
+ScattLenApproximation(;
+    Ms::Tuple{Real,Real,Real} = error("give Ms = (c11, c12, c22)"),
+    ms1::Tuple{Real,Real} = error("give ms1 = (m1, m2)"),
+    ms2::Tuple{Real,Real}) = Lineshape(9,"ScattLen",[Ms...,ms1...,ms2...])
+
+function ScattLenMatrix(s,Ms,ms1,ms2)
+    M  = SMatrix{2,2}(Ms[1],Ms[2],Ms[2],Ms[3])
+    iρ = SMatrix{2,2}(-sqrt((ms1[1]+ms1[2])^2-s)*sqrt(s-(ms1[1]-ms1[2])^2)/s, 0.0im, 0.0im,
+                      -sqrt((ms2[1]+ms2[2])^2-s)*sqrt(s-(ms2[1]-ms2[2])^2)/s)
+    return inv(M - iρ)
+end
+ScattLenT11(s,Ms,ms1,ms2) = ScattLenMatrix(s,Ms,ms1,ms2)[1,1]
 
 #            _|
 #  _|_|_|    _|_|_|          _|_|_|  _|_|_|
