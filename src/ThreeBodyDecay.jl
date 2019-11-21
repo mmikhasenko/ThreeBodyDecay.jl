@@ -7,7 +7,7 @@ using Cuba
 # using WignerSymbols
 
 export gσ1, gσ2, gσ3,
-       σ3of1, σ1of2, σ2of3,
+       σkofi, σ3of1, σ1of2, σ2of3,
        cosθ12, cosθ23, cosθ31,
        cosθhat12,
        cosθhat23,
@@ -34,6 +34,7 @@ export ThreeBodySystem, DalitzPlotPoint,
        randomPoint
 export two_J, two_Λ
 export possible_helicities
+export x2
 include("tbs_struct.jl")
 
 # density
@@ -95,7 +96,7 @@ include("coupling_scheme.jl")
 #
 export Zksτ
 export decay_chain, amplitude
-export summed_over_polarization
+export itr, summed_over_polarization
 export QTB_mismatch_factor
 include("general_case.jl")
 

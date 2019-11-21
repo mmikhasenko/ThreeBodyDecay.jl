@@ -9,7 +9,7 @@
 using ThreeBodyDecay
 
 mLb = 5.62; mJψ = 3.09; mp=0.938; mK = 0.49367
-const tbs = ThreeBodySystem(mLb,mJψ,mp,mK; two_jps = ([2,1,0,1],['-','+','-','+']))
+const tbs = ThreeBodySystem(mJψ,mp,mKmLb; two_jps = ([2,1,0,1],['-','+','-','+']))
 
 
 # helicity couplings

@@ -23,7 +23,7 @@ end
 ############################################################
 
 const Lb2JpK = let mLb = 5.62, mJψ = 3.09, mp=0.938, mK = 0.49367
-    ThreeBodySystem(mLb,mJψ,mp,mK)
+    ThreeBodySystem(mJψ,mp,mK,mLb)
 end
 
 function plot_dalitz_with_projections(f=(σ3,σ1)->1.0)

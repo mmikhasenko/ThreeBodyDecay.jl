@@ -5,7 +5,7 @@ using Plots
 const mDstar = 2.00685 # 2 GeV
 const ΓDstar = 30e-6 # 30 keV
 tbs = let mD = 1.86483, mπ0 = 0.13498
-    ThreeBodySystem(mD+mDstar+0.01,mD,mπ0,mD)
+    ThreeBodySystem(mD,mπ0,mD,mD+mDstar+0.01)
 end
 
 # amplitude

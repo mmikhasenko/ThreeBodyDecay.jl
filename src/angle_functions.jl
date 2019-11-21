@@ -25,8 +25,9 @@ function σkofi(k,z,σi,m2s)
     #
     s = m2s[4]
     EE4σ = (σi+m2s[j]-m2s[k])*(s-σi-m2s[i])
-    pp4σ = sqrt(λ(σi,m2s[j],m2s[k])*λ(s,σi,m2s[i]))
-    σk = m2s[i]+m2s[j] + (EE4σ + pp4σ*z) / (2σi)
+    pp4σ_sq = λ(σi,m2s[j],m2s[k])*λ(s,σi,m2s[i])
+    pp4σ_sq = (pp4σ_sq < 0) ? 0.0 : pp4σ_sq # for numerical errors
+    σk = m2s[i]+m2s[j] + (EE4σ + sqrt(pp4σ_sq)*z) / (2σi)
     return σk
 end
 σ3of1(z,σ1,m2s) = σkofi(3,z,σ1,m2s)

@@ -26,7 +26,8 @@ two_j1(tbs::ThreeBodySystem) = tbs.two_js[1]
 two_j2(tbs::ThreeBodySystem) = tbs.two_js[2]
 two_j3(tbs::ThreeBodySystem) = tbs.two_js[3]
 
-ThreeBodySystem(e,m1,m2,m3; two_jps = ([0,0,0,0], ['+','+','+','+'])) =
+ThreeBodySystem(m1,m2,m3,e; two_jps = ([0,0,0,0], ['+','+','+','+'])) =
+    e < m1+m2+m3 ? error("Unphysical system, e < sum m_i!") :
     ThreeBodySystem([m1,m2,m3,e], [m1,m2,m3,e].^2,
                     [m2+m3,m3+m1,m1+m2], [m2+m3,m3+m1,m1+m2].^2,
                     [e-m1,e-m2,e-m3], [e-m1,e-m2,e-m3].^2,
@@ -74,3 +75,6 @@ function possible_helicities(dpp,tbs)
                       -tbs.two_js[3]:2:tbs.two_js[3],
                       -tbs.two_js[4]:2:tbs.two_js[4])]
 end
+
+# dealing with spin 1/2
+x2(v) = Int(2v)

@@ -2,7 +2,7 @@ using ThreeBodyDecay
 using Test
 
 let m1 = 0.938, m2 = 0.49367, m3 = 0.13957, m0 = 2.46867
-    tbs = ThreeBodySystem(m0,m1,m2,m3)
+    tbs = ThreeBodySystem(m1,m2,m3,m0)
     #
     dpp = randomPoint(tbs)
     #

@@ -4,7 +4,7 @@ using Test
 @testset "Wigner angle permutations" begin
 
     mp = 0.938; mK = 0.49367; mpi  = 0.13957; mXic = 2.46867
-    tbs = ThreeBodySystem(mXic,mp,mK,mpi)
+    tbs = ThreeBodySystem(mp,mK,mpi,mXic)
     dpp = randomPoint(tbs)
 
     # (23) cosζ31_for1 = cosζ23_for1

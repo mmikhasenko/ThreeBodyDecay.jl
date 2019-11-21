@@ -4,7 +4,7 @@ using Test
 
 @testset "Three isobars in general decay" begin
     mLb = 5.62; mJψ = 3.09; mp=0.938; mK = 0.49367
-    tbs = ThreeBodySystem(mLb,mJψ,mp,mK; two_jps = ([2,1,0,1],['-','+','-','+']))
+    tbs = ThreeBodySystem(mJψ,mp,mK,mLb; two_jps = ([2,1,0,1],['-','+','-','+']))
     dpp = randomPoint(tbs);
 
     # Lambda
@@ -20,7 +20,7 @@ end
 
 
 # mLb = 5.62; mJψ = 3.09; mp=0.938; mK = 0.49367
-# tbs = ThreeBodySystem(mLb,mJψ,mp,mK; two_jps = ([2,1,0,1],['-','+','-','+']))
+# tbs = ThreeBodySystem(mJψ,mp,mK,mLb; two_jps = ([2,1,0,1],['-','+','-','+']))
 # dpp = randomPoint(tbs);
 # dpp.two_λs[1]
 # two_s1 = 3; two_τ1 = rand(-two_s1:2:two_s1) # hat angle 11 is equal to 0

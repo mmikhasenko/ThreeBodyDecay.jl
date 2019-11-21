@@ -2,7 +2,7 @@ using ThreeBodyDecay
 using Plots
 
 const B2psippbar = let mB = 5.27932
-    ThreeBodySystem(mB,0.938,3.09,0.938)
+    ThreeBodySystem(0.938,3.09,0.938,mB)
 end
 
 σ3MC, σ1MC = flatDalitzPlotSample31(B2psippbar)

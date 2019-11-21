@@ -120,12 +120,13 @@ end
 amplitude(dpp, dc) = amplitude(dpp.σs, dpp.two_λs, dc)
 
 #
-summed_over_polarization(fn, two_js) =
-    σs->sum(fn(σs,two_λs) for two_λs in Iterators.product(
-        -two_js[1]:2:two_js[1],
-        -two_js[2]:2:two_js[2],
-        -two_js[3]:2:two_js[3],
-        -two_js[4]:2:two_js[4]))
+summed_over_polarization(fn, two_js) = σs->sum(fn(σs,two_λs) for two_λs in itr(two_js))
+#
+itr(two_js) = Iterators.product(-two_js[1]:2:two_js[1],
+                                -two_js[2]:2:two_js[2],
+                                -two_js[3]:2:two_js[3],
+                                -two_js[4]:2:two_js[4])
+
 
 function QTB_mismatch_factor(dc)
     k = dc.k; i,j = ij_from_k(k);
