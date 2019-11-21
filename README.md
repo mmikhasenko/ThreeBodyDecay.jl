@@ -90,7 +90,7 @@ Plot in the σ₁σ₃ variables is obtained by
 ```julia
 plot(border31(tbs), xlab="sigma1", ylab="sigma3")
 ```
-![border31](example/plot/border31.pdf)
+![border31](example/plot/border31.png)
 
 A phase-space sample is generated using the `flatDalitzPlotSample` function.
 ```julia
@@ -102,4 +102,4 @@ weights = [I(σs) for σs in zip(σ1v,σ2v,σ3v)]
 # weighted histogram
 histogram2d(σ1v,σ3v, weight=weights, xlab="sigma1", ylab="sigma3")
 ```
-![Scatter and Histogram](example/plot/dalitz31.pdf)
+![Scatter and Histogram](example/plot/dalitz31.png)
