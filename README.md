@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/mmikhasenko/ThreeBodyDecay.jl.svg?branch=master)](https://travis-ci.com/mmikhasenko/ThreeBodyDecay.jl)
 [![Build Status](https://ci.appveyor.com/api/projects/status/github/mmikhasenko/ThreeBodyDecay.jl?svg=true)](https://ci.appveyor.com/project/mmikhasenko/ThreeBodyDecay-jl)
 [![Codecov](https://codecov.io/gh/mmikhasenko/ThreeBodyDecay.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/mmikhasenko/ThreeBodyDecay.jl)
-[![Coveralls](https://coveralls.io/repos/github/mmikhasenko/ThreeBodyDecay.jl/badge.svg?branch=master)](https://coveralls.io/github/mmikhasenko/ThreeBodyDecay.jl?branch=master)
+<!-- [![Coveralls](https://coveralls.io/repos/github/mmikhasenko/ThreeBodyDecay.jl/badge.svg?branch=master)](https://coveralls.io/github/mmikhasenko/ThreeBodyDecay.jl?branch=master) -->
 
 A framework for the amplitude analysis of multibody decay chains.
 The main focus of the project is the three-body decay and reactions required the Dalitz Plot analysis.
@@ -16,9 +16,9 @@ The code inherits notations of the paper:
  - Particles are numbered 1,2,3, and 0 for the decay products and the mother particle, respectively.
  - `s` is a total invariant mass of three particles,
  - `σ` is a two-particle invariant mass squared, `σₖ = (pᵢ+pⱼ)²`,
- - `θᵢⱼ` is a scattering angle
- - `hat θᵢ₍ⱼ₎` is a isobar angle (the Wigner angle of the 0-particle)
- - `ζᵏᵢ₍₀₎` is the Wigner angle for the final-state particle.
+ - `θᵢⱼ` is a scattering angle, an angle between `vec pᵢ` and `- vec pₖ`.
+ - `hat θₖ₍ⱼ₎` is a isobar angle (the Wigner angle of the 0-particle), an angle of `vec pⱼ+pⱼ` with respect the the chain `j`.
+ - `ζᵏᵢ₍₀₎` is the Wigner angle for the final-state particle (see the paper for the definition).
 
 ## API for describing the decay
 
@@ -28,7 +28,6 @@ and $LS$ Clebsch-Gordan coefficient in the production and decay vertices.
 
 Here is an example for amplitude description for Λb ⟶ Jψ p K,
 the reaction where the pentaquarks candidates were observed for the first time.
-
 
 ```julia
 using ThreeBodyDecay # import the module

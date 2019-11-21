@@ -35,14 +35,17 @@ export ThreeBodySystem, DalitzPlotPoint,
 export two_J, two_Λ
 export possible_helicities
 export x2
+export border, border31, border12, border23
+export flatDalitzPlotSample,
+       flatDalitzPlotSample31, flatDalitzPlotSample12, flatDalitzPlotSample23
 include("tbs_struct.jl")
 
 # density
 export getbinned1dDensity,
        getbinned2dDensity
-export flatDalitzPlotSample31
 export gridded_density_function
 include("rand_corr.jl")
+
 
 export rotz!, roty!, roty_cos!, boostz!
 export invmasssq

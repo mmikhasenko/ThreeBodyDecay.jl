@@ -58,18 +58,15 @@ struct decay_chain
     #
     Xlineshape::Function # lineshape
 end
-#     two_λs=error("two_λs is required"),
 
-# function decay_chain(k;
-#     two_s::Vector{Int}=error("two_s, i.e. spin of the isobar is required"),
-#     two_js::Vector{Int}=error("two_js is required"),
-#     Ps::Vector{Char}=['N','N','N','N'], # default values
-#     two_ls=(-1,-1), # default values
-#     two_LS=(-1,-1) # default values
-#     )
-#     # do something to figure out minimal LS ls
-#     return decay_chain(k, two_s, two_ls, two_LS)
-# end
+function printable_l(two_l)
+    l = div(two_l,2)
+    waves = ['S', 'P', 'D', 'F', 'G', 'H'];
+    return l < 6 ? waves[l+1] : string(l)[1]
+end
+printable_s(two_s) = two_s//2
+printable_ls(two_ls) = (printable_s(two_ls[2]), printable_l(two_ls[1]))
+
 
 function decay_chain(k, Xlineshape;
     two_s=error("give two_s, i.e. spin of the isobar is required"),
@@ -88,13 +85,13 @@ function decay_chain(k, Xlineshape;
     #
     used_two_ls = two_ls
     if two_ls[1] < 0
-        println("Possible (l,s) for the isobar decay: ",possible_ls,"\nI use the first one: ", possible_ls[1],"\n")
+        # println("Possible (l,s) for the isobar decay: ",printable_ls.(possible_ls),"\nI use the first one: ", printable_ls(possible_ls[1]),"\n")
         used_two_ls = possible_ls[1]
     end
     #
     used_two_LS = two_LS
     if two_LS[1] < 0
-        println("Possible (L,S) for a decay to isobar-spectator: ",possible_LS,"\nI use the first one: ", possible_LS[1],"\n")
+        # println("Possible (L,S) for a decay to isobar-spectator: ",printable_ls.(possible_LS),"\nI use the first one: ", printable_ls(possible_LS[1]),"\n")
         used_two_LS = possible_LS[1]
     end
     return decay_chain(k, two_s, used_two_ls, used_two_LS, tbs, Xlineshape)

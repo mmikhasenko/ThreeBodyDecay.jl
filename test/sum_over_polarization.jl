@@ -24,11 +24,7 @@ using ThreeBodyDecay
     full_a(σs,two_λs) = sum(amplitude(σs,two_λs, ch) for ch in [dc_Σb1, dc_Σb_x1, dc_Σb3, dc_Σb_x3])
     full_a(dpp) = full_a(dpp.σs, dpp.two_λs)
     #
-    total_I(σs) = sum(abs2(full_a(σs,two_λs)) for two_λs in Iterators.product(
-        -tbs.two_js[1]:2:tbs.two_js[1],
-        -tbs.two_js[2]:2:tbs.two_js[2],
-        -tbs.two_js[3]:2:tbs.two_js[3],
-        -tbs.two_js[4]:2:tbs.two_js[4]))
+    total_I(σs) = sum(abs2(full_a(σs,two_λs)) for two_λs in itr(tbs.two_js))
 
     test_I = summed_over_polarization((σs,two_λs)->abs2(full_a(σs,two_λs)),tbs.two_js)
     @test test_I(dpp.σs) == total_I(dpp.σs)

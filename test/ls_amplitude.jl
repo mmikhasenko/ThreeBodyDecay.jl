@@ -6,7 +6,7 @@ using Test
     dpp = randomPoint(tbs)
     #
     dc = decay_chain(1, (s,σ)->1/(4.1^2-σ-0.1im); two_s=2, parity='-', tbs=tbs)
-    @show amplitude(dpp, dc)
+    # @show amplitude(dpp, dc)
     @test sum(reim(amplitude(dpp, dc)) .≈ 0.0) == 0
     # testing something else?
 end
@@ -17,7 +17,7 @@ end
     dpp = randomPoint(tbs)
     #
     dc = decay_chain(3, (s,σ)->1/(4.1^2-σ-0.1im); two_s=3, parity='-', tbs=tbs)
-    @show amplitude(dpp, dc)
+    # @show amplitude(dpp, dc)
     @test sum(reim(amplitude(dpp, dc)) .≈ 0.0) == 0
     # testing something else?
 end

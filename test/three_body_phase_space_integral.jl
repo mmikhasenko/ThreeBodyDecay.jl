@@ -18,7 +18,7 @@ end
   #
   v_qtv = RhoQTB(tbs.msq[4],(s,σ)->1.0, tbs.msq)
   v_qtv *= QTB_mismatch_factor(ch) # helicity couplings
-  @show v_qtv
+  # @show v_qtv
   v_fll = real(three_body_phase_space_integral(sp, tbs))
   @show v_fll
   #
@@ -34,9 +34,9 @@ end
   #
   v_qtv = RhoQTB(tbs.msq[4],(s,σ)->1.0, tbs.msq)
   v_qtv *= QTB_mismatch_factor(ch) # helicity couplings
-  @show v_qtv
+  # @show v_qtv
   v_fll = real(three_body_phase_space_integral(sp, tbs))
-  @show v_fll
+  # @show v_fll
   #
   @test abs(v_qtv-v_fll)/v_fll < 1e-5
 end
@@ -50,9 +50,9 @@ end
   #
   v_qtv = RhoQTB(tbs.msq[4],(s,σ)->1.0, tbs.msq)
   v_qtv *= QTB_mismatch_factor(ch) # helicity couplings
-  @show v_qtv
+  # @show v_qtv
   v_fll = real(three_body_phase_space_integral(sp, tbs))
-  @show v_fll
+  # @show v_fll
   #
   @test abs(v_qtv-v_fll)/v_fll < 1e-5
 end
