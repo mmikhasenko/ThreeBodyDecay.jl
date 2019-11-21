@@ -88,7 +88,7 @@ x2(v) = Int(2v)
 #        _|
 #    _|_|
 
-function border(k, tbs; Nx=300)
+function border(k, tbs; Nx::Int=300)
     (i,j) = ij_from_k(k)
     σiv = range(tbs.mthsq[i], tbs.sthsq[i],length=Nx)
     σkm = [σkofi(k,-1.0,σ,tbs.msq) for σ in σiv]
@@ -96,9 +96,9 @@ function border(k, tbs; Nx=300)
     return (σiv, [σkm σkp])
 end
 #
-border31(tbs; Nx=300) = border(3, tbs; Nx=300)
-border12(tbs; Nx=300) = border(1, tbs; Nx=300)
-border23(tbs; Nx=300) = border(2, tbs; Nx=300)
+border31(tbs; Nx::Int=300) = border(3, tbs; Nx=Nx)
+border12(tbs; Nx::Int=300) = border(1, tbs; Nx=Nx)
+border23(tbs; Nx::Int=300) = border(2, tbs; Nx=Nx)
 
 function flatDalitzPlotSample(k, tbs; Nev::Int=10000, σbins::Int=500)
     (i,j) = ij_from_k(k)
@@ -112,3 +112,9 @@ end
 flatDalitzPlotSample31(tbs; Nev::Int=10000, σbins::Int=500) = flatDalitzPlotSample(3, tbs; Nev=Nev, σbins=σbins)
 flatDalitzPlotSample12(tbs; Nev::Int=10000, σbins::Int=500) = flatDalitzPlotSample(1, tbs; Nev=Nev, σbins=σbins)
 flatDalitzPlotSample23(tbs; Nev::Int=10000, σbins::Int=500) = flatDalitzPlotSample(2, tbs; Nev=Nev, σbins=σbins)
+
+function flatDalitzPlotSample(tbs; Nev::Int=10000, σbins::Int=500)
+    σ1v,σ2v = flatDalitzPlotSample12(tbs; Nev=Nev, σbins=σbins)
+    σ3v = sum(tbs.msq) .- (σ1v+σ2v)
+    return (σ1v,σ2v,σ3v)
+end

@@ -62,7 +62,7 @@ Pcs = (Pc4312,Pc4440,Pc4457)
 A(σs,two_λs,cs) = sum(c*amplitude(σs,two_λs,dc) for (c, dc) in zip(cs, (Λs...,Pcs...)))
 ```
 Amplitudes for the decay chains are added coherently with complex constants.
-- the invarint variables, `σs = [σ₁,σ₂,σ₃]`,
+- the invariant variables, `σs = [σ₁,σ₂,σ₃]`,
 - helicities `two_λs = [λ₁,λ₂,λ₃,λ₀]`
 - and complex couplings `cs = [c₁,c₂,...]`
 
@@ -75,3 +75,31 @@ I(σs) = I(σs,[1, 1.1, 0.4im, 2.2, 2.1im, -0.3im]) # set the couplings
 dpp = randomPoint(tbs) # just a random point of the Dalitz Plot
 @show I(dpp.σs) # gives a real number - probability
 ```
+
+# Plotting API
+
+Visualization discuss below exploits the `Plots.jl` module with `matplotlib` backend.
+```julia
+using Plots
+pyplot()
+```
+A natural way to visualize the three-body decay with two degrees of freedom
+is a correlation plot of the subchannel invariant masses squared.
+Kinematic limits can visualized using the `border` function.
+Plot in the σ₁σ₃ variables is obtained by
+```julia
+plot(border31(tbs), xlab="sigma1", ylab="sigma3")
+```
+![border31](example/plot/border31.pdf)
+
+A phase-space sample is generated using the `flatDalitzPlotSample` function.
+```julia
+# generate data
+σ1v,σ2v,σ3v = flatDalitzPlotSample(tbs; Nev = 10000)
+scatter(σ1v,σ3v, xlab="sigma1", ylab="sigma3")
+# weight with amplitude
+weights = [I(σs) for σs in zip(σ1v,σ2v,σ3v)]
+# weighted histogram
+histogram2d(σ1v,σ3v, weight=weights, xlab="sigma1", ylab="sigma3")
+```
+![Scatter and Histogram](example/plot/dalitz31.pdf)
