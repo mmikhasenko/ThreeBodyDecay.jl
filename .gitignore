@@ -6,3 +6,4 @@ Lc2pKpi.jl
 Zygote_diff.jl
 numbers.jl
 test_Xic_decay_dynamics.jl
+correlated_random.jl
