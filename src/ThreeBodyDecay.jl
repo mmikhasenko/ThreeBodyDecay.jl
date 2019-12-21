@@ -47,7 +47,7 @@ export gridded_density_function
 include("rand_corr.jl")
 
 
-export rotz!, roty!, roty_cos!, boostz!
+export rotz!, roty!, roty_cos!, roty_cos_inv!, boostz!
 export invmasssq
 export four_vectors_in_binary_decay
 include("rand_gen.jl")
@@ -63,7 +63,7 @@ export three_body_phase_space_integral
 include("lineshape.jl")
 
 # angual_functions
-export ClGd
+export ClGd, kronecker
 export jacobi_pols,
        wignerd,
        wignerD,

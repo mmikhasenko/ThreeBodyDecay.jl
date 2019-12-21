@@ -97,6 +97,8 @@ function wignerd_hat_doublearg(two_j, two_m1, two_m2, z)
                jacobi_pols(j_mnus_M, div(abs(two_m1-two_m2),2), div(abs(two_m1+two_m2),2), z);
 end
 
+kronecker(i, j) = (i==j) ? 1 : 0
+
 function wignerd_doublearg(two_j, two_m1, two_m2, z)
     (z ≈ 1) && return two_m1 == two_m2 ? 1.0 : 0.0
     (z ≈ -1) && return two_m1 == -two_m2 ? (iseven(div(two_j-two_m2,2)) ? 1.0 : -1.0) : 0.0

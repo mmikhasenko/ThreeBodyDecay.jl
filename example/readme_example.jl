@@ -29,11 +29,14 @@ dpp = randomPoint(tbs) # just a random point of the Dalitz Plot
 @show I(dpp.σs)
 
 function plot_something(what; method=heatmap)
-    σ3v = LinRange((tbs.m[1]+tbs.m[2])^2, (tbs.e-tbs.m[3])^2, 100)
-    σ1v = LinRange((tbs.m[2]+tbs.m[3])^2, (tbs.e-tbs.m[1])^2-1e-3, 100)
-    cal = [Kibble31(σ3,σ1,tbs) < 0.0 ? what(σ3,σ1) : NaN for σ3 in σ3v, σ1 in σ1v]
+    σ3v = range(tbs.mthsq[3], tbs.sthsq[3], length=100)
+    σ1v = range(tbs.mthsq[1], tbs.sthsq[1], length=100)
+    cal = [Kibble31(σ3,σ1,tbs.msq) < 0.0 ? what([σ1,gσ2(σ3,σ1,tbs.msq),σ3]) : NaN
+        for (σ3,σ1) in Iterators.product(σ3v,σ1v)]
     method(σ1v, σ3v, cal, c=:lime_grad, colorbar=false)
 end
+
+@time plot_something(I)
 
 using Plots
 using LaTeXStrings

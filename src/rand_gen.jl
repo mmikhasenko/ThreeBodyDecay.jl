@@ -49,6 +49,11 @@ function roty_cos!(p,cosθ)
     p[1], p[3] = [c s; -s c]*[p[1], p[3]]
     return
 end
+function roty_cos_inv!(p,cosθ)
+    c, s = cosθ, sqrt(1-cosθ^2)
+    p[1], p[3] = [c -s; s c]*[p[1], p[3]]
+    return
+end
 function boostz!(p,γ)
     γ, βγ = γ*sign(γ), sqrt(γ^2-1)*sign(γ)
     p[3], p[4] = [γ βγ; βγ γ]*[p[3], p[4]]
