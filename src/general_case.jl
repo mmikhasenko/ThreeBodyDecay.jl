@@ -6,7 +6,9 @@ function Zksτ(k,two_s,two_τ,two_λs,two_λs_prime,σs,tbs)
     #
     val =
         phase(k,1,two_Λ,two_τ-two_λs_prime[k]) *
+        phase(tbs.two_js[k]-two_λs_prime[k]) * # particle-2 convention
         sqrt(two_J(tbs)+1) * wignerd_doublearg(two_J(tbs),two_Λ,two_τ-two_λs_prime[k],cosθhatk1(k,σs,tbs.msq)) *
+        phase(tbs.two_js[j]-two_λs_prime[j]) * # particle-2 convention
         sqrt(two_s+1) * wignerd_doublearg(two_s,two_τ,two_λs_prime[i]-two_λs_prime[j],cosθij(k,σs,tbs.msq)) *
             phase(1,k,two_λs_prime[1],two_λs[1]) * wignerd_doublearg(tbs.two_js[1], two_λs_prime[1], two_λs[1], cosζk1_for1(k,σs,tbs.msq)) *
             phase(2,k,two_λs_prime[2],two_λs[2]) * wignerd_doublearg(tbs.two_js[2], two_λs_prime[2], two_λs[2], cosζk2_for2(k,σs,tbs.msq)) *

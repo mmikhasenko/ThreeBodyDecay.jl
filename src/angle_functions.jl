@@ -115,7 +115,8 @@ cosζ12_for3(σs,m2s) = cosζ23_for1(SVector(σs[3],σs[1],σs[2]), SVector(m2s[
 """
     Phase for wigner d-functions for clockwise rotations
 """
-phase(two_λ1,two_λ2) = (abs(two_λ1-two_λ2) % 4 == 2 ? -1.0 : 1.0)
+phase(two_λ1_minus_λ2) = (abs(two_λ1_minus_λ2) % 4 == 2 ? -1.0 : 1.0)
+phase(two_λ1,two_λ2) = phase(two_λ1 - two_λ2)
 
 """
     Phase for wigner d-functions for clockwise rotations
