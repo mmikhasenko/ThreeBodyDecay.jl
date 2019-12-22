@@ -26,19 +26,25 @@ end
 #     if (k==1)
 #         val = (!(two_λs[1:3] == two_λs_prime[1:3])) ? 0.0 :
 #             sqrt(two_J(tbs)+1) * wignerd_doublearg(two_J(tbs),two_Λ,two_τ-two_λs[1],1.0) *
-#             sqrt(two_s+1) * wignerd_doublearg(two_s,two_τ,two_λs[2]-two_λs[3],cosθ23(σs,tbs.msq))
+#                 phase(tbs.two_js[1]-two_λs[1]) * # particle-2 convention
+#             sqrt(two_s+1) * wignerd_doublearg(two_s,two_τ,two_λs[2]-two_λs[3],cosθ23(σs,tbs.msq)) *
+#                 phase(tbs.two_js[3]-two_λs[3]) # particle-2 convention
 #     elseif (k==2)
 #         val =
 #             phase(two_Λ,two_τ-two_λs_prime[2]) * # 21
 #             sqrt(two_J(tbs)+1) * wignerd_doublearg(two_J(tbs),two_Λ,two_τ-two_λs_prime[2],cosθhat12(σs,tbs.msq)) *
+#                 phase(tbs.two_js[2]-two_λs_prime[2]) * # particle-2 convention
 #             sqrt(two_s+1) * wignerd_doublearg(two_s,two_τ,two_λs_prime[3]-two_λs_prime[1],cosθ31(σs,tbs.msq)) *
+#                 phase(tbs.two_js[1]-two_λs_prime[1]) * # particle-2 convention
 #                                                    wignerd_doublearg(tbs.two_js[1], two_λs_prime[1], two_λs[1], cosζ21_for1(σs,tbs.msq)) *
 #                                                    wignerd_doublearg(tbs.two_js[2], two_λs_prime[2], two_λs[2], cosζ21_for2(σs,tbs.msq)) *
 #                 phase(two_λs_prime[3],two_λs[3]) * wignerd_doublearg(tbs.two_js[3], two_λs_prime[3], two_λs[3], cosζ12_for3(σs,tbs.msq))
 #     elseif (k==3)
 #         val =
 #             sqrt(two_J(tbs)+1) * wignerd_doublearg(two_J(tbs),two_Λ,two_τ-two_λs_prime[3],cosθhat31(σs,tbs.msq)) *
+#                 phase(tbs.two_js[3]-two_λs_prime[3]) * # particle-2 convention
 #             sqrt(two_s+1) * wignerd_doublearg(two_s,two_τ,two_λs_prime[1]-two_λs_prime[2],cosθ12(σs,tbs.msq)) *
+#                 phase(tbs.two_js[2]-two_λs_prime[2]) * # particle-2 convention
 #                 phase(two_λs_prime[1],two_λs[1]) * wignerd_doublearg(tbs.two_js[1], two_λs_prime[1], two_λs[1], cosζ13_for1(σs,tbs.msq)) *
 #                                                    wignerd_doublearg(tbs.two_js[2], two_λs_prime[2], two_λs[2], cosζ31_for2(σs,tbs.msq)) *
 #                 phase(two_λs_prime[3],two_λs[3]) * wignerd_doublearg(tbs.two_js[3], two_λs_prime[3], two_λs[3], cosζ13_for3(σs,tbs.msq))
