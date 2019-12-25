@@ -1,6 +1,10 @@
 
 
 const logfact = [0,[sum(log(i) for i=1:n) for n=1:50]...];
+function f_logfact(n)
+    n < 0 && error("n < 0")
+    return logfact[n+1]
+end
 
 function jacobi_pols(n, a, b, z)
     if (n+a > length(logfact) || n+b > length(logfact))
@@ -56,22 +60,63 @@ function wignerD(j, m1, m2, α, cosβ, γ)
     return wignerd(j, m1, m2, cosβ) * cis(-m1*α-m2*γ);
 end
 
-function ClGd(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
-    factor = sqrt(two_j+1)*(mod(two_j1-two_j2+two_m,4)==2 ? -1 : +1)
-    three_j = sf_coupling_3j(two_j1,two_j2,two_j,two_m1,two_m2,-two_m)
-    return factor*three_j;
-end
+# function ClGd_jsl(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
+#     factor = sqrt(two_j+1)*(mod(two_j1-two_j2+two_m,4)==2 ? -1 : +1)
+#     three_j = sf_coupling_3j(two_j1,two_j2,two_j,two_m1,two_m2,-two_m)
+#     return factor*three_j;
+# end
 # function ClGd(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
-#     # factor = sqrt(two_j+1)*(mod(two_j1-two_j2+two_m,4)==2 ? -1 : +1)
-#     # three_j = sf_coupling_3j(two_j1,two_j2,two_j,two_m1,two_m2,-two_m)
+#     return N(clebsch_gordan(Sym(two_j1)/2, Sym(two_j2)/2, Sym(two_j)/2,
+#                             Sym(two_m1)/2, Sym(two_m2)/2, Sym(two_m)/2));
+# end
+# function ClGd(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
 #     abs(two_m1) > two_j1 && return 0.0;
 #     abs(two_m2) > two_j2 && return 0.0;
 #     abs(two_m)  > two_j  && return 0.0;
-#     return clebschgordan(HalfInteger(two_j1,2),HalfInteger(two_m1,2),
-#                          HalfInteger(two_j2,2),HalfInteger(two_m2,2),
-#                          HalfInteger(two_j,2), HalfInteger(two_m,2))
+#     return clebschgordan(half(two_j1),half(two_m1),
+#                          half(two_j2),half(two_m2),
+#                          half(two_j), half(two_m))
 # end
 
+function ClGd(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
+    # @show (two_j1,two_m1,two_j2,two_m2,two_j,two_m)
+    ((abs(two_m1) > two_j1) || (abs(two_m2) > two_j2) || (abs(two_m ) > two_j )) && return 0.0
+    ((two_m1+two_m2 != two_m) || !(abs(two_j1-two_j2) ≤ two_j ≤ two_j1+two_j2))  && return 0.0
+    # (two_m < 0)       && return ((two_j-two_j1-two_j2) % 4 == 2 ? -1 : 1) * ClGd(two_j1,-two_m1,two_j2,-two_m2,two_j,-two_m)
+    # (two_j1 > two_j2) && return ((two_j-two_j1-two_j2) % 4 == 2 ? -1 : 1) * ClGd(two_j2,two_m2,two_j1,two_m1,two_j,two_m)
+     # general case
+    prefactor = sqrt(two_j+1)*
+        exp( ( f_logfact(div(two_j1+two_j2-two_j,  2)) +
+               f_logfact(div(two_j1+two_j -two_j2, 2)) +
+               f_logfact(div(two_j2+two_j -two_j1, 2)) -
+               f_logfact(div(two_j1+two_j2+two_j,2)+1) +
+               #
+               f_logfact(div(two_j1+two_m1,2)) +
+               f_logfact(div(two_j1-two_m1,2)) +
+               f_logfact(div(two_j2+two_m2,2)) +
+               f_logfact(div(two_j2-two_m2,2)) +
+               f_logfact(div(two_j +two_m ,2)) +
+               f_logfact(div(two_j -two_m ,2)) ) / 2)
+    res = 0
+    t_min = max(0,
+                div(two_j2-two_m1-two_j, 2),
+                div(two_j1+two_m2-two_j, 2))
+    t_max = min(div(two_j1+two_j2-two_j, 2),
+                div(two_j1-two_m1,       2),
+                div(two_j2+two_m2,       2))
+    # @show t_max
+    for t = t_min:t_max
+        logs = f_logfact(t                             ) +
+               f_logfact(div(two_j-two_j2+two_m1+2*t,2)) +
+               f_logfact(div(two_j-two_j1-two_m2+2*t,2)) +
+               f_logfact(div(two_j1+two_j2-two_j-2*t,2)) +
+               f_logfact(div(two_j1-two_m1-2*t,      2)) +
+               f_logfact(div(two_j2+two_m2-2*t,      2));
+        res += (t % 2 == 0 ? 1.0 : -1.0) * exp(-logs);
+    end
+    res *= prefactor
+    return res;
+end
 
 ###########
 

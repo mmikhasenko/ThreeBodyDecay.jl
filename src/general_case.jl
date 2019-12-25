@@ -139,18 +139,20 @@ function amplitude(σs, two_λs, dc)
     two_s = dc.two_s
     two_js = tbs.two_js
     #
+    itr_two_λs_prime = itr(SVector{3}(tbs.two_js[1:3]))
     f = sum(jls_coupling(two_js[i], two_λs_prime[i], two_js[j], two_λs_prime[j], two_s, dc.two_ls[1], dc.two_ls[2]) *
             Zksτ(k,two_s,two_τ,two_λs,two_λs_prime,σs,tbs) *
             jls_coupling(two_s, two_τ, two_js[k], two_λs_prime[k], two_js[4], dc.two_LS[1], dc.two_LS[2])
-        for two_τ = -two_s:2:two_s, two_λs_prime in itr(tbs.two_js[1:3]))
-    return f * dc.Xlineshape(s,σs[k])
+        for two_τ = -two_s:2:two_s, two_λs_prime in itr_two_λs_prime)
+    lineshape = dc.Xlineshape(s,σs[k])
+    return f * lineshape
 end
 #
 amplitude(dpp, dc) = amplitude(dpp.σs, dpp.two_λs, dc)
 #
 summed_over_polarization(fn, two_js) = σs->sum(fn(σs,two_λs) for two_λs in itr(two_js))
 #
-itr(two_js) = Iterators.product([-two_j:2:two_j for two_j in two_js]...)
+itr(two_js) = Iterators.ProductIterator(Tuple([-two_j:2:two_j for two_j in two_js]))
 
 function QTB_mismatch_factor(dc)
     k = dc.k; i,j = ij_from_k(k);

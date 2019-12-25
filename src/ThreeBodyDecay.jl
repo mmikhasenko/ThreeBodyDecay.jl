@@ -1,10 +1,8 @@
 module ThreeBodyDecay
 
-using GSL
 using QuadGK
 using StaticArrays
 using Cuba
-# using WignerSymbols
 
 export gσ1, gσ2, gσ3,
        σkofi, σ3of1, σ1of2, σ2of3,
