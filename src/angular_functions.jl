@@ -2,8 +2,13 @@
 
 const logfact = [0,[sum(log(i) for i=1:n) for n=1:50]...];
 function f_logfact(n)
-    n < 0 && error("n < 0")
-    return logfact[n+1]
+    (n < 0 || n > 50) && error("n < 0 || n > 50")
+    @inbounds return logfact[n+1]
+end
+const logfact2 = [f_logfact(div(two_n,2)) for two_n=1:100];
+function f_logfact2(two_n)
+    (two_n < 0 || two_n > 100) && error("two_n < 0 || two_n > 100")
+    @inbounds return logfact2[two_n+1]
 end
 
 function jacobi_pols(n, a, b, z)
@@ -73,33 +78,33 @@ function ClGd(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
     ((two_m1+two_m2 != two_m) || !(abs(two_j1-two_j2) ≤ two_j ≤ two_j1+two_j2))  && return 0.0
      #
     prefactor = sqrt(two_j+1)*
-        exp( ( f_logfact(div(two_j1+two_j2-two_j,  2)) +
-               f_logfact(div(two_j1+two_j -two_j2, 2)) +
-               f_logfact(div(two_j2+two_j -two_j1, 2)) -
-               f_logfact(div(two_j1+two_j2+two_j,2)+1) +
+        exp( ( f_logfact2(two_j1+two_j2-two_j) +
+               f_logfact2(two_j1+two_j -two_j2) +
+               f_logfact2(two_j2+two_j -two_j1) -
+               f_logfact2(two_j1+two_j2+two_j+2) +
                #
-               f_logfact(div(two_j1+two_m1,2)) +
-               f_logfact(div(two_j1-two_m1,2)) +
-               f_logfact(div(two_j2+two_m2,2)) +
-               f_logfact(div(two_j2-two_m2,2)) +
-               f_logfact(div(two_j +two_m ,2)) +
-               f_logfact(div(two_j -two_m ,2)) ) / 2)
-    res = 0
-    t_min = max(0,
-                div(two_j2-two_m1-two_j, 2),
-                div(two_j1+two_m2-two_j, 2))
-    t_max = min(div(two_j1+two_j2-two_j, 2),
-                div(two_j1-two_m1,       2),
-                div(two_j2+two_m2,       2))
+               f_logfact2(two_j1+two_m1) +
+               f_logfact2(two_j1-two_m1) +
+               f_logfact2(two_j2+two_m2) +
+               f_logfact2(two_j2-two_m2) +
+               f_logfact2(two_j +two_m ) +
+               f_logfact2(two_j -two_m ) ) / 2)
+    res = 0.0
+    two_t_min = max(0,
+                    two_j2-two_m1-two_j,
+                    two_j1+two_m2-two_j)
+    two_t_max = min(two_j1+two_j2-two_j,
+                    two_j1-two_m1,
+                    two_j2+two_m2)
     #
-    for t = t_min:t_max
-        logs = f_logfact(t                             ) +
-               f_logfact(div(two_j-two_j2+two_m1+2*t,2)) +
-               f_logfact(div(two_j-two_j1-two_m2+2*t,2)) +
-               f_logfact(div(two_j1+two_j2-two_j-2*t,2)) +
-               f_logfact(div(two_j1-two_m1-2*t,      2)) +
-               f_logfact(div(two_j2+two_m2-2*t,      2));
-        res += (t % 2 == 0 ? 1.0 : -1.0) * exp(-logs);
+    for two_t = two_t_min:2:two_t_max
+        logs = f_logfact2(two_t) +
+               f_logfact2(two_j-two_j2+two_m1+two_t) +
+               f_logfact2(two_j-two_j1-two_m2+two_t) +
+               f_logfact2(two_j1+two_j2-two_j-two_t) +
+               f_logfact2(two_j1-two_m1-two_t) +
+               f_logfact2(two_j2+two_m2-two_t);
+        res += (abs(two_t) % 4 == 2 ? -1.0 : 1.0) * exp(-logs);
     end
     res *= prefactor
     return res;

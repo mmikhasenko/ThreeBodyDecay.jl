@@ -17,7 +17,7 @@ import PyCall
 PyCall.pyimport_conda("sympy.physics.wigner","sympy")
 import_from(sympy.physics.wigner)
 #
-ClGd_sympy_wigner(two_j1,two_m1,two_j2,two_m2,two_j,two_m) =
+ClGd_sympy(two_j1,two_m1,two_j2,two_m2,two_j,two_m) =
     convert(Float64, clebsch_gordan(Sym(two_j1)/2, Sym(two_j2)/2, Sym(two_j)/2, Sym(two_m1)/2, Sym(two_m2)/2, Sym(two_m)/2))
 
 #
@@ -52,17 +52,16 @@ end
 #                                      _|
 #                                      _|
 
-for _ in 1:1_000
-    @unpack two_j1=two_j1, two_j2=two_j2, two_j=two_j,
-            two_m1=two_m1, two_m2=two_m2, two_m=two_m = rand_clebsch()
-
+for _ in 1:1_000_0
+    @unpack two_j1, two_j2, two_j,
+            two_m1, two_m2, two_m = rand_clebsch()
     #
     v1 = ClGd(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
     v2 = ClGd_gsl(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
     v3 = ClGd_sympy(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
-    v4 = ClGd_sympy(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
+    v4 = ClGd_WS(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
     #
-    (abs(v1-v2) > 1e-5) && error("gsl is different")
+    (abs(v1-v2) > 1e-5) && error("gsl is different: $(v1) $(v2)")
     (abs(v1-v3) > 1e-5) && error("sympy is different")
     (abs(v1-v4) > 1e-5) && error("WS is different")
 end
@@ -77,9 +76,18 @@ end
 #                                                _|_|
 
 @btime for _ in 1:1_000
-    @unpack two_j1, two_j2, two_j, two_m1, two_m2, two_m = rand_clebsch()
+    @unpack two_j1, two_j2, two_j, two_m1, two_m2, two_m = rand_clebsch(;two_j_max = 24)
     ClGd(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
 end # 187 μs
+
+# using Plots
+# v = [let
+#     @unpack two_j1, two_j2, two_j, two_m1, two_m2, two_m = rand_clebsch()
+#     ClGd(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
+# end for _ in 1:1_000_000]
+# sum(v .≈ 0.0)
+# sum(v .≈ 1.0)
+# histogram(v, bins=range(-1,1,length=100))
 
 @btime for _ in 1:1_000
     @unpack two_j1, two_j2, two_j, two_m1, two_m2, two_m = rand_clebsch()
