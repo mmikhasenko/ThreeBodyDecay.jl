@@ -79,11 +79,8 @@ end
 # end
 
 function ClGd(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
-    # @show (two_j1,two_m1,two_j2,two_m2,two_j,two_m)
     ((abs(two_m1) > two_j1) || (abs(two_m2) > two_j2) || (abs(two_m ) > two_j )) && return 0.0
     ((two_m1+two_m2 != two_m) || !(abs(two_j1-two_j2) ≤ two_j ≤ two_j1+two_j2))  && return 0.0
-    # (two_m < 0)       && return ((two_j-two_j1-two_j2) % 4 == 2 ? -1 : 1) * ClGd(two_j1,-two_m1,two_j2,-two_m2,two_j,-two_m)
-    # (two_j1 > two_j2) && return ((two_j-two_j1-two_j2) % 4 == 2 ? -1 : 1) * ClGd(two_j2,two_m2,two_j1,two_m1,two_j,two_m)
      # general case
     prefactor = sqrt(two_j+1)*
         exp( ( f_logfact(div(two_j1+two_j2-two_j,  2)) +
