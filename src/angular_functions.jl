@@ -33,7 +33,6 @@ function jacobi_pols(n, a, b, z)
 end
 
 function wignerd_hat(j, m1, m2, z)
-        # @show j, m1, m2
         if abs(m1) > j || abs(m2) > j
             return 0.0
         end
@@ -60,28 +59,19 @@ function wignerD(j, m1, m2, α, cosβ, γ)
     return wignerd(j, m1, m2, cosβ) * cis(-m1*α-m2*γ);
 end
 
-# function ClGd_jsl(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
-#     factor = sqrt(two_j+1)*(mod(two_j1-two_j2+two_m,4)==2 ? -1 : +1)
-#     three_j = sf_coupling_3j(two_j1,two_j2,two_j,two_m1,two_m2,-two_m)
-#     return factor*three_j;
-# end
-# function ClGd(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
-#     return N(clebsch_gordan(Sym(two_j1)/2, Sym(two_j2)/2, Sym(two_j)/2,
-#                             Sym(two_m1)/2, Sym(two_m2)/2, Sym(two_m)/2));
-# end
-# function ClGd(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
-#     abs(two_m1) > two_j1 && return 0.0;
-#     abs(two_m2) > two_j2 && return 0.0;
-#     abs(two_m)  > two_j  && return 0.0;
-#     return clebschgordan(half(two_j1),half(two_m1),
-#                          half(two_j2),half(two_m2),
-#                          half(two_j), half(two_m))
-# end
+"""
+    ClGd(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
 
+gives a numerical value of the Clebsch-Gordan coefficient
+```
+    ⟨ j₁ m₁ ; j₂ m₂ | j m ⟩
+```
+The function requires __doubled value of the momenta__ for the input.
+"""
 function ClGd(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
     ((abs(two_m1) > two_j1) || (abs(two_m2) > two_j2) || (abs(two_m ) > two_j )) && return 0.0
     ((two_m1+two_m2 != two_m) || !(abs(two_j1-two_j2) ≤ two_j ≤ two_j1+two_j2))  && return 0.0
-     # general case
+     #
     prefactor = sqrt(two_j+1)*
         exp( ( f_logfact(div(two_j1+two_j2-two_j,  2)) +
                f_logfact(div(two_j1+two_j -two_j2, 2)) +
@@ -101,7 +91,7 @@ function ClGd(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
     t_max = min(div(two_j1+two_j2-two_j, 2),
                 div(two_j1-two_m1,       2),
                 div(two_j2+two_m2,       2))
-    # @show t_max
+    #
     for t = t_min:t_max
         logs = f_logfact(t                             ) +
                f_logfact(div(two_j-two_j2+two_m1+2*t,2)) +

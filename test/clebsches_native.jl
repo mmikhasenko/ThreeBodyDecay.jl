@@ -5,7 +5,7 @@ using BenchmarkTools
 
 #
 using GSL
-function ClGd_jsl(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
+function ClGd_gsl(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
     factor = sqrt(two_j+1)*(mod(two_j1-two_j2+two_m,4)==2 ? -1 : +1)
     three_j = sf_coupling_3j(two_j1,two_j2,two_j,two_m1,two_m2,-two_m)
     return factor*three_j;
@@ -58,11 +58,11 @@ for _ in 1:1_000
 
     #
     v1 = ClGd(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
-    v2 = ClGd_jsl(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
+    v2 = ClGd_gsl(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
     v3 = ClGd_sympy(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
     v4 = ClGd_sympy(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
     #
-    (abs(v1-v2) > 1e-5) && error("jsl is different")
+    (abs(v1-v2) > 1e-5) && error("gsl is different")
     (abs(v1-v3) > 1e-5) && error("sympy is different")
     (abs(v1-v4) > 1e-5) && error("WS is different")
 end
@@ -83,7 +83,7 @@ end # 187 μs
 
 @btime for _ in 1:1_000
     @unpack two_j1, two_j2, two_j, two_m1, two_m2, two_m = rand_clebsch()
-    ClGd_jsl(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
+    ClGd_gsl(two_j1,two_m1,two_j2,two_m2,two_j,two_m)
 end # 743 μs
 
 @btime for _ in 1:1_000
