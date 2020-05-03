@@ -14,6 +14,11 @@ gσ3(σ1,σ2,msq) = sum(msq)-σ1-σ2
 λ(x,y,z) = x^2+y^2+z^2 - 2x*y - 2y*z - 2z*x
 Kibble(σs,m2s) = (2σs[2]*(m2s[1]+m2s[4]-σs[1])-(m2s[4]+σs[2]-m2s[2])*(σs[2]+m2s[1]-m2s[3]))^2 - λ(m2s[4],σs[2],m2s[2])*λ(σs[2],m2s[1],m2s[3])
 #
+inphrange(σs,tbs) = Kibble(σs,tbs.msq)<0 &&
+    (tbs.mthsq[1]<σs[1]<tbs.sthsq[1]) &&
+    (tbs.mthsq[2]<σs[2]<tbs.sthsq[2]) &&
+    (tbs.mthsq[3]<σs[3]<tbs.sthsq[3])
+#
 Kibble23(σ2, σ3, msq) = Kibble(SVector(gσ1(σ2,σ3,msq),σ2,σ3), msq)
 Kibble31(σ3, σ1, msq) = Kibble(SVector(gσ2(σ3,σ1,msq),σ3,σ1), SVector(msq[2],msq[3],msq[1],msq[4]))
 Kibble12(σ1, σ2, msq) = Kibble(SVector(gσ3(σ1,σ2,msq),σ1,σ2), SVector(msq[3],msq[1],msq[2],msq[4]))
@@ -127,3 +132,20 @@ function phase(i,j,two_λ1,two_λ2)
     ((i,j)==(1,2) || (i,j)==(2,3) || (i,j)==(3,1)) && return 1.0
     return phase(two_λ1,two_λ2)
 end
+
+
+"""
+    Calculate normalized values in square coordinates
+"""
+function squaredalitz(k,σs,tbs)
+    cθ = cosθij(k,σs,tbs.msq)
+    cθ = cθ ≥ 1.0 ? 1.0 : (cθ ≤ -1.0 ? -1.0 : cθ)
+    y = acos(cθ) / π
+    xn = 2*(sqrt(σs[k]) - tbs.mth[k]) / (tbs.sth[k]-tbs.mth[k])-1
+    x = acos(xn) / π
+    return (x=x, y=y)
+end
+
+squaredalitz1(σs,tbs) = squaredalitz(1,σs,tbs)
+squaredalitz2(σs,tbs) = squaredalitz(2,σs,tbs)
+squaredalitz3(σs,tbs) = squaredalitz(3,σs,tbs)

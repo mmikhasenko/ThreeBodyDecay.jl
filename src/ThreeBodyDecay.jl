@@ -13,7 +13,8 @@ export gσ1, gσ2, gσ3,
        cos_plus_θhat31,
        cos_mins_θhat21,
        λ,
-       Kibble, Kibble23, Kibble12, Kibble31
+       Kibble, Kibble23, Kibble12, Kibble31,
+       inphrange
 export cosζ13_for1,
        cosζ21_for1
 export cosζ23_for1, cosζ31_for2, cosζ12_for3
@@ -24,6 +25,8 @@ export cosζk1_for1,
        cosθij
 export phase
 export ij_from_k
+export squaredalitz,
+       squaredalitz1, squaredalitz2, squaredalitz3
 include("angle_functions.jl")
 
 
