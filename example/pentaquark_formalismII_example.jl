@@ -14,11 +14,11 @@ const tbs = ThreeBodySystem(mJψ,mp,mKmLb; two_jps = ([2,1,0,1],['-','+','-','+'
 
 # helicity couplings
 # Lb Jψ
-H1(two_λ0,two_λ1;two_LS=(4,3),two_s=3) = ClGd(1,two_λ0,2,-two_λ1,two_LS[2],two_λ0-two_λ1) *
-                                         ClGd(two_LS[1],0,two_LS[2],two_λ0-two_λ1,two_s,two_λ0-two_λ1)
+H1(two_λ0,two_λ1;two_LS=(4,3),two_s=3) = CG_doublearg(1,two_λ0,2,-two_λ1,two_LS[2],two_λ0-two_λ1) *
+                                         CG_doublearg(two_LS[1],0,two_LS[2],two_λ0-two_λ1,two_s,two_λ0-two_λ1)
 # pK
-H2(two_λ2;two_l=4,two_s=3) = ClGd(1,two_λ2,0,0,1,two_λ2) *
-                             ClGd(two_l,0,1,two_λ2,two_s,two_λ2)
+H2(two_λ2;two_l=4,two_s=3) = CG_doublearg(1,two_λ2,0,0,1,two_λ2) *
+                             CG_doublearg(two_l,0,1,two_λ2,two_s,two_λ2)
 
 # amplitude
 function A(z,two_λs;two_s=3,two_LS=(4,3),two_l=4)

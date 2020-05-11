@@ -2,9 +2,9 @@ using ThreeBodyDecay
 using Plots
 
 
-H1(two_τ,two_j,two_L) = ClGd(two_L,0,two_j,two_τ,1,two_τ)
-H2(two_μ,two_λ,two_j,two_s,two_l) = ClGd(2,two_μ,1,         -two_λ,two_s,two_μ-two_λ)*
-                              ClGd(two_l,0,two_s,two_μ-two_λ,two_j,two_μ-two_λ)
+H1(two_τ,two_j,two_L) = CG_doublearg(two_L,0,two_j,two_τ,1,two_τ)
+H2(two_μ,two_λ,two_j,two_s,two_l) = CG_doublearg(2,two_μ,1,         -two_λ,two_s,two_μ-two_λ)*
+                              CG_doublearg(two_l,0,two_s,two_μ-two_λ,two_j,two_μ-two_λ)
 #
 I(cosθ,two_j,two_s,two_l,two_L) = sum(abs2,
     H1(two_τ,two_j,two_L)*

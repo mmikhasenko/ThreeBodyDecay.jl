@@ -3,6 +3,7 @@ module ThreeBodyDecay
 using QuadGK
 using StaticArrays
 using Cuba
+using PartialWaveFunctions
 
 export gσ1, gσ2, gσ3,
        σkofi, σ3of1, σ1of2, σ2of3,
@@ -62,17 +63,6 @@ export RhoQTB, iRhoQTB
 #
 export three_body_phase_space_integral
 include("lineshape.jl")
-
-# angual_functions
-export ClGd, kronecker
-export jacobi_pols,
-       wignerd,
-       wignerD,
-       wignerd_hat
-export wignerd_hat_doublearg,
-       wignerd_doublearg,
-       wignerD_doublearg
-include("angular_functions.jl")
 
 export change_basis_3from1,
         change_basis_1from2,
