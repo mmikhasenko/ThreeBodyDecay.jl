@@ -7,6 +7,7 @@ function four_vectors_in_binary_decay(cosθ, ϕ;
         m0sq::Real=error("give decay mass squared"))
     E1 = (m0sq+m1sq-m2sq)/(2sqrt(m0sq));
     E2 = (m0sq-m1sq+m2sq)/(2sqrt(m0sq));
+    √m0sq < √m1sq + √m2sq && error("!!! -√m0sq + √m1sq + √m2sq = $(-√m0sq + √m1sq + √m2sq)")
     p = sqrt(λ(m0sq,m1sq,m2sq))/(2sqrt(m0sq));
     #
     sinθ = sqrt(1-cosθ^2)
@@ -22,7 +23,7 @@ function four_vectors_in_binary_decay(p0,cosθ,ϕ;
     m0sq = p0[4]^2-psq
     #
     γ = p0[4]/sqrt(m0sq)
-    cosθ0 = p0[3]/sqrt(psq)
+    cosθ0 = psq≈0.0 ? 1.0 : p0[3]/sqrt(psq)
     ϕ0 = atan(p0[2],p0[1])
     #
     p1, p2 = four_vectors_in_binary_decay(cosθ,ϕ; m1sq=m1sq, m2sq=m2sq, m0sq=m0sq)
