@@ -24,13 +24,13 @@ end
 #
 phsp(s,σ;ms) = sqrt(λ(ms.m0^2,s,ms.m4^2)*λ(s,σ,ms.m1^2)*λ(σ,ms.m2^2,ms.m3^3))/(σ*s)
 #
-function rand_Ξcpipi_phsp(; m_miss=mπ0)
+function rand_Ξcpipi_phsp(; m_miss)
     #
-    ms = (m0 = mΞcc, m1 = m_miss, m2 = mπ, m3 = mΞc, m4 = mπ)
+    ms = (m0 = mΞcc, m1 = mπ, m2 = mπ, m3 = mΞc, m4 = m_miss)
     #
     s = urand((ms.m1+ms.m2+ms.m3)^2,(ms.m0-ms.m4)^2)
     σ1 = urand((ms.m2+ms.m3)^2,(ms.m0-(ms.m4+ms.m1))^2)
-    σ1 > (√s-ms.m1)^2 && return rand_Ξcpipi_phsp(; m_miss=mπ0)
+    σ1 > (√s-ms.m1)^2 && return rand_Ξcpipi_phsp(; m_miss=m_miss)
     cosθ1,cosθ23,ϕ23 = urand(-1,1),urand(-1,1),urand(-π,π)
     vars = (s=s,σ1=σ1,cosθ1=cosθ1,cosθ23=cosθ23,ϕ23=ϕ23)
     #
@@ -38,7 +38,7 @@ function rand_Ξcpipi_phsp(; m_miss=mπ0)
     !(invmasssq(p1+p2+p3+p4) ≈ ms.m0^2) && error("something is wrong with s")
     !(invmasssq(p1+p2+p3) ≈ s) && error("something is wrong")
     !(invmasssq(p2+p3) ≈ σ1) && error("something is wrong with σ")
-    (m=sqrt(invmasssq(p4+p2+p3)), w=phsp(s,σ1;ms=ms))
+    (m=sqrt(invmasssq(p1+p2+p3)), w=phsp(s,σ1;ms=ms))
 end
 #
 function rand_Ξcpipi_Ξc′(;mΞc′=mΞc′)
