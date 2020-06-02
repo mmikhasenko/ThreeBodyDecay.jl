@@ -28,6 +28,8 @@ export phase
 export ij_from_k
 export squaredalitz,
        squaredalitz1, squaredalitz2, squaredalitz3
+export jacobian_squaredalitz,
+    jacobian_squaredalitz1, jacobian_squaredalitz2, jacobian_squaredalitz3
 include("angle_functions.jl")
 
 

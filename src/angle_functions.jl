@@ -149,3 +149,26 @@ end
 squaredalitz1(σs,tbs) = squaredalitz(1,σs,tbs)
 squaredalitz2(σs,tbs) = squaredalitz(2,σs,tbs)
 squaredalitz3(σs,tbs) = squaredalitz(3,σs,tbs)
+
+```
+    jacobian_squaredalitz(k,σs,tbs)
+
+calculates jacobian of transformation to square coordinates
+```
+function jacobian_squaredalitz(k,σs,tbs)
+    (i,j) = ij_from_k(k)
+    #
+    cθ = cosθij(k,σs,tbs.msq)
+    cθ = cθ ≥ 1.0 ? 1.0 : (cθ ≤ -1.0 ? -1.0 : cθ)
+    dydcθ = 1 / sqrt(1-cθ^2) / π
+    #
+    m = sqrt(σs[k])
+    xn = 2*(m - tbs.mth[k]) / (tbs.sth[k]-tbs.mth[k]) - 1
+    dxdm = 2 / (tbs.sth[k]-tbs.mth[k]) / sqrt(1-xn^2) / π
+    ρρm = sqrt(λ(σs[k],tbs.msq[i],tbs.msq[j])*λ(tbs.msq[4],σs[k],tbs.msq[k])) / (σs[k]*tbs.msq[4]) * m
+    return ρρm / dydcθ / dxdm #
+end
+
+jacobian_squaredalitz1(σs,tbs) = jacobian_squaredalitz(1,σs,tbs)
+jacobian_squaredalitz2(σs,tbs) = jacobian_squaredalitz(2,σs,tbs)
+jacobian_squaredalitz3(σs,tbs) = jacobian_squaredalitz(3,σs,tbs)
