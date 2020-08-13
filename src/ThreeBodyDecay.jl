@@ -4,6 +4,7 @@ using QuadGK
 using StaticArrays
 using Cuba
 using PartialWaveFunctions
+using Parameters
 
 export gσ1, gσ2, gσ3,
        σkofi, σ3of1, σ1of2, σ2of3,
@@ -14,8 +15,9 @@ export gσ1, gσ2, gσ3,
        cos_plus_θhat31,
        cos_mins_θhat21,
        λ,
-       Kibble, Kibble23, Kibble12, Kibble31,
-       inphrange
+       Kibble,
+       inphrange,
+       lims,lims1,lims2,lims3
 export cosζ13_for1,
        cosζ21_for1
 export cosζ23_for1, cosζ31_for2, cosζ12_for3
@@ -30,11 +32,10 @@ export squaredalitz,
        squaredalitz1, squaredalitz2, squaredalitz3
 include("angle_functions.jl")
 
-
+export ThreeBodyMasses, ThreeBodySpins
 export ThreeBodySystem, DalitzPlotPoint,
-       DalitzPlotPoint12, DalitzPlotPoint23, DalitzPlotPoint31,
        randomPoint
-export two_J, two_Λ
+export Invariants
 export possible_helicities
 export x2
 export border, border31, border12, border23

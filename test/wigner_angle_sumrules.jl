@@ -2,14 +2,14 @@ using ThreeBodyDecay
 using ThreeBodyDecay.PartialWaveFunctions
 using Test
 
-let m1 = 0.938, m2 = 0.49367, m3 = 0.13957, m0 = 2.46867
-    tbs = ThreeBodySystem(m1,m2,m3,m0)
+let 
+    ms = ThreeBodyMasses(m1 = 0.938, m2 = 0.49367, m3 = 0.13957, m0 = 2.46867)
     #
-    dpp = randomPoint(tbs)
+    σs = randomPoint(ms)
     #
-    cosζ13_for1_ = cosζ13_for1(dpp.σs,tbs.msq)
-    cosζ21_for1_ = cosζ21_for1(dpp.σs,tbs.msq)
-    cosζ23_for1_ = cosζ23_for1(dpp.σs,tbs.msq)
+    cosζ13_for1_ = cosζ13_for1(σs,ms^2)
+    cosζ21_for1_ = cosζ21_for1(σs,ms^2)
+    cosζ23_for1_ = cosζ23_for1(σs,ms^2)
     #
     ζ13_for1 = acos(cosζ13_for1_)
     ζ21_for1 = acos(cosζ21_for1_)
@@ -24,3 +24,4 @@ let m1 = 0.938, m2 = 0.49367, m3 = 0.13957, m0 = 2.46867
     just_13 = [wignerd(1,ν,0,cosζ13_for1_) for ν=-1:1]
     @test sum(prod_13 .≈ just_13) == 3
 end
+

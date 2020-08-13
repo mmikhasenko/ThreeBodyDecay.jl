@@ -7,73 +7,106 @@
 #              _|_|
 
 
-struct ThreeBodySystem # immutable
-    m::SVector{4,Float64}
-    msq::SVector{4,Float64}
-    #
-    mth::SVector{3,Float64}
-    mthsq::SVector{3,Float64}
-    #
-    sth::SVector{3,Float64}
-    sthsq::SVector{3,Float64}
-    #
-    two_js::SVector{4,Int}
-    Ps::SVector{4,Char}
+@with_kw struct ThreeBodyMasses
+    m0::Float64
+    m1::Float64
+    m2::Float64
+    m3::Float64
+    ThreeBodyMasses(m0,m1,m2,m3) = m0<m1+m2+m3 ? error("m₀ should be bigger than m₁+m₂+m₃") : new(m0,m1,m2,m3)
 end
 
-two_J(tbs::ThreeBodySystem) = tbs.two_js[4]
-two_j1(tbs::ThreeBodySystem) = tbs.two_js[1]
-two_j2(tbs::ThreeBodySystem) = tbs.two_js[2]
-two_j3(tbs::ThreeBodySystem) = tbs.two_js[3]
-
-ThreeBodySystem(m1,m2,m3,e; two_jps = ([0,0,0,0], ['+','+','+','+'])) =
-    e < m1+m2+m3 ? error("Unphysical system, e < sum m_i!") :
-    ThreeBodySystem([m1,m2,m3,e], [m1,m2,m3,e].^2,
-                    [m2+m3,m3+m1,m1+m2], [m2+m3,m3+m1,m1+m2].^2,
-                    [e-m1,e-m2,e-m3], [e-m1,e-m2,e-m3].^2,
-                    two_jps[1], two_jps[2]);
+lims(k::Int,ms::ThreeBodyMasses) = k==1 ? lims1(ms) : (k==2) ? lims2(ms) : lims3(ms)
+lims1(ms::ThreeBodyMasses) = ((ms.m2+ms.m3)^2, (ms.m0-ms.m1)^2)
+lims2(ms::ThreeBodyMasses) = ((ms.m3+ms.m1)^2, (ms.m0-ms.m2)^2)
+lims3(ms::ThreeBodyMasses) = ((ms.m1+ms.m2)^2, (ms.m0-ms.m3)^2)
 #
-
-change_basis_3from1(τ1, tbs::ThreeBodySystem) = change_basis_3from1(τ1..., tbs.msq[1],tbs.msq[2],tbs.msq[3], tbs.msq[4])
-change_basis_1from2(τ2, tbs::ThreeBodySystem) = change_basis_3from1(τ2..., tbs.msq[2],tbs.msq[3],tbs.msq[1], tbs.msq[4])
-change_basis_2from3(τ3, tbs::ThreeBodySystem) = change_basis_3from1(τ3..., tbs.msq[3],tbs.msq[1],tbs.msq[2], tbs.msq[4])
-
-# coupling scheme
-coupling_schemek(k,two_jp,tbs::ThreeBodySystem) = coupling_schemek(k,two_jp,collect(zip(tbs.two_js,tbs.Ps)))
-coupling_scheme23(two_jp,tbs::ThreeBodySystem) = coupling_schemek(1,two_jp,tbs)
-coupling_scheme12(two_jp,tbs::ThreeBodySystem) = coupling_schemek(3,two_jp,tbs)
-coupling_scheme31(two_jp,tbs::ThreeBodySystem) = coupling_schemek(2,two_jp,tbs)
+import Base: getindex, ^, length
+^(ms::ThreeBodyMasses,i::Int) = SVector(ms.m1,ms.m2,ms.m3,ms.m0).^i
+# 
+function getindex(ms::ThreeBodyMasses, i::Int)
+    i==1 && return ms.m1
+    i==2 && return ms.m2
+    i==3 && return ms.m3
+    i==4 && return ms.m0
+end
+#
+import Base: iterate
+# 
+iterate(ms::ThreeBodyMasses) = iterate(SVector(ms.m1,ms.m2,ms.m3,ms.m0))
+iterate(ms::ThreeBodyMasses, state) = iterate(SVector(ms.m1,ms.m2,ms.m3,ms.m0),state)
+# 
+@with_kw struct ThreeBodySpins
+    two_h1::Int
+    two_h2::Int
+    two_h3::Int
+    two_h0::Int
+end
+function getindex(two_hs::ThreeBodySpins, i::Int)
+    i==1 && return two_hs.two_h1
+    i==2 && return two_hs.two_h2
+    i==3 && return two_hs.two_h3
+    i==4 && return two_hs.two_h0
+end
+length(σs::ThreeBodySpins) = 4
+iterate(two_hs::ThreeBodySpins)        = iterate(SVector(two_hs.two_h1,two_hs.two_h2,two_hs.two_h3,two_hs.two_h0))
+iterate(two_hs::ThreeBodySpins, state) = iterate(SVector(two_hs.two_h1,two_hs.two_h2,two_hs.two_h3,two_hs.two_h0),state)
+# 
+# 
+# 
+@with_kw struct ThreeBodySystem
+    ms::ThreeBodyMasses
+    two_js::ThreeBodySpins
+end
+# 
+ThreeBodySystem(m0,m1,m2,m3; two_js = [0,0,0,0]) =
+    ThreeBodySystem(ThreeBodyMasses(m0=m0,m1=m1,m2=m2,m3=m3),
+                    ThreeBodySpins(two_js...));
+#
 
 # Dynamic variables
-struct DalitzPlotPoint
-    σs::SVector{3,Float64}
+@with_kw struct Invariants
+    σ1::Float64
+    σ2::Float64
+    σ3::Float64
+end
+function Invariants(ms::ThreeBodyMasses;σ1=-1.0,σ2=-1.0,σ3=-1.0)
+    sign(σ1)+sign(σ2)+sign(σ3)!=1 && error("the method works with TWO invariants given: $((σ1,σ2,σ3))")
+    σ3 < 0 && return Invariants(;σ1,σ2,σ3=sum(ms^2)-σ1-σ2)
+    σ1 < 0 && return Invariants(;σ2,σ3,σ1=sum(ms^2)-σ2-σ3)
+    σ2 < 0 && return Invariants(;σ3,σ1,σ2=sum(ms^2)-σ3-σ1)
+end
+# 
+length(σs::Invariants) = 3
+function getindex(σs::Invariants, i::Int)
+    i==1 && return σs.σ1
+    i==2 && return σs.σ2
+    i==3 && return σs.σ3
+end
+# 
+@with_kw struct DalitzPlotPoint
+    σs::Invariants
     two_λs::SVector{4,Int}
 end
-
-two_Λ(dpp::DalitzPlotPoint) = dpp.two_λs[4]
-
-DalitzPlotPoint(σ1,σ2,σ3; two_λs::SVector{4,Int}=error("helicities are needed")) = DalitzPlotPoint(SVector(σ1,σ2,σ3), two_λs)
 #
-DalitzPlotPoint12(σ1,σ2, tbs::ThreeBodySystem; two_λs::SVector{4,Int}=SVector(0,0,0,0)) =
-    DalitzPlotPoint(σ1,σ2,gσ3(σ1,σ2,tbs.msq); two_λs = (two_λs == fill(0, 4)) ? tbs.two_js : two_λs) # maximal projection if not provided
-DalitzPlotPoint23(σ2,σ3, tbs::ThreeBodySystem; two_λs::SVector{4,Int}=SVector(0,0,0,0)) =
-    DalitzPlotPoint(gσ1(σ2,σ3,tbs.msq),σ2,σ3; two_λs = (two_λs == fill(0, 4)) ? tbs.two_js : two_λs) # maximal projection if not provided
-DalitzPlotPoint31(σ3,σ1, tbs::ThreeBodySystem; two_λs::SVector{4,Int}=SVector(0,0,0,0)) =
-    DalitzPlotPoint(σ1,gσ2(σ3,σ1,tbs.msq),σ3; two_λs = (two_λs == fill(0, 4)) ? tbs.two_js : two_λs) # maximal projection if not provided
-#
-function randomPoint(tbs::ThreeBodySystem)
-    σ1 = tbs.mthsq[1] + rand()*(tbs.sthsq[1]-tbs.mthsq[1])
-    σ3 = σ3of1(2rand()-1, σ1, tbs.msq)
-    σ2 = gσ2(σ3,σ1,tbs.msq)
-    return DalitzPlotPoint(σ1,σ2,σ3; two_λs=SVector([rand(-j:2:j) for j in tbs.two_js]...))
+function randomPoint(ms::ThreeBodyMasses)
+    σ1 = lims1(ms)[1] + rand()* (lims1(ms)[2]-lims1(ms)[1])
+    σ3 = σ3of1(2rand()-1, σ1, ms^2)
+    return Invariants(ms;σ1=σ1,σ3=σ3);
 end
 
-function possible_helicities(dpp,tbs)
-    [DalitzPlotPoint(dpp.σs...; two_λs = SVector(two_λs...))
-        for two_λs = Iterators.product(-tbs.two_js[1]:2:tbs.two_js[1],
-                      -tbs.two_js[2]:2:tbs.two_js[2],
-                      -tbs.two_js[3]:2:tbs.two_js[3],
-                      -tbs.two_js[4]:2:tbs.two_js[4])]
+function randomPoint(tbs::ThreeBodySystem)
+    DalitzPlotPoint(σs=randomPoint(tbs.ms),
+        two_λs=[rand(-j:2:j) for j in tbs.two_js])
+end
+
+function possible_helicities(two_js::ThreeBodySpins)
+    @unpack two_h0, two_h1, two_h2, two_h3 = two_js
+    [ThreeBodySpins(two_λs...) for two_λs =
+        Iterators.product(
+            -two_h0:2:two_h0,
+            -two_h1:2:two_h1,
+            -two_h2:2:two_h2,
+            -two_h3:2:two_h3)]
 end
 
 # dealing with spin 1/2
@@ -88,33 +121,40 @@ x2(v) = Int(2v)
 #        _|
 #    _|_|
 
-function border(k, tbs; Nx::Int=300)
+function border(k, ms::ThreeBodyMasses; Nx::Int=300)
     (i,j) = ij_from_k(k)
-    σiv = range(tbs.mthsq[i], tbs.sthsq[i],length=Nx)
-    σkm = [σkofi(k,-1.0,σ,tbs.msq) for σ in σiv]
-    σkp = [σkofi(k, 1.0,σ,tbs.msq) for σ in σiv]
+    σiv = range(lims(i,ms)..., length=Nx)
+    σkm = [σkofi(k,-1.0,σi,ms^2) for σi in σiv]
+    σkp = [σkofi(k, 1.0,σi,ms^2) for σi in σiv]
     return (σiv, [σkm σkp])
 end
 #
-border31(tbs; Nx::Int=300) = border(3, tbs; Nx=Nx)
-border12(tbs; Nx::Int=300) = border(1, tbs; Nx=Nx)
-border23(tbs; Nx::Int=300) = border(2, tbs; Nx=Nx)
-
-function flatDalitzPlotSample(k, tbs; Nev::Int=10000, σbins::Int=500)
-    (i,j) = ij_from_k(k)
-    s = tbs.msq[4]
-    density = getbinned1dDensity(σi->sqrt(λ(σi,tbs.msq[j],tbs.msq[k])*λ(σi,s,tbs.msq[i]))/σi, (tbs.mthsq[i],tbs.sthsq[i]), σbins)
-    σiv = [rand(density) for _ in 1:Nev]
-    σkv = [σkofi(k,2*rand()-1,σ,tbs.msq) for σ in σiv]
-    return (σkv, σiv)
+border31(ms; Nx::Int=300) = border(3, ms; Nx=Nx)
+border12(ms; Nx::Int=300) = border(1, ms; Nx=Nx)
+border23(ms; Nx::Int=300) = border(2, ms; Nx=Nx)
+# 
+function flatDalitzPlotSample(ms::ThreeBodyMasses; Nev::Int=10000, σbins::Int=500)
+    @unpack m0,m1,m2,m3 = ms
+    density = getbinned1dDensity(σ1->sqrt(λ(σ1,m2^2,m3^2)*λ(σ1,m0^2,m1^2))/σ1, lims1(ms), σbins)
+    σ1v = [rand(density) for _ in 1:Nev]
+    σ3v = [σ3of1(2*rand()-1,σ1,ms^2) for σ1 in σ1v]
+    return [Invariants(ms; σ1=σ1, σ3=σ3) for (σ1,σ3) in zip(σ1v,σ3v)]
 end
+
 #
-flatDalitzPlotSample31(tbs; Nev::Int=10000, σbins::Int=500) = flatDalitzPlotSample(3, tbs; Nev=Nev, σbins=σbins)
-flatDalitzPlotSample12(tbs; Nev::Int=10000, σbins::Int=500) = flatDalitzPlotSample(1, tbs; Nev=Nev, σbins=σbins)
-flatDalitzPlotSample23(tbs; Nev::Int=10000, σbins::Int=500) = flatDalitzPlotSample(2, tbs; Nev=Nev, σbins=σbins)
+inrange(x,r) = r[1]<x<r[2]
+inphrange(σs::Invariants,ms::ThreeBodySystem) = Kibble(σs,ms) < 0 &&
+    inrange(σ1,lims1(ms)) && inrange(σ2,lims2(ms)) && inrange(σ3,lims3(ms))
 
-function flatDalitzPlotSample(tbs; Nev::Int=10000, σbins::Int=500)
-    σ1v,σ2v = flatDalitzPlotSample12(tbs; Nev=Nev, σbins=σbins)
-    σ3v = sum(tbs.msq) .- (σ1v+σ2v)
-    return (σ1v,σ2v,σ3v)
-end
+# 
+# 
+# 
+change_basis_3from1(τ1, ms::ThreeBodyMasses) = change_basis_3from1(τ1..., ms.m1^2, ms.m2^2, ms.m3^2, ms.m0^2) 
+change_basis_1from2(τ2, ms::ThreeBodyMasses) = change_basis_3from1(τ2..., ms.m2^2, ms.m3^2, ms.m1^2, ms.m0^2) 
+change_basis_2from3(τ3, ms::ThreeBodyMasses) = change_basis_3from1(τ3..., ms.m3^2, ms.m1^2, ms.m2^2, ms.m0^2) 
+
+# coupling scheme
+coupling_schemek(k,two_jp,tbs::ThreeBodySystem) = coupling_schemek(k,two_jp,collect(zip(tbs.two_js,tbs.Ps)))
+coupling_scheme23(two_jp,tbs::ThreeBodySystem)  = coupling_schemek(1,two_jp,tbs)
+coupling_scheme12(two_jp,tbs::ThreeBodySystem)  = coupling_schemek(3,two_jp,tbs)
+coupling_scheme31(two_jp,tbs::ThreeBodySystem)  = coupling_schemek(2,two_jp,tbs)

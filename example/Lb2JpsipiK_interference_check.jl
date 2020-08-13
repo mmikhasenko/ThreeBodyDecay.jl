@@ -37,7 +37,7 @@ dpp = randomPoint(tbs) # just a random point of the Dalitz Plot
 
 let
     # generate data
-    plot(size=(1000,350), layout=grid(1,2),
+    plot(size=(900,350), layout=grid(1,2),
         xlab=L"\cos\,\theta_{12}")
     #
     σ1v,σ2v,σ3v = flatDalitzPlotSample(tbs; Nev = 10000)

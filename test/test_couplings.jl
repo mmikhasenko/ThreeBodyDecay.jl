@@ -21,12 +21,10 @@ end
 
 @testset "possible helicities" begin
     mLb = 5.62; mJψ = 3.09; mp=0.938; mK = 0.49367
-    tbs = ThreeBodySystem(mJψ,mp,mK,mLb; two_jps = ([2,1,0,1],['-','+','-','+']))
-    dpp = randomPoint(tbs);
+    tbs = ThreeBodySystem(mLb, mJψ, mp, mK; two_js = [2,1,0,1])
 
-    @test length(possible_helicities(dpp,tbs)) == prod([2,1,0,1].+1)
+    @test length(possible_helicities(tbs.two_js)) == prod([2,1,0,1].+1)
 end
-
 
 # TODO:
 # test HelicityRecoupling_doublearg

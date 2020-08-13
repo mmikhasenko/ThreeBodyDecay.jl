@@ -1,58 +1,22 @@
+two_J(tbs) = tbs.two_js.two_h0
 
-function Zksτ(k,two_s,two_τ,two_λs,two_λs_prime,σs,tbs)
+function Zksτ(k,two_s,two_τ,two_λs,two_λs′,σs,tbs)
     (i,j) = (k==1 ? (2,3) : (k==2 ? (3,1) : (1,2)))
     #
     two_Λ = two_λs[4]
     #
     val =
-        phase(k,1,two_Λ,two_τ-two_λs_prime[k]) *
-        phase(tbs.two_js[k]-two_λs_prime[k]) * # particle-2 convention
-        sqrt(two_J(tbs)+1) * wignerd_doublearg(two_J(tbs),two_Λ,two_τ-two_λs_prime[k],cosθhatk1(k,σs,tbs.msq)) *
-        phase(tbs.two_js[j]-two_λs_prime[j]) * # particle-2 convention
-        sqrt(two_s+1) * wignerd_doublearg(two_s,two_τ,two_λs_prime[i]-two_λs_prime[j],cosθij(k,σs,tbs.msq)) *
-            phase(1,k,two_λs_prime[1],two_λs[1]) * wignerd_doublearg(tbs.two_js[1], two_λs_prime[1], two_λs[1], cosζk1_for1(k,σs,tbs.msq)) *
-            phase(2,k,two_λs_prime[2],two_λs[2]) * wignerd_doublearg(tbs.two_js[2], two_λs_prime[2], two_λs[2], cosζk2_for2(k,σs,tbs.msq)) *
-            phase(3,k,two_λs_prime[3],two_λs[3]) * wignerd_doublearg(tbs.two_js[3], two_λs_prime[3], two_λs[3], cosζk3_for3(k,σs,tbs.msq))
+        phase(k,1,two_Λ,two_τ-two_λs′[k]) *
+            phase(tbs.two_js[k]-two_λs′[k]) * # particle-2 convention
+        sqrt(two_J(tbs)+1) * wignerd_doublearg(two_J(tbs),two_Λ,two_τ-two_λs′[k],cosθhatk1(k,σs,tbs.ms^2)) *
+            phase(tbs.two_js[j]-two_λs′[j]) * # particle-2 convention
+        sqrt(two_s+1) * wignerd_doublearg(two_s,two_τ,two_λs′[i]-two_λs′[j],cosθij(k,σs,tbs.ms^2)) *
+            phase(1,k,two_λs′[1],two_λs[1]) * wignerd_doublearg(tbs.two_js[1], two_λs′[1], two_λs[1], cosζk1_for1(k,σs,tbs.ms^2)) *
+            phase(2,k,two_λs′[2],two_λs[2]) * wignerd_doublearg(tbs.two_js[2], two_λs′[2], two_λs[2], cosζk2_for2(k,σs,tbs.ms^2)) *
+            phase(3,k,two_λs′[3],two_λs[3]) * wignerd_doublearg(tbs.two_js[3], two_λs′[3], two_λs[3], cosζk3_for3(k,σs,tbs.ms^2))
     return val
 end
 
-# alternative, referenced to 1 for all
-# function Zksτ(k,two_s,two_τ,two_λs,two_λs_prime,σs,tbs)
-#     #
-#     two_Λ = two_λs[4]
-#     #
-#     val = 0.0;
-#     #
-#     if (k==1)
-#         val = (!(two_λs[1:3] == two_λs_prime[1:3])) ? 0.0 :
-#             sqrt(two_J(tbs)+1) * wignerd_doublearg(two_J(tbs),two_Λ,two_τ-two_λs[1],1.0) *
-#                 phase(tbs.two_js[1]-two_λs[1]) * # particle-2 convention
-#             sqrt(two_s+1) * wignerd_doublearg(two_s,two_τ,two_λs[2]-two_λs[3],cosθ23(σs,tbs.msq)) *
-#                 phase(tbs.two_js[3]-two_λs[3]) # particle-2 convention
-#     elseif (k==2)
-#         val =
-#             phase(two_Λ,two_τ-two_λs_prime[2]) * # 21
-#             sqrt(two_J(tbs)+1) * wignerd_doublearg(two_J(tbs),two_Λ,two_τ-two_λs_prime[2],cosθhat12(σs,tbs.msq)) *
-#                 phase(tbs.two_js[2]-two_λs_prime[2]) * # particle-2 convention
-#             sqrt(two_s+1) * wignerd_doublearg(two_s,two_τ,two_λs_prime[3]-two_λs_prime[1],cosθ31(σs,tbs.msq)) *
-#                 phase(tbs.two_js[1]-two_λs_prime[1]) * # particle-2 convention
-#                                                    wignerd_doublearg(tbs.two_js[1], two_λs_prime[1], two_λs[1], cosζ21_for1(σs,tbs.msq)) *
-#                                                    wignerd_doublearg(tbs.two_js[2], two_λs_prime[2], two_λs[2], cosζ21_for2(σs,tbs.msq)) *
-#                 phase(two_λs_prime[3],two_λs[3]) * wignerd_doublearg(tbs.two_js[3], two_λs_prime[3], two_λs[3], cosζ12_for3(σs,tbs.msq))
-#     elseif (k==3)
-#         val =
-#             sqrt(two_J(tbs)+1) * wignerd_doublearg(two_J(tbs),two_Λ,two_τ-two_λs_prime[3],cosθhat31(σs,tbs.msq)) *
-#                 phase(tbs.two_js[3]-two_λs_prime[3]) * # particle-2 convention
-#             sqrt(two_s+1) * wignerd_doublearg(two_s,two_τ,two_λs_prime[1]-two_λs_prime[2],cosθ12(σs,tbs.msq)) *
-#                 phase(tbs.two_js[2]-two_λs_prime[2]) * # particle-2 convention
-#                 phase(two_λs_prime[1],two_λs[1]) * wignerd_doublearg(tbs.two_js[1], two_λs_prime[1], two_λs[1], cosζ13_for1(σs,tbs.msq)) *
-#                                                    wignerd_doublearg(tbs.two_js[2], two_λs_prime[2], two_λs[2], cosζ31_for2(σs,tbs.msq)) *
-#                 phase(two_λs_prime[3],two_λs[3]) * wignerd_doublearg(tbs.two_js[3], two_λs_prime[3], two_λs[3], cosζ13_for3(σs,tbs.msq))
-#     else
-#         error("k=$k must be ∈ {1,2,3}!")
-#     end
-#     return val
-# end
 Zksτ(k,two_s,two_τ,dpp,tbs) = Zksτ(k,two_s,two_τ,dpp.two_λs,dpp.σs,tbs)
 
 function Rksτ(k,two_s,two_τ,coupls,CScheme,dpp,tbs)
@@ -80,7 +44,7 @@ end
 #                                                _|
 #                                            _|_|
 
-struct decay_chain
+@with_kw struct decay_chain
     k::Int
     #
     two_s::Int # isobar spin
@@ -103,16 +67,17 @@ printable_ls(two_ls) = (printable_s(two_ls[2]), printable_l(two_ls[1]))
 
 
 function decay_chain(k, Xlineshape;
-    two_s=error("give two_s, i.e. spin of the isobar is required"),
-    parity::Char='+',
+    two_s=error("give two_s, i.e. the spin of the isobar"),
     tbs=error("give three-body-system structure"),
-    two_ls=(-1,-1), # default values
-    two_LS=(-1,-1) # default values
-    )
+    parity::Char='+',
+    Ps=SVector('+','+','+','+'),
+    two_ls=(l=-1,s=-1), # use parities by default
+    two_LS=(L=-1,S=-1)) # use parities by default
+    # 
     k = k; i,j = ij_from_k(k);
     #
-    possible_ls = possibleLS((tbs.two_js[i],tbs.Ps[i]), (tbs.two_js[j],tbs.Ps[j]), (two_s,parity))
-    possible_LS = possibleLS((two_s,parity), (tbs.two_js[k],tbs.Ps[k]), (tbs.two_js[4],tbs.Ps[4]))
+    possible_ls = possibleLS((tbs.two_js[i],Ps[i]), (tbs.two_js[j],Ps[j]), (two_s,parity))
+    possible_LS = possibleLS((two_s,parity), (tbs.two_js[k],Ps[k]), (tbs.two_js[4],Ps[4]))
     #
     length(possible_ls)==0 && error("no ls are possible! check parity")
     length(possible_LS)==0 && error("no LS are possible! check parity")
@@ -128,22 +93,22 @@ function decay_chain(k, Xlineshape;
         # println("Possible (L,S) for a decay to isobar-spectator: ",printable_ls.(possible_LS),"\nI use the first one: ", printable_ls(possible_LS[1]),"\n")
         used_two_LS = possible_LS[1]
     end
-    return decay_chain(k, two_s, used_two_ls, used_two_LS, tbs, Xlineshape)
+    return decay_chain(;k=k, two_s=two_s, two_ls=used_two_ls, two_LS=used_two_LS, tbs=tbs, Xlineshape=Xlineshape)
 end
 
 function amplitude(σs, two_λs, dc)
     k = dc.k; i,j = ij_from_k(k);
     tbs = dc.tbs
-    s = tbs.msq[4]
+    s = tbs.ms.m0^2
     #
     two_s = dc.two_s
     two_js = tbs.two_js
     #
-    itr_two_λs_prime = itr(SVector{3}(tbs.two_js[1:3]))
-    f = sum(jls_coupling(two_js[i], two_λs_prime[i], two_js[j], two_λs_prime[j], two_s, dc.two_ls[1], dc.two_ls[2]) *
-            Zksτ(k,two_s,two_τ,two_λs,two_λs_prime,σs,tbs) *
-            jls_coupling(two_s, two_τ, two_js[k], two_λs_prime[k], two_js[4], dc.two_LS[1], dc.two_LS[2])
-        for two_τ = -two_s:2:two_s, two_λs_prime in itr_two_λs_prime)
+    itr_two_λs′ = itr(SVector{3}(tbs.two_js[1],tbs.two_js[2],tbs.two_js[3]))
+    f = sum(jls_coupling(two_js[i], two_λs′[i], two_js[j], two_λs′[j], two_s, dc.two_ls[1], dc.two_ls[2]) *
+            Zksτ(k,two_s,two_τ,two_λs,two_λs′,σs,tbs) *
+            jls_coupling(two_s, two_τ, two_js[k], two_λs′[k], two_js[4], dc.two_LS[1], dc.two_LS[2])
+        for two_τ = -two_s:2:two_s, two_λs′ in itr_two_λs′)
     lineshape = dc.Xlineshape(s,σs[k])
     return f * lineshape
 end
