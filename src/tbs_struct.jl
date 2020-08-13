@@ -143,7 +143,7 @@ end
 
 #
 inrange(x,r) = r[1]<x<r[2]
-inphrange(σs::Invariants,ms::ThreeBodyMass) = Kibble(σs,ms) < 0 &&
+inphrange(σs::Invariants,ms::ThreeBodyMasses) = Kibble(σs,ms) < 0 &&
     inrange(σ1,lims1(ms)) && inrange(σ2,lims2(ms)) && inrange(σ3,lims3(ms))
 
 # 
