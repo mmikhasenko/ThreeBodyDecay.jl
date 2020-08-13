@@ -29,6 +29,7 @@ function getindex(ms::ThreeBodyMasses, i::Int)
     i==3 && return ms.m3
     i==4 && return ms.m0
 end
+nt(ms::ThreeBodyMasses) = NamedTuple{(:m0,m1,:m2,:m3)}([ms.m0,ms.m1,ms.m2,ms.m3])
 #
 import Base: iterate
 # 
@@ -50,7 +51,6 @@ end
 length(σs::ThreeBodySpins) = 4
 iterate(two_hs::ThreeBodySpins)        = iterate(SVector(two_hs.two_h1,two_hs.two_h2,two_hs.two_h3,two_hs.two_h0))
 iterate(two_hs::ThreeBodySpins, state) = iterate(SVector(two_hs.two_h1,two_hs.two_h2,two_hs.two_h3,two_hs.two_h0),state)
-# 
 # 
 # 
 @with_kw struct ThreeBodySystem
@@ -82,7 +82,8 @@ function getindex(σs::Invariants, i::Int)
     i==2 && return σs.σ2
     i==3 && return σs.σ3
 end
-# 
+nt(σs::Invariants) = NamedTuple{(:σ1,:σ2,:σ3)}([σs.σ1,σs.σ2,σs.σ3])
+ 
 @with_kw struct DalitzPlotPoint
     σs::Invariants
     two_λs::SVector{4,Int}

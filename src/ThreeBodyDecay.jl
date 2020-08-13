@@ -35,6 +35,7 @@ include("angle_functions.jl")
 export ThreeBodyMasses, ThreeBodySpins
 export ThreeBodySystem, DalitzPlotPoint,
        randomPoint
+export nt
 export Invariants
 export possible_helicities
 export x2
