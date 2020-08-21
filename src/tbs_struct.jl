@@ -24,10 +24,11 @@ import Base: getindex, ^, length
 ^(ms::ThreeBodyMasses,i::Int) = SVector(ms.m1,ms.m2,ms.m3,ms.m0).^i
 # 
 function getindex(ms::ThreeBodyMasses, i::Int)
-    i==1 && return ms.m1
+    (i==0 || i==4) && return ms.m0
     i==2 && return ms.m2
     i==3 && return ms.m3
-    i==4 && return ms.m0
+    i!=1 && error("i should be equal to 0,1,2,3 or 4")
+    return ms.m1
 end
 nt(ms::ThreeBodyMasses) = NamedTuple{(:m0,m1,:m2,:m3)}([ms.m0,ms.m1,ms.m2,ms.m3])
 #
@@ -73,14 +74,15 @@ function Invariants(ms::ThreeBodyMasses;σ1=-1.0,σ2=-1.0,σ3=-1.0)
     sign(σ1)+sign(σ2)+sign(σ3)!=1 && error("the method works with TWO invariants given: $((σ1,σ2,σ3))")
     σ3 < 0 && return Invariants(;σ1,σ2,σ3=sum(ms^2)-σ1-σ2)
     σ1 < 0 && return Invariants(;σ2,σ3,σ1=sum(ms^2)-σ2-σ3)
-    σ2 < 0 && return Invariants(;σ3,σ1,σ2=sum(ms^2)-σ3-σ1)
+    return Invariants(;σ3,σ1,σ2=sum(ms^2)-σ3-σ1)
 end
 # 
 length(σs::Invariants) = 3
 function getindex(σs::Invariants, i::Int)
     i==1 && return σs.σ1
     i==2 && return σs.σ2
-    i==3 && return σs.σ3
+    i!=3 && error("i should be equal to 1,2, or 3")
+    return σs.σ3
 end
 nt(σs::Invariants) = NamedTuple{(:σ1,:σ2,:σ3)}([σs.σ1,σs.σ2,σs.σ3])
  
