@@ -6,7 +6,7 @@ pyplot()
 #
 ms = (Jψ = 3.09, p=0.938, Bs = 5.366) # masses of the particles
 # create two-body system
-tbs = ThreeBodySystem(ms.Jψ, ms.p, ms.p,  ms.Bs;   # masses m1,m2,m3,m0
+tbs = ThreeBodySystem(ms.Jψ, ms.p, ms.p, m0=ms.Bs;   # masses m1,m2,m3,m0
             two_jps=([   1,  1//2, 1//2,    0] .|> x2,  # twice spin
                      [ '-',   '+',  '-',  '+'])) # parities
 #

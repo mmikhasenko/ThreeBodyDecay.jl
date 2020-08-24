@@ -32,13 +32,13 @@ export squaredalitz,
        squaredalitz1, squaredalitz2, squaredalitz3
 include("angle_functions.jl")
 
-export ThreeBodyMasses, ThreeBodySpins
-export ThreeBodySystem, DalitzPlotPoint,
-       randomPoint
-export nt
+export ThreeBodyMasses, ThreeBodySpins, ThreeBodyParities
+export ThreeBodySystem
+export DalitzPlotPoint
 export Invariants
+export randomPoint
+export nt, x2
 export possible_helicities
-export x2
 export border, border31, border12, border23
 export flatDalitzPlotSample,
        flatDalitzPlotSample31, flatDalitzPlotSample12, flatDalitzPlotSample23
@@ -49,7 +49,6 @@ export getbinned1dDensity,
        getbinned2dDensity
 export gridded_density_function
 include("rand_corr.jl")
-
 
 export rotz!, roty!, roty_cos!, roty_cos_inv!, boostz!
 export invmasssq
@@ -69,7 +68,6 @@ include("lineshape.jl")
 export change_basis_3from1,
         change_basis_1from2,
         change_basis_2from3
-
 include("cross_channel_relations.jl")
 
 #
@@ -91,17 +89,11 @@ include("coupling_scheme.jl")
 
 #
 export Zksτ
-export decay_chain, amplitude
-export itr, summed_over_polarization
 export QTB_mismatch_factor
 include("general_case.jl")
 
-#
-export amp_b2bzz,
-    rate_b2bzz, rateCC_b2bzz, rateΛΛ_b2bzz,
-    polSens_b2bzz
-export get_couplings,
-    set_couplings
-include("half_to_half_zero_zero.jl")
+export decay_chain, decay_chains, amplitude
+export itr, summed_over_polarization
+include("decay_channel.jl")
 
 end  # module ThreeBodyDecay

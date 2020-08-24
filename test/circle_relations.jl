@@ -3,7 +3,7 @@ using ThreeBodyDecay
 
 @testset "Circular permutations" begin
     m1 = 0.938; m2 = 0.49367; m3 = 0.13957; m0 = 2.46867
-    tbs = ThreeBodySystem(m0,m1,m2,m3)
+    tbs = ThreeBodySystem(m1,m2,m3,m0=m0)
     #
     τ1 = (sum(lims1(tbs.ms))/2.0, 0.3, 0.3, 0.3, 0.3)
     τ3  = change_basis_3from1(τ1, tbs.ms)
