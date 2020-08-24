@@ -48,6 +48,7 @@ ThreeBodyMasses(m1,m2,m3;
     two_h2::Int
     two_h3::Int
     two_h0::Int
+    ThreeBodySpins(two_h1,two_h2,two_h3,two_h0) = isodd(two_h1+two_h2+two_h3+two_h0) ? error("baryon number is not conserved") : new(two_h1,two_h2,two_h3,two_h0)
 end
 function getindex(two_hs::ThreeBodySpins, i::Int)
     (i==0 || i==4) && return two_hs.two_h0
@@ -60,10 +61,23 @@ length(σs::ThreeBodySpins) = 4
 iterate(two_hs::ThreeBodySpins)        = iterate(SVector(two_hs.two_h1,two_hs.two_h2,two_hs.two_h3,two_hs.two_h0))
 iterate(two_hs::ThreeBodySpins, state) = iterate(SVector(two_hs.two_h1,two_hs.two_h2,two_hs.two_h3,two_hs.two_h0),state)
 #
+import Base:getproperty
+function getproperty(two_js::ThreeBodySpins, sym::Symbol)
+    (sym in fieldnames(ThreeBodySpins)) && return getfield(two_js, sym)
+    (sym == :two_j1 || sym == :two_λ1) && return getfield(two_js, :two_h1)
+    (sym == :two_j2 || sym == :two_λ2) && return getfield(two_js, :two_h2)
+    (sym == :two_j3 || sym == :two_λ3) && return getfield(two_js, :two_h3)
+    (sym == :two_j0 || sym == :two_λ0) && return getfield(two_js, :two_h0)
+    error("no property $(sym)")
+end
+# 
 ThreeBodySpins(two_h1,two_h2,two_h3;
     two_h0=error("used the format ThreeBodySpins(1,1,0; two_j0=2)")) =
     ThreeBodySpins(two_h1=two_h1,two_h2=two_h2,two_h3=two_h3,two_h0=two_h0)
 
+# dealing with spin 1/2
+x2(v) = Int(2v)
+# 
 # 
 @with_kw struct ThreeBodySystem
     ms::ThreeBodyMasses
@@ -112,6 +126,8 @@ function Invariants(ms::ThreeBodyMasses;σ1=-1.0,σ2=-1.0,σ3=-1.0)
     return Invariants(;σ3,σ1,σ2=sum(ms^2)-σ3-σ1)
 end
 # 
+iterate(σs::Invariants)        = iterate(SVector(σs.σ1,σs.σ2,σs.σ3))
+iterate(σs::Invariants, state) = iterate(SVector(σs.σ1,σs.σ2,σs.σ3),state)
 length(σs::Invariants) = 3
 function getindex(σs::Invariants, i::Int)
     i==1 && return σs.σ1
@@ -138,20 +154,6 @@ function randomPoint(tbs::ThreeBodySystem)
     DalitzPlotPoint(σs=randomPoint(tbs.ms),
         two_λs=[rand(-j:2:j) for j in tbs.two_js])
 end
-
-function possible_helicities(two_js::ThreeBodySpins)
-    @unpack two_h0, two_h1, two_h2, two_h3 = two_js
-    [ThreeBodySpins(two_λs...) for two_λs =
-        Iterators.product(
-            -two_h0:2:two_h0,
-            -two_h1:2:two_h1,
-            -two_h2:2:two_h2,
-            -two_h3:2:two_h3)]
-end
-
-# dealing with spin 1/2
-x2(v) = Int(2v)
-
 
 #                                                                _|
 #    _|_|_|    _|_|    _|_|_|      _|_|    _|  _|_|    _|_|_|  _|_|_|_|    _|_|

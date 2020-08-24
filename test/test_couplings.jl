@@ -23,7 +23,7 @@ end
     mLb = 5.62; mJψ = 3.09; mp=0.938; mK = 0.49367
     tbs = ThreeBodySystem(mJψ, mp, mK; m0=mLb, two_js=ThreeBodySpins(2,1,0; two_h0=1))
 
-    @test length(possible_helicities(tbs.two_js)) == prod([2,1,0,1].+1)
+    @test length(itr(tbs.two_js)) == prod([2,1,0,1].+1)
 end
 
 # TODO:
