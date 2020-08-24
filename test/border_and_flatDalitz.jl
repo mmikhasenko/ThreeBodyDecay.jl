@@ -2,9 +2,9 @@ using ThreeBodyDecay
 using Test
 
 @testset "Border and Flat Dalitz" begin
-    tbs = ThreeBodySystem(1.1,1.3,1.5,6.0)
-    fDP = flatDalitzPlotSample31(tbs)
-    b = border31(tbs)
+    ms = ThreeBodyMasses(6.0,1.1,1.3,1.5)
+    fDP = flatDalitzPlotSample(ms)
+    b = border31(ms)
     # make better test!
     #   It would be great to check if all points in `dDP` are inside of `b`
     @test true

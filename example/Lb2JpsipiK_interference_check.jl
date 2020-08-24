@@ -6,7 +6,7 @@ using ThreeBodyDecay
 # decay Λb ⟶ Jψ p K
 ms = (Jψ = 3.09, p=0.938, K = 0.49367, Lb = 5.62) # masses of the particles
 # create two-body system
-tbs = ThreeBodySystem(ms.Jψ, ms.p, ms.K, ms.Lb;   # masses m1,m2,m3,m0
+tbs = ThreeBodySystem(ms.Jψ, ms.p, ms.K; m0=ms.Lb,   # masses m1,m2,m3,m0
             two_jps=([    1, 1//2,    0,  1//2] .|> x2,  # twice spin
                      [  '-',  '+',  '-',   '+'])) # parities
 #
@@ -37,7 +37,7 @@ dpp = randomPoint(tbs) # just a random point of the Dalitz Plot
 
 let
     # generate data
-    plot(size=(1000,350), layout=grid(1,2),
+    plot(size=(900,350), layout=grid(1,2),
         xlab=L"\cos\,\theta_{12}")
     #
     σ1v,σ2v,σ3v = flatDalitzPlotSample(tbs; Nev = 10000)

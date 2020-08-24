@@ -1,7 +1,7 @@
 using ThreeBodyDecay
 
 tbs = let m1 = 0.938, m2 = 0.49367, m3 = 0.13957, m0 = 2.46867
-    ThreeBodySystem(m1,m2,m3,m0)
+    ThreeBodySystem(m1,m2,m3, m0=m0)
 end
 
 using Plots

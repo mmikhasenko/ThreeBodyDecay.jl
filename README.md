@@ -35,28 +35,28 @@ using ThreeBodyDecay # import the module
 # decay Λb ⟶ Jψ p K
 ms = (Jψ = 3.09, p=0.938, K = 0.49367, Lb = 5.62) # masses of the particles
 # create two-body system
-tbs = ThreeBodySystem(ms.Jψ, ms.p, ms.K, ms.Lb;   # masses m1,m2,m3,m0
-            two_jps=([    1, 1//2,    0,  1//2] .|> x2,  # twice spin
-                     [  '-',  '+',  '-',   '+'])) # parities
+tbs = ThreeBodySystem(ms.Jψ, ms.p, ms.K; m0=ms.Lb,   # masses m1,m2,m3,m0
+            two_js=ThreeBodySpins(2, 1, 0; two_h0=1])) # twice spin
+Concerving = ThreeBodyParities('-',  '+',  '-'; P0='+')
+Violating  = ThreeBodyParities('-',  '+',  '-'; P0='-')
 ```
 `ThreeBodySystem` creates an immutable structure that describes the setup.
-Two work with particles with non-integer spin, the doubled quantum numbers are stored,
-`x2(t)=2t` is a convenient converter.
+Two work with particles with non-integer spin, the doubled quantum numbers are stored.
 
 The following code creates six possible decay channels.
 The lineshape of the isobar is specified by the second argument,
 it is a simple Breit-Wigner function in the example below.
 ```julia
 # chains-1, i.e. (2+3): Λs with the lowest ls, LS
-Λ1520  = decay_chain(1, (s,σ)->BW(σ, 1.5195, 0.0156); two_s = 3/2|>x2, tbs=tbs)
-Λ1690  = decay_chain(1, (s,σ)->BW(σ, 1.685,  0.050 ); two_s = 1/2|>x2, tbs=tbs)
-Λ1810  = decay_chain(1, (s,σ)->BW(σ, 1.80,   0.090 ); two_s = 5/2|>x2, tbs=tbs)
+Λ1520  = decay_chain(1, (s,σ)->BW(σ, 1.5195, 0.0156); two_s = 3/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
+Λ1690  = decay_chain(1, (s,σ)->BW(σ, 1.685,  0.050 ); two_s = 1/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
+Λ1810  = decay_chain(1, (s,σ)->BW(σ, 1.80,   0.090 ); two_s = 5/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
 Λs = (Λ1520,Λ1690,Λ1810)
 #
 # chains-3, i.e. (1+2): Pentaquarks with the lowest ls, LS
-Pc4312 = decay_chain(3, (s,σ)->BW(σ, 4.312, 0.015); two_s = 1/2|>x2, tbs=tbs)
-Pc4440 = decay_chain(3, (s,σ)->BW(σ, 4.440, 0.010); two_s = 1/2|>x2, tbs=tbs)
-Pc4457 = decay_chain(3, (s,σ)->BW(σ, 4.457, 0.020); two_s = 3/2|>x2, tbs=tbs)
+Pc4312 = decay_chain(3, (s,σ)->BW(σ, 4.312, 0.015); two_s = 1/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
+Pc4440 = decay_chain(3, (s,σ)->BW(σ, 4.440, 0.010); two_s = 1/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
+Pc4457 = decay_chain(3, (s,σ)->BW(σ, 4.457, 0.020); two_s = 3/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
 Pcs = (Pc4312,Pc4440,Pc4457)
 #
 A(σs,two_λs,cs) = sum(c*amplitude(σs,two_λs,dc) for (c, dc) in zip(cs, (Λs...,Pcs...)))
@@ -72,8 +72,8 @@ I(σs,cs) = sum(abs2(A(σs,two_λs,cs)) for two_λs in itr(tbs.two_js))
 #
 I(σs) = I(σs,[1, 1.1, 0.4im, 2.2, 2.1im, -0.3im]) # set the couplings
 #
-dpp = randomPoint(tbs) # just a random point of the Dalitz Plot
-@show I(dpp.σs) # gives a real number - probability
+σs = randomPoint(tbs.ms) # just a random point of the Dalitz Plot
+@show I(σs) # gives a real number - probability
 ```
 
 # Plotting API
@@ -89,19 +89,22 @@ Kinematic limits can visualized using the `border` function.
 Plot in the σ₁σ₃ variables is obtained by
 ```julia
 plot(
-  plot(border31(tbs), xlab="sigma1", ylab="sigma3"),
-  plot(border12(tbs), xlab="sigma2", ylab="sigma1"))
+  plot(border31(tbs), xlab="σ₁ (GeV²)", ylab="σ₃ (GeV²)"),
+  plot(border12(tbs), xlab="σ₂ (GeV²)", ylab="σ₁ (GeV²)"))
 ```
 ![border31](example/plot/border31_12.png)
 
 A phase-space sample is generated using the `flatDalitzPlotSample` function.
+By weighting the sample one gets the intensity distribution.
+The intensity function can also be plotted on the Dalitz plan using a grid.
 ```julia
-# generate data
-σ1v,σ2v,σ3v = flatDalitzPlotSample(tbs; Nev = 10000)
-scatter(σ1v,σ3v, xlab="sigma1", ylab="sigma3")
-# weight with amplitude
-weights = [I(σs) for σs in zip(σ1v,σ2v,σ3v)]
-# weighted histogram
-histogram2d(σ1v,σ3v, weights=weights, xlab="sigma1", ylab="sigma3")
+using TypedTables # converint inteface of selecting columns
+#
+σsv = Table(flatDalitzPlotSample(tbs.ms; Nev = 10_000))
+weights = I.(σsv) # dot is a broadcast
+#
+plot(layout=(900,350), layout=grid(1,2), xlab="σ₁ (GeV²)", ylab="σ₃ (GeV²)")
+histogram2d!(sp=1, σsv.σ1, σsv.σ3, weights=weights, lab="weighted phase space"))
+plot!(sp=2, I, tbs.ms; iσx=1, iσy=3, lab="on a grid")
 ```
 ![Scatter and Histogram](example/plot/dalitz31.png)
