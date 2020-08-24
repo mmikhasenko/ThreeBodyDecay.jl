@@ -41,8 +41,7 @@ Concerving = ThreeBodyParities('-',  '+',  '-'; P0='+')
 Violating  = ThreeBodyParities('-',  '+',  '-'; P0='-')
 ```
 `ThreeBodySystem` creates an immutable structure that describes the setup.
-Two work with particles with non-integer spin, the doubled quantum numbers are stored,
-`x2(t)=2t` is a convenient converter.
+Two work with particles with non-integer spin, the doubled quantum numbers are stored.
 
 The following code creates six possible decay channels.
 The lineshape of the isobar is specified by the second argument,
@@ -90,21 +89,22 @@ Kinematic limits can visualized using the `border` function.
 Plot in the σ₁σ₃ variables is obtained by
 ```julia
 plot(
-  plot(border31(tbs), xlab="σ₁", ylab="σ₃"),
-  plot(border12(tbs), xlab="σ₂", ylab="σ₁"))
+  plot(border31(tbs), xlab="σ₁ (GeV²)", ylab="σ₃ (GeV²)"),
+  plot(border12(tbs), xlab="σ₂ (GeV²)", ylab="σ₁ (GeV²)"))
 ```
 ![border31](example/plot/border31_12.png)
 
 A phase-space sample is generated using the `flatDalitzPlotSample` function.
+By weighting the sample one gets the intensity distribution.
+The intensity function can also be plotted on the Dalitz plan using a grid.
 ```julia
-# generate data
-σsv = flatDalitzPlotSample(tbs; Nev = 10_000)
-scatter(getproperty.(σsv,:σ1),
-        getproperty.(σsv,:σ3), xlab="σ₁", ylab="σ₃")
-# weight with amplitude
+using TypedTables # converint inteface of selecting columns
+#
+σsv = Table(flatDalitzPlotSample(tbs.ms; Nev = 10_000))
 weights = I.(σsv) # dot is a broadcast
-# weighted histogram
-histogram2d(getproperty.(σsv,:σ1),
-            getproperty.(σsv,:σ3), weights=weights, xlab="σ₁", ylab="σ₃")
+#
+plot(layout=(900,350), layout=grid(1,2), xlab="σ₁ (GeV²)", ylab="σ₃ (GeV²)")
+histogram2d!(sp=1, σsv.σ1, σsv.σ3, weights=weights, lab="weighted phase space"))
+plot!(sp=2, I, tbs.ms; iσx=1, iσy=3, lab="on a grid")
 ```
 ![Scatter and Histogram](example/plot/dalitz31.png)

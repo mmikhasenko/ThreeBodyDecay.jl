@@ -1,8 +1,6 @@
 using ThreeBodyDecay
 using Test
 
-ThreeBodySystem(2, 1, 1.5; m0=6)
-
 @testset "LS amplitude integer spin" begin
     tbs = ThreeBodySystem(2, 1, 1.5; m0=6)
     dpp = randomPoint(tbs)
@@ -13,7 +11,6 @@ ThreeBodySystem(2, 1, 1.5; m0=6)
         Ps = ['+','+','+','+'],
         tbs=tbs)
     @test sum(reim(amplitude(dpp, dc)) .≈ 0.0) == 0
-    # testing something else?
 end
 
 

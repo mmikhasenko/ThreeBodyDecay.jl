@@ -5,6 +5,7 @@ using StaticArrays
 using Cuba
 using PartialWaveFunctions
 using Parameters
+using RecipesBase
 
 export gσ1, gσ2, gσ3,
        σkofi, σ3of1, σ1of2, σ2of3,
@@ -40,8 +41,7 @@ export randomPoint
 export nt, x2
 export possible_helicities
 export border, border31, border12, border23
-export flatDalitzPlotSample,
-       flatDalitzPlotSample31, flatDalitzPlotSample12, flatDalitzPlotSample23
+export flatDalitzPlotSample
 include("tbs_struct.jl")
 
 # density
@@ -87,13 +87,16 @@ export HelicityRecoupling,
        HelicityRecoupling_doublearg
 include("coupling_scheme.jl")
 
-#
 export Zksτ
-export QTB_mismatch_factor
 include("general_case.jl")
+
+export QTB_mismatch_factor
+include("qtb.jl")
 
 export decay_chain, decay_chains, amplitude
 export itr, summed_over_polarization
 include("decay_channel.jl")
+
+include("dalitzplotsrecipe.jl")
 
 end  # module ThreeBodyDecay
