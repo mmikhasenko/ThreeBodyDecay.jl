@@ -19,9 +19,9 @@ end
     # 
     # 
     calv = [
-        (Kibble(invs(σx,σy;iσx,iσy,ms),ms^2) > 0 ?
+        (Kibble(invs(σx,σy; iσx=iσx, iσy=iσy, ms=ms),ms^2) > 0 ?
         NaN :
-        intensity(invs(σx,σy;iσx,iσy,ms))) for σy in σyv, σx in σxv]
+        intensity(invs(σx,σy; iσx=iσx, iσy=iσy, ms=ms))) for σy in σyv, σx in σxv]
 
     seriestype := :heatmap
     colorbar := false
