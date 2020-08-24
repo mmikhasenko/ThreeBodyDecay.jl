@@ -121,9 +121,9 @@ ThreeBodyParities(P1,P2,P3;
 end
 function Invariants(ms::ThreeBodyMasses;σ1=-1.0,σ2=-1.0,σ3=-1.0)
     sign(σ1)+sign(σ2)+sign(σ3)!=1 && error("the method works with TWO invariants given: $((σ1,σ2,σ3))")
-    σ3 < 0 && return Invariants(;σ1,σ2,σ3=sum(ms^2)-σ1-σ2)
-    σ1 < 0 && return Invariants(;σ2,σ3,σ1=sum(ms^2)-σ2-σ3)
-    return Invariants(;σ3,σ1,σ2=sum(ms^2)-σ3-σ1)
+    σ3 < 0 && return Invariants(;σ1=σ1,σ2=σ2,σ3=sum(ms^2)-σ1-σ2)
+    σ1 < 0 && return Invariants(;σ2=σ2,σ3=σ3,σ1=sum(ms^2)-σ2-σ3)
+    return Invariants(;σ3=σ3,σ1=σ1,σ2=sum(ms^2)-σ3-σ1)
 end
 # 
 iterate(σs::Invariants)        = iterate(SVector(σs.σ1,σs.σ2,σs.σ3))
