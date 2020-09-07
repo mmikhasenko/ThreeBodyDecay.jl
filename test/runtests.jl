@@ -42,3 +42,7 @@ end
 end
 # examples
 @safetestset "Complete example" begin include("test_Xic_decay.jl") end
+
+@safetestset "square dalitz" begin
+    include("transformations_of_squaredalitz.jl")
+end
