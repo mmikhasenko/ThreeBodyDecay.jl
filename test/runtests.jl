@@ -1,7 +1,12 @@
 using SafeTestsets
 
 # ThreeBodyDecay structure
-@safetestset "Test of the tbs structure" begin include("test_ranges.jl") end
+@safetestset "Test of the tbs structure" begin
+    include("threebodymasses.jl")
+    include("threebodyspins.jl")
+    include("threebodyparities.jl")
+    include("invariants.jl")
+end
 
 @safetestset "four vectors" begin include("test_generation.jl") end
 

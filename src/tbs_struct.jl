@@ -8,14 +8,14 @@
 
 
 @with_kw struct ThreeBodyMasses
-    m0::Float64
     m1::Float64
     m2::Float64
     m3::Float64
-    ThreeBodyMasses(m0,m1,m2,m3) = m0<m1+m2+m3 ? error("m₀ should be bigger than m₁+m₂+m₃") : new(m0,m1,m2,m3)
+    m0::Float64
+    ThreeBodyMasses(m1,m2,m3,m0) = m0<m1+m2+m3 ? error("m₀ should be bigger than m₁+m₂+m₃") : new(m1,m2,m3,m0)
 end
 
-lims(k::Int,ms::ThreeBodyMasses) = k==1 ? lims1(ms) : (k==2) ? lims2(ms) : lims3(ms)
+lims(k::Int,ms::ThreeBodyMasses) = k==1 ? lims1(ms) : ((k==2) ? lims2(ms) : lims3(ms))
 lims1(ms::ThreeBodyMasses) = ((ms.m2+ms.m3)^2, (ms.m0-ms.m1)^2)
 lims2(ms::ThreeBodyMasses) = ((ms.m3+ms.m1)^2, (ms.m0-ms.m2)^2)
 lims3(ms::ThreeBodyMasses) = ((ms.m1+ms.m2)^2, (ms.m0-ms.m3)^2)
@@ -24,10 +24,11 @@ import Base: getindex, ^, length
 ^(ms::ThreeBodyMasses,i::Int) = SVector(ms.m1,ms.m2,ms.m3,ms.m0).^i
 # 
 function getindex(ms::ThreeBodyMasses, i::Int)
-    i==1 && return ms.m1
+    (i==0 || i==4) && return ms.m0
     i==2 && return ms.m2
     i==3 && return ms.m3
-    i==4 && return ms.m0
+    i!=1 && error("i should be equal to 0,1,2,3 or 4")
+    return ms.m1
 end
 nt(ms::ThreeBodyMasses) = NamedTuple{(:m0,m1,:m2,:m3)}([ms.m0,ms.m1,ms.m2,ms.m3])
 #
@@ -36,32 +37,81 @@ import Base: iterate
 iterate(ms::ThreeBodyMasses) = iterate(SVector(ms.m1,ms.m2,ms.m3,ms.m0))
 iterate(ms::ThreeBodyMasses, state) = iterate(SVector(ms.m1,ms.m2,ms.m3,ms.m0),state)
 # 
+ThreeBodyMasses(m1,m2,m3;
+    m0=error("used the format ThreeBodyMasses(0.15,0.5,0.94; m0=4.5)")) =
+    ThreeBodyMasses(m1=m1,m2=m2,m3=m3,m0=m0)
+# 
+# -----------------------------------------------------
+
 @with_kw struct ThreeBodySpins
     two_h1::Int
     two_h2::Int
     two_h3::Int
     two_h0::Int
+    ThreeBodySpins(two_h1,two_h2,two_h3,two_h0) = isodd(two_h1+two_h2+two_h3+two_h0) ? error("baryon number is not conserved") : new(two_h1,two_h2,two_h3,two_h0)
 end
 function getindex(two_hs::ThreeBodySpins, i::Int)
-    i==1 && return two_hs.two_h1
+    (i==0 || i==4) && return two_hs.two_h0
     i==2 && return two_hs.two_h2
     i==3 && return two_hs.two_h3
-    i==4 && return two_hs.two_h0
+    i!=1 && error("i should be equal to 0,1,2,3 or 4")
+    return two_hs.two_h1
 end
 length(σs::ThreeBodySpins) = 4
 iterate(two_hs::ThreeBodySpins)        = iterate(SVector(two_hs.two_h1,two_hs.two_h2,two_hs.two_h3,two_hs.two_h0))
 iterate(two_hs::ThreeBodySpins, state) = iterate(SVector(two_hs.two_h1,two_hs.two_h2,two_hs.two_h3,two_hs.two_h0),state)
+#
+import Base:getproperty
+function getproperty(two_js::ThreeBodySpins, sym::Symbol)
+    (sym in fieldnames(ThreeBodySpins)) && return getfield(two_js, sym)
+    (sym == :two_j1 || sym == :two_λ1) && return getfield(two_js, :two_h1)
+    (sym == :two_j2 || sym == :two_λ2) && return getfield(two_js, :two_h2)
+    (sym == :two_j3 || sym == :two_λ3) && return getfield(two_js, :two_h3)
+    (sym == :two_j0 || sym == :two_λ0) && return getfield(two_js, :two_h0)
+    error("no property $(sym)")
+end
+# 
+ThreeBodySpins(two_h1,two_h2,two_h3;
+    two_h0=error("used the format ThreeBodySpins(1,1,0; two_j0=2)")) =
+    ThreeBodySpins(two_h1=two_h1,two_h2=two_h2,two_h3=two_h3,two_h0=two_h0)
+
+# dealing with spin 1/2
+x2(v) = Int(2v)
 # 
 # 
 @with_kw struct ThreeBodySystem
     ms::ThreeBodyMasses
-    two_js::ThreeBodySpins
+    two_js::ThreeBodySpins = ThreeBodySpins(0,0,0,0)
 end
-# 
-ThreeBodySystem(m0,m1,m2,m3; two_js = [0,0,0,0]) =
-    ThreeBodySystem(ThreeBodyMasses(m0=m0,m1=m1,m2=m2,m3=m3),
-                    ThreeBodySpins(two_js...));
 #
+# convenient constructors
+ThreeBodySystem(ms::ThreeBodyMasses) = ThreeBodySystem(ms=ms)
+ThreeBodySystem(m1,m2,m3; m0, two_js=ThreeBodySpins(0,0,0,0)) = ThreeBodySystem(ThreeBodyMasses(m1,m2,m3; m0=m0), two_js)
+#
+
+# -----------------------------------------------------
+@with_kw struct ThreeBodyParities
+    P1::Char
+    P2::Char
+    P3::Char
+    P0::Char
+end
+function getindex(Ps::ThreeBodyParities, i::Int)
+    (i==0 || i==4) && return Ps.P0
+    i==2 && return Ps.P2
+    i==3 && return Ps.P3
+    i!=1 && error("i should be equal to 0,1,2,3 or 4")
+    return Ps.P1
+end
+length(σs::ThreeBodyParities) = 4
+iterate(Ps::ThreeBodyParities)        = iterate(SVector(Ps.P1,Ps.P2,Ps.P3,Ps.P0))
+iterate(Ps::ThreeBodyParities, state) = iterate(SVector(Ps.P1,Ps.P2,Ps.P3,Ps.P0),state)
+#
+ThreeBodyParities(P1,P2,P3;
+    P0=error("used the format ThreeBodyParities(1,1,0; two_j0=2)")) =
+    ThreeBodyParities(P1=P1,P2=P2,P3=P3,P0=P0)
+
+# -----------------------------------------------------
 
 # Dynamic variables
 @with_kw struct Invariants
@@ -71,19 +121,24 @@ ThreeBodySystem(m0,m1,m2,m3; two_js = [0,0,0,0]) =
 end
 function Invariants(ms::ThreeBodyMasses;σ1=-1.0,σ2=-1.0,σ3=-1.0)
     sign(σ1)+sign(σ2)+sign(σ3)!=1 && error("the method works with TWO invariants given: $((σ1,σ2,σ3))")
-    σ3 < 0 && return Invariants(;σ1,σ2,σ3=sum(ms^2)-σ1-σ2)
-    σ1 < 0 && return Invariants(;σ2,σ3,σ1=sum(ms^2)-σ2-σ3)
-    σ2 < 0 && return Invariants(;σ3,σ1,σ2=sum(ms^2)-σ3-σ1)
+    σ3 < 0 && return Invariants(;σ1=σ1,σ2=σ2,σ3=sum(ms^2)-σ1-σ2)
+    σ1 < 0 && return Invariants(;σ2=σ2,σ3=σ3,σ1=sum(ms^2)-σ2-σ3)
+    return Invariants(;σ3=σ3,σ1=σ1,σ2=sum(ms^2)-σ3-σ1)
 end
 # 
+iterate(σs::Invariants)        = iterate(SVector(σs.σ1,σs.σ2,σs.σ3))
+iterate(σs::Invariants, state) = iterate(SVector(σs.σ1,σs.σ2,σs.σ3),state)
 length(σs::Invariants) = 3
 function getindex(σs::Invariants, i::Int)
     i==1 && return σs.σ1
     i==2 && return σs.σ2
-    i==3 && return σs.σ3
+    i!=3 && error("i should be equal to 1,2, or 3")
+    return σs.σ3
 end
 nt(σs::Invariants) = NamedTuple{(:σ1,:σ2,:σ3)}([σs.σ1,σs.σ2,σs.σ3])
- 
+
+# -----------------------------------------------------
+
 @with_kw struct DalitzPlotPoint
     σs::Invariants
     two_λs::SVector{4,Int}
@@ -99,20 +154,6 @@ function randomPoint(tbs::ThreeBodySystem)
     DalitzPlotPoint(σs=randomPoint(tbs.ms),
         two_λs=[rand(-j:2:j) for j in tbs.two_js])
 end
-
-function possible_helicities(two_js::ThreeBodySpins)
-    @unpack two_h0, two_h1, two_h2, two_h3 = two_js
-    [ThreeBodySpins(two_λs...) for two_λs =
-        Iterators.product(
-            -two_h0:2:two_h0,
-            -two_h1:2:two_h1,
-            -two_h2:2:two_h2,
-            -two_h3:2:two_h3)]
-end
-
-# dealing with spin 1/2
-x2(v) = Int(2v)
-
 
 #                                                                _|
 #    _|_|_|    _|_|    _|_|_|      _|_|    _|  _|_|    _|_|_|  _|_|_|_|    _|_|

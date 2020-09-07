@@ -5,7 +5,7 @@ using Test
 @testset "Wigner angle permutations" begin
 
     mp = 0.938; mK = 0.49367; mpi  = 0.13957; mXic = 2.46867
-    tbs = ThreeBodySystem(mXic,mp,mK,mpi)
+    tbs = ThreeBodySystem(mp,mK,mpi; m0=mXic)
     σs = randomPoint(tbs.ms)
 
     @unpack m1,m2,m3,m0 = tbs.ms

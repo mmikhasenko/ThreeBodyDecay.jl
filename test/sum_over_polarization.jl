@@ -10,8 +10,8 @@ using ThreeBodyDecay
 
     mΛb2S = 6.3; # just a peak of the plot
 
-    tbs = ThreeBodySystem(mΛb2S,mπ,mΛb,mπ;
-        two_js = [0, 1, 0, 1])  # 1/2+ 0- 0- 1/2+
+    tbs = ThreeBodySystem(mπ,mΛb,mπ; m0=mΛb2S,
+        two_js = ThreeBodySpins(0, 1, 0; two_h0=1))  # 1/2+ 0- 0- 1/2+
     dpp = randomPoint(tbs)
     σs = dpp.σs
 
