@@ -7,3 +7,4 @@ Zygote_diff.jl
 numbers.jl
 test_Xic_decay_dynamics.jl
 correlated_random.jl
+vs.code-workspace

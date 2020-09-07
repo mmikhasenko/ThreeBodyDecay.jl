@@ -8,7 +8,7 @@ const mΣb_x = 5.83032; const ΓΣb_x = 0.0094
 
 const mΛb2S = 6.3; # just a peak of the plot
 
-tbs = ThreeBodySystem(mπ,mΛb,mπ,mΛb2S;
+tbs = ThreeBodySystem(mπ,mΛb,mπ; m0=mΛb2S,
     two_jps = ([0, 1, 0, 1], ['-','+','-','+']))  # 1/2+ 0- 0- 1/2+
 dpp = randomPoint(tbs)
 

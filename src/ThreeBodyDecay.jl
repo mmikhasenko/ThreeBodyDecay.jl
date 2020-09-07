@@ -4,6 +4,8 @@ using QuadGK
 using StaticArrays
 using Cuba
 using PartialWaveFunctions
+using Parameters
+using RecipesBase
 
 export gσ1, gσ2, gσ3,
        σkofi, σ3of1, σ1of2, σ2of3,
@@ -14,8 +16,9 @@ export gσ1, gσ2, gσ3,
        cos_plus_θhat31,
        cos_mins_θhat21,
        λ,
-       Kibble, Kibble23, Kibble12, Kibble31,
-       inphrange
+       Kibble,
+       inphrange,
+       lims,lims1,lims2,lims3
 export cosζ13_for1,
        cosζ21_for1
 export cosζ23_for1, cosζ31_for2, cosζ12_for3
@@ -32,16 +35,15 @@ export jacobian_squaredalitz,
     jacobian_squaredalitz1, jacobian_squaredalitz2, jacobian_squaredalitz3
 include("angle_functions.jl")
 
-
-export ThreeBodySystem, DalitzPlotPoint,
-       DalitzPlotPoint12, DalitzPlotPoint23, DalitzPlotPoint31,
-       randomPoint
-export two_J, two_Λ
+export ThreeBodyMasses, ThreeBodySpins, ThreeBodyParities
+export ThreeBodySystem
+export DalitzPlotPoint
+export Invariants
+export randomPoint
+export nt, x2
 export possible_helicities
-export x2
 export border, border31, border12, border23
-export flatDalitzPlotSample,
-       flatDalitzPlotSample31, flatDalitzPlotSample12, flatDalitzPlotSample23
+export flatDalitzPlotSample
 include("tbs_struct.jl")
 
 # density
@@ -49,7 +51,6 @@ export getbinned1dDensity,
        getbinned2dDensity
 export gridded_density_function
 include("rand_corr.jl")
-
 
 export rotz!, roty!, roty_cos!, roty_cos_inv!, boostz!
 export invmasssq
@@ -69,7 +70,6 @@ include("lineshape.jl")
 export change_basis_3from1,
         change_basis_1from2,
         change_basis_2from3
-
 include("cross_channel_relations.jl")
 
 #
@@ -89,19 +89,16 @@ export HelicityRecoupling,
        HelicityRecoupling_doublearg
 include("coupling_scheme.jl")
 
-#
 export Zksτ
-export decay_chain, amplitude
-export itr, summed_over_polarization
-export QTB_mismatch_factor
 include("general_case.jl")
 
-#
-export amp_b2bzz,
-    rate_b2bzz, rateCC_b2bzz, rateΛΛ_b2bzz,
-    polSens_b2bzz
-export get_couplings,
-    set_couplings
-include("half_to_half_zero_zero.jl")
+export QTB_mismatch_factor
+include("qtb.jl")
+
+export decay_chain, decay_chains, amplitude
+export itr, summed_over_polarization
+include("decay_channel.jl")
+
+include("dalitzplotsrecipe.jl")
 
 end  # module ThreeBodyDecay

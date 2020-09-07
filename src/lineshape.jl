@@ -94,16 +94,14 @@ end
 RhoQTB(s,m1,m2,Γ1,m1th) = RhoQTB(s,(s,σ)->BW(σ,m1,Γ1),[m2,m1th/2,m1th/2].^2)
 iRhoQTB(s,m1,m2,Γ1,m1th) = 1im*RhoQTB(s,m1,m2,Γ1,m1th)
 
-function three_body_phase_space_integral(function_σs, tbs)
-    msq = tbs.msq
-    m1sq,m2sq,m3sq,s = msq
+function three_body_phase_space_integral(function_σs, ms)
+    m1sq,m2sq,m3sq,s = ms^2
     #
-    σ1min,σ1max = tbs.mthsq[1],tbs.sthsq[1]
+    σ1min,σ1max = lims1(ms)
     function integrand(x,f)
         σ1 = σ1min + x[1]*(σ1max-σ1min)
         z = 2*x[2]-1
-        σ3 = σ3of1(z,σ1,msq); σ2 = gσ2(σ3,σ1,msq)
-        σs = [σ1, σ2, σ3]
+        σs = Invariants(ms;σ1=σ1,σ3=σ3of1(z,σ1,ms^2))
         #
         r = function_σs(σs) *
             sqrt(λ(s,σ1, m1sq)*λ(σ1,m2sq,m3sq))/σ1 *

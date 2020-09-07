@@ -2,12 +2,11 @@ using ThreeBodyDecay
 using Test
 # using Plots
 
-mJψ = 3.0969;  mππ = 0.3;
-mD0 = 1.86483; mDstar0 = 2.00685
-
-cs = (c11 = -0.03, c12 = 0.07, c22=0.0)
-
 @testset "Scattering Length Approximation" begin
+    mJψ = 3.0969;  mππ = 0.3;
+    mD0 = 1.86483; mDstar0 = 2.00685
+
+    cs = (c11 = -0.03, c12 = 0.07, c22=0.0)
     #
     ScA = ScattLenApproximation(
         Ms=(cs.c11,cs.c12,cs.c22),
