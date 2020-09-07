@@ -47,7 +47,6 @@ function decay_chain(k, Xlineshape;
     # 
     (two_LS,two_ls) = first(
             possibleLSls(k; two_s=two_s, Ps=Ps, two_js=tbs.two_js, parity=parity))
-    @show (two_ls,two_LS)
     return decay_chain(; k=k, Xlineshape=Xlineshape,
         two_s=two_s, two_ls=Tuple(two_ls), two_LS=Tuple(two_LS),
         tbs=tbs)
