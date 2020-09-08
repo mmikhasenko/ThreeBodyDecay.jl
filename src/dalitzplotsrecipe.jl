@@ -24,8 +24,7 @@ end
         intensity(invs(σx,σy; iσx=iσx, iσy=iσy, ms=ms))) for σy in σyv, σx in σxv]
 
     seriestype := :heatmap
-    colorbar := false
-    seriescolor := cgrad(:viridis, scale=:exp)
+    colorbar --> false
     #
     σxv, σyv, calv
 end
