@@ -12,6 +12,14 @@ Kibble(σs,msq) = λ(λ(msq[4],msq[1],σs[1]),
 #
 ij_from_k(k) = (k==1 ? (2,3) : (k==2 ? (3,1) : (1,2)))
 #
+# TODO: added proper tests
+"""
+    function σkofi(k,z,σi,msq)
+
+Computes invariant σk = (pi + pj)² from
+ the scattering angle z=cosθjk in the rest from of (jk),
+ given the mass of the system m(jk)² = σi
+"""
 function σkofi(k,z,σi,msq)
     (i,j) = ij_from_k(k)
     #
@@ -119,19 +127,3 @@ function phase(i,j,two_λ1,two_λ2)
     ((i,j)==(1,2) || (i,j)==(2,3) || (i,j)==(3,1)) && return 1.0
     return phase(two_λ1,two_λ2)
 end
-
-"""
-    Calculate normalized values in square coordinates
-"""
-function squaredalitz(k,σs,tbs)
-    cθ = cosθij(k,σs,tbs.msq)
-    cθ = cθ ≥ 1.0 ? 1.0 : (cθ ≤ -1.0 ? -1.0 : cθ)
-    y = acos(cθ) / π
-    xn = 2*(sqrt(σs[k]) - tbs.mth[k]) / (tbs.sth[k]-tbs.mth[k])-1
-    x = acos(xn) / π
-    return (x=x, y=y)
-end
-
-squaredalitz1(σs,tbs) = squaredalitz(1,σs,tbs)
-squaredalitz2(σs,tbs) = squaredalitz(2,σs,tbs)
-squaredalitz3(σs,tbs) = squaredalitz(3,σs,tbs)

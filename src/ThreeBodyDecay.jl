@@ -29,8 +29,6 @@ export cosζk1_for1,
        cosθij
 export phase
 export ij_from_k
-export squaredalitz,
-       squaredalitz1, squaredalitz2, squaredalitz3
 include("angle_functions.jl")
 
 export ThreeBodyMasses, ThreeBodySpins, ThreeBodyParities
@@ -98,5 +96,19 @@ export itr, summed_over_polarization
 include("decay_channel.jl")
 
 include("dalitzplotsrecipe.jl")
+
+export squaredalitz,
+       squaredalitz1,
+       squaredalitz2,
+       squaredalitz3
+export invsquaredalitz,
+       invsquaredalitz1,
+       invsquaredalitz2,
+       invsquaredalitz3
+export jacobean_squaredalitz,
+       jacobean_squaredalitz1,
+       jacobean_squaredalitz2,
+       jacobean_squaredalitz3
+include("squaredalitz.jl")
 
 end  # module ThreeBodyDecay
