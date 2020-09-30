@@ -1,21 +1,53 @@
 
-struct jls
-    two_j::Int
-    two_l::Int
-    two_s::Int
+
+
+vtype{T} = Union{Rational{T}, T}
+struct jp{T}
+    j::vtype{T}
+    p::Char
 end
 
-struct twochain
-    to_isobar::jls
-    from_isobar::jls
+jp(v::Tuple{vtype{T} where T, Char}) = jp(v[1],v[2])
+
+import Base: length
+length(jp1::jp) = 0
+
+⊗(p1::Char,p2::Char) = p1==p2 ? '+' : '-'
+⊗(jp1::jp, jp2::jp) = [jp(j, ⊗(jp1.p, jp2.p)) for j in abs(jp1.j-jp2.j):abs(jp1.j+jp2.j)]
+
+macro jp_str(p)
+    !(contains(p, '/')) && return jp(Meta.parse(p[1:end-1]), p[end])
+    p[end-2:end-1] != "/2" && error("the string should be `x/2±`")
+    return jp(Meta.parse(p[1:end-3])//2, p[end])
 end
 
-two_J(ch::twochain) = ch.to_isobar.two_j
-two_L(ch::twochain) = ch.to_isobar.two_l
-two_S(ch::twochain) = ch.to_isobar.two_s
-two_j(ch::twochain) = ch.from_isobar.two_j
-two_l(ch::twochain) = ch.from_isobar.two_l
-two_s(ch::twochain) = ch.from_isobar.two_s
+function possible_ls(jp1::jp, jp2::jp; jp::jp)
+    ls = Vector{Tuple{Int,vtype{T}} where T}(undef,0)
+    for s in abs(jp1.j-jp2.j):abs(jp1.j+jp2.j)
+        for l in Int(abs(jp.j-s)):Int(abs(jp.j+s))
+            if jp1.p ⊗ jp2.p ⊗ jp.p  == (isodd(l) ? '-' : '+')
+                push!(ls, (l,s))
+            end
+        end
+    end
+    return ls
+end
+
+function possible_lsLS(k::Int, jpR::jp, jps::T where T<:Vector{jp})
+    i,j = ij_from_k(k)
+    lsv = possible_ls(jps[i], jps[j]; jp = jpR)
+    LSv = possible_ls(jpR, jps[k]; jp = jps[4])
+    return [(ls=ls, LS=LS) for (ls, LS) in Iterators.product(lsv, LSv)]
+end
+function possible_lsLS(k::Int, two_s::Int, parity::Char,
+        two_js::ThreeBodySpins, Ps::ThreeBodyParities)
+    i,j = ij_from_k(k)
+    jpR = jp(two_s//2, parity)
+    jps = jp.(zip(two_js .// 2, Ps))
+    return possible_lsLS(k, jpR, jps)
+end
+
+
 
 function possibleLS(two_jp1,two_jp2,two_jp) # expects tuples
     two_ls = Vector{Tuple{Int,Int}}(undef,0)
@@ -31,57 +63,43 @@ function possibleLS(two_jp1,two_jp2,two_jp) # expects tuples
     return two_ls
 end
 
-function coupling_schemek(k,two_jp,two_jps)
-    (i,j) = ij_from_k(k)
-    #
-    # length(pls) != 1 && error("length(pls) = $(length(pls)) != 1 for the second decay: $(two_jp...)=>$(two_jps[2]...),$(two_jps[3]...). Check quantum numbers!");
-    return [twochain(
-                jls(two_jps[4][1],two_LS...),  # JLS
-                jls(two_jp[1],two_ls...))  # jls
-                    for two_LS in possibleLS(two_jp,two_jps[k],two_jps[4])
-                    for two_ls in possibleLS(two_jps[i],two_jps[j],two_jp)]
-end
-coupling_scheme23(two_jp,two_jps) = coupling_schemek(1,two_jp,two_jps)
-coupling_scheme12(two_jp,two_jps) = coupling_schemek(3,two_jp,two_jps)
-coupling_scheme31(two_jp,two_jps) = coupling_schemek(2,two_jp,two_jps)
-
 jls_coupling(two_j1, two_λ1, two_j2, two_λ2, two_j, two_l, two_s) =
     CG_doublearg(two_j1, two_λ1, two_j2, -two_λ2, two_s, two_λ1-two_λ2) *
         CG_doublearg(two_l, 0, two_s, two_λ1-two_λ2, two_j, two_λ1-two_λ2)
 
-function clebsch_for_chaink(k, two_s_int, two_τ, chain, two_λs, two_js)
-    (i,j) = ij_from_k(k)
-    #
-    v = 1.0;
-    two_λi_λj = two_λs[i]-two_λs[j]
-    v *= CG_doublearg(two_js[i],two_λs[i],two_js[j],-two_λs[j],two_s(chain),two_λi_λj) *
-         CG_doublearg(two_l(chain),0,two_s(chain),two_λi_λj,two_s_int,two_λi_λj)
-    #
-    two_τ_λk = two_τ - two_λs[k]
-    v *= CG_doublearg(two_s_int,two_τ,two_js[k],-two_λs[k],two_S(chain),two_τ_λk) *
-         CG_doublearg(two_L(chain),0,two_S(chain),two_τ_λk,two_J(chain),two_τ_λk)
-    return v
-end
+# function clebsch_for_chaink(k, two_s_int, two_τ, chain, two_λs, two_js)
+#     (i,j) = ij_from_k(k)
+#     #
+#     v = 1.0;
+#     two_λi_λj = two_λs[i]-two_λs[j]
+#     v *= CG_doublearg(two_js[i],two_λs[i],two_js[j],-two_λs[j],two_s(chain),two_λi_λj) *
+#          CG_doublearg(two_l(chain),0,two_s(chain),two_λi_λj,two_s_int,two_λi_λj)
+#     #
+#     two_τ_λk = two_τ - two_λs[k]
+#     v *= CG_doublearg(two_s_int,two_τ,two_js[k],-two_λs[k],two_S(chain),two_τ_λk) *
+#          CG_doublearg(two_L(chain),0,two_S(chain),two_τ_λk,two_J(chain),two_τ_λk)
+#     return v
+# end
 
-#(j1λ1j2λ2,JLS)
-function HelicityRecoupling_doublearg(HLSpairs)
-    v = 1.0;
-    for p in HLSpairs
-        (two_j1,two_λ1,two_j2,two_λ2) = p[1]
-        (two_J,two_L,two_S) = p[2]
-        two_λ1_λ2 = two_λ1-two_λ2
-        v *= CG_doublearg(two_j1,two_λ1,two_j2,-two_λ2,two_S,two_λ1_λ2) *
-             CG_doublearg(two_L,0,two_S,two_λ1_λ2,two_J,two_λ1_λ2)
-    end
-    return  v;
-end
-function HelicityRecoupling(HLSpairs)
-    v = 1.0;
-    for p in HLSpairs
-        (j1,λ1,j2,λ2) = p[1]
-        (J,L,S) = p[2]
-        v *= CG_doublearg(2*j1,2*λ1,2*j2,-2*λ2,2*S,2*(λ1-λ2)) *
-             CG_doublearg(2*L,0,2*S,2*(λ1-λ2),2*J,2*(λ1-λ2))
-    end
-    return  v;
-end
+# #(j1λ1j2λ2,JLS)
+# function HelicityRecoupling_doublearg(HLSpairs)
+#     v = 1.0;
+#     for p in HLSpairs
+#         (two_j1,two_λ1,two_j2,two_λ2) = p[1]
+#         (two_J,two_L,two_S) = p[2]
+#         two_λ1_λ2 = two_λ1-two_λ2
+#         v *= CG_doublearg(two_j1,two_λ1,two_j2,-two_λ2,two_S,two_λ1_λ2) *
+#              CG_doublearg(two_L,0,two_S,two_λ1_λ2,two_J,two_λ1_λ2)
+#     end
+#     return  v;
+# end
+# function HelicityRecoupling(HLSpairs)
+#     v = 1.0;
+#     for p in HLSpairs
+#         (j1,λ1,j2,λ2) = p[1]
+#         (J,L,S) = p[2]
+#         v *= CG_doublearg(2*j1,2*λ1,2*j2,-2*λ2,2*S,2*(λ1-λ2)) *
+#              CG_doublearg(2*L,0,2*S,2*(λ1-λ2),2*J,2*(λ1-λ2))
+#     end
+#     return  v;
+# end

@@ -75,6 +75,11 @@ ThreeBodySpins(two_h1,two_h2,two_h3;
     two_h0=error("used the format ThreeBodySpins(1,1,0; two_j0=2)")) =
     ThreeBodySpins(two_h1=two_h1,two_h2=two_h2,two_h3=two_h3,two_h0=two_h0)
 
+two_j0(tbs::ThreeBodySystem) = tbs.two_js[4]
+two_j1(tbs::ThreeBodySystem) = tbs.two_js[1]
+two_j2(tbs::ThreeBodySystem) = tbs.two_js[2]
+two_j3(tbs::ThreeBodySystem) = tbs.two_js[3]
+
 # dealing with spin 1/2
 x2(v) = Int(2v)
 # 
