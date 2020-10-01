@@ -1,8 +1,6 @@
 using Test
 using ThreeBodyDecay
 
-
-
 @testset "jp_str macro" begin
     @test jp"1/2+" == jp(1//2, '+')
     @test jp"3/2-" == jp(3//2, '-')
@@ -16,25 +14,22 @@ end
     Dwave = [sw ⊗ jp(2,'+') for sw in Swave]
     # 
     @test length(Swave) == 2 
-    @test length(vcat(Pwave)) == 4
-    @test length(Set(vcat(Pwave))) == 3
+    @test length(vcat(Pwave...)) == 5
+    @test length(Set(vcat(Pwave...))) == 3
 end
 
-
-@testset "possible ls: binory" begin
-
-@test length(possible_ls(jp"3/2-", jp"3-"; jp=jp"1/2+")) == 4
-
-
-lsLSv = possible_lsLS(1, jp"1//2+",
-    [jp"1+", jp"1/2+", jp"0-", jp"1-"])
-@test size(lsLSv) == (1,2)
-#
-lsLSv = possible_coupling_schemes(1, 1, '+',
-    ThreeBodySpins(2,1,0; two_h0=1),
-    ThreeBodyParities('+', '+', '-'; P0='-'))
-@test size(lsLSv) == (1,2)
-
+let
+    @test length(possible_ls(jp"3/2-", jp"3-"; jp=jp"1/2+")) == 4
+    # 
+    lsLSv = possible_lsLS(1, jp"1/2+",
+        [jp"1+", jp"1/2+", jp"0-", jp"1/2-"])
+    @test size(lsLSv) == (1,2)
+    #
+    lsLSv = possible_lsLS(1, 1, '+',
+        ThreeBodySpins(2,1,0; two_h0=1),
+        ThreeBodyParities('+', '+', '-'; P0='-'))
+    @test size(lsLSv) == (1,2)
+end
 
 
 # @testset "Coupling schemes" begin
