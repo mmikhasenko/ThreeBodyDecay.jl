@@ -31,7 +31,6 @@ let
     @test size(lsLSv) == (1,2)
 end
 
-
 # @testset "Coupling schemes" begin
 #     # final state particles
 #     two_jps = [(1,'+'), (0,'-'), (0,'-')];
