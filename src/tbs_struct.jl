@@ -190,8 +190,8 @@ end
 #
 inrange(x,r) = r[1]<x<r[2]
 inphrange(σs::Invariants, ms::ThreeBodyMasses) = Kibble(σs,ms^2) < 0 &&
-    inrange(σ1,lims1(ms)) && inrange(σ2,lims2(ms)) && inrange(σ3,lims3(ms))
-# 
+    inrange(σs[1],lims1(ms)) && inrange(σs[2],lims2(ms)) && inrange(σs[3],lims3(ms))
+#
 # 
 change_basis_3from1(τ1, ms::ThreeBodyMasses) = change_basis_3from1(τ1..., ms.m1^2, ms.m2^2, ms.m3^2, ms.m0^2) 
 change_basis_1from2(τ2, ms::ThreeBodyMasses) = change_basis_3from1(τ2..., ms.m2^2, ms.m3^2, ms.m1^2, ms.m0^2) 
