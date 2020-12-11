@@ -31,6 +31,16 @@ let
     @test size(lsLSv) == (1,2)
 end
 
+@testset "x2 over2" begin
+    @test x2(1//2) == 1
+    @test x2(3) == 6
+    @test x2((2,3//2)) == (4,3)
+    # 
+    @test over2(3) == 3//2
+    @test over2(2) == 1
+    @test over2((2,3)) == (1,3//2)
+end
+
 # @testset "Coupling schemes" begin
 #     # final state particles
 #     two_jps = [(1,'+'), (0,'-'), (0,'-')];

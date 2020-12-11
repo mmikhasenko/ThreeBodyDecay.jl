@@ -36,7 +36,7 @@ export ThreeBodySystem
 export DalitzPlotPoint
 export Invariants
 export randomPoint
-export nt, x2
+export nt, x2, over2
 export possible_helicities
 export border, border31, border12, border23
 export flatDalitzPlotSample

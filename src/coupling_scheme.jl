@@ -9,6 +9,13 @@ jp(v::Tuple{vtype, Char}) = jp(v[1],v[2])
 
 import Base: length
 length(jp1::jp) = 0
+two_j(jp::jp) = Int(2jp.j)
+# 
+# dealing with spin 1/2
+x2(v) = @. Int(2v)
+# 
+_over2(two) = mod(two,2)==0 ? div(two,2) : two // 2
+over2(two) = _over2.(two)
 
 ⊗(p1::Char,p2::Char) = p1==p2 ? '+' : '-'
 ⊗(jp1::jp, jp2::jp) = [jp(j, ⊗(jp1.p, jp2.p)) for j in abs(jp1.j-jp2.j):abs(jp1.j+jp2.j)]
