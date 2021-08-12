@@ -7,29 +7,40 @@ using PartialWaveFunctions
 using Parameters
 using RecipesBase
 
-export gσ1, gσ2, gσ3,
-       σkofi, σ3of1, σ1of2, σ2of3,
-       cosθ12, cosθ23, cosθ31,
-       cosθhat12,
-       cosθhat23,
-       cosθhat31,
-       cos_plus_θhat31,
-       cos_mins_θhat21,
-       λ,
-       Kibble,
+export λ, Kibble,
        inphrange,
        lims,lims1,lims2,lims3
-export cosζ13_for1,
-       cosζ21_for1
-export cosζ23_for1, cosζ31_for2, cosζ12_for3
-export cosζk1_for1,
-       cosζk2_for2,
-       cosζk3_for3,
-       cosθhatk1,
-       cosθij
 export phase
-export ij_from_k
-include("angle_functions.jl")
+export ijk
+# 
+export cosθij
+export cosθ12, cosθ23, cosθ31
+# 
+export σkofi, σkofj
+export σ1of2, σ2of3, σ3of1,
+       σ1of3, σ2of1, σ3of2       
+include("kinematics.jl")
+
+export ispositive
+export TrivialWR, ZetaAllWR, ZetaRepWR, HatWR
+export wr
+export cosζ
+include("wignerrotations.jl")
+
+
+export cosθhatk1,cosθhatk2,cosθhatk3
+export cosζik_fork, cosζkj_fork
+# 
+export cosθhat12, cosθhat23, cosθhat31
+# 
+export cosζk1_for1, cosζk2_for2, cosζk3_for3
+export cosζ21_for1,cosζ21_for2
+export cosζ13_for1,cosζ13_for3
+export cosζ32_for3,cosζ32_for2
+# 
+export cosζ12_for3,cosζ23_for1,cosζ31_for2
+include("depricate/angle_functions.jl")
+
 
 export ThreeBodyMasses, ThreeBodySpins, ThreeBodyParities
 export ThreeBodySystem

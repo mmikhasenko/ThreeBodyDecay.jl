@@ -9,6 +9,10 @@ using ThreeBodyDecay
     include("invariants.jl")
 end
 
+
+include("wignerrotationdispatch.jl")
+
+
 @safetestset "four vectors" begin include("test_generation.jl") end
 
 # angular functions
