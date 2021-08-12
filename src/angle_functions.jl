@@ -66,8 +66,8 @@ function cosθhatk1(k,σs,msq)
     rest = σs[j]-msq[i]-msq[k]
     return (EE4s-2s*rest)/pp4s
 end
-cosθhatk2(k,σs,msq) = cosθhatk1(mod(k-2,3)+1, SVector(σs[2],σs[3],σs[1]), SVector(msq[2],msq[3],msq[1],msq[4]))
-cosθhatk3(k,σs,msq) = cosθhatk1(mod(k,3)+1,   SVector(σs[3],σs[1],σs[2]), SVector(msq[3],msq[1],msq[2],msq[4]))
+cosθhatk2(k,σs,msq) = cosθhatk1(mod(k-2,3)+1, (σs[2],σs[3],σs[1]), (msq[2],msq[3],msq[1],msq[4]))
+cosθhatk3(k,σs,msq) = cosθhatk1(mod(k,3)+1,   (σs[3],σs[1],σs[2]), (msq[3],msq[1],msq[2],msq[4]))
 #
 cosθhat31(σs,msq) = cosθhatk1(3,σs,msq)
 cosθhat12(σs,msq) = cosθhatk1(2,σs,msq)
@@ -88,8 +88,8 @@ function cosζk1_for1(k,σs,msq)
     rest = σs[j]-s-msq[j]
     return (2msq[i]*rest+EE4m1sq)/pp4m1sq
 end
-cosζk2_for2(k,σs,msq) = cosζk1_for1(mod(k-2,3)+1, SVector(σs[2],σs[3],σs[1]), SVector(msq[2],msq[3],msq[1],msq[4]))
-cosζk3_for3(k,σs,msq) = cosζk1_for1(mod(k,3)+1,   SVector(σs[3],σs[1],σs[2]), SVector(msq[3],msq[1],msq[2],msq[4]))
+cosζk2_for2(k,σs,msq) = cosζk1_for1(mod(k-2,3)+1, (σs[2],σs[3],σs[1]), (msq[2],msq[3],msq[1],msq[4]))
+cosζk3_for3(k,σs,msq) = cosζk1_for1(mod(k,3)+1,   (σs[3],σs[1],σs[2]), (msq[3],msq[1],msq[2],msq[4]))
 # particular
 cosζ13_for1(σs,msq) = cosζk1_for1(3,σs,msq)
 cosζ21_for1(σs,msq) = cosζk1_for1(2,σs,msq)
@@ -109,8 +109,8 @@ function cosζ23_for1(σs,msq)
     rest = msq[2]+msq[3]-σs[1]
     return (2msq[1]*rest+EE4m1sq)/pp4m1sq
 end
-cosζ31_for2(σs,msq) = cosζ23_for1(SVector(σs[2],σs[3],σs[1]), SVector(msq[2],msq[3],msq[1],msq[4]))
-cosζ12_for3(σs,msq) = cosζ23_for1(SVector(σs[3],σs[1],σs[2]), SVector(msq[3],msq[1],msq[2],msq[4]))
+cosζ31_for2(σs,msq) = cosζ23_for1((σs[2],σs[3],σs[1]), (msq[2],msq[3],msq[1],msq[4]))
+cosζ12_for3(σs,msq) = cosζ23_for1((σs[3],σs[1],σs[2]), (msq[3],msq[1],msq[2],msq[4]))
 
 """
     Phase for wigner d-functions for clockwise rotations
