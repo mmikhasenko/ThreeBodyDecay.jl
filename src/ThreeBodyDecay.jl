@@ -36,7 +36,7 @@ export ThreeBodySystem
 export DalitzPlotPoint
 export Invariants
 export randomPoint
-export nt, x2
+export nt, x2, over2
 export possible_helicities
 export border, border31, border12, border23
 export flatDalitzPlotSample
@@ -79,10 +79,12 @@ export clebsch_for_chaink, jls_coupling
 export two_J,two_L,two_S,
        two_j,two_l,two_s
 
-export possibleLS
-
 export HelicityRecoupling,
        HelicityRecoupling_doublearg
+export jp, @jp_str
+export ⊗
+export possible_ls, possible_lsLS
+export possible_coupling_schemes
 include("coupling_scheme.jl")
 
 export Zksτ

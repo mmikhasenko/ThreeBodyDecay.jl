@@ -14,8 +14,8 @@
     #
     two_s::Int # isobar spin
     #
-    two_ls::Tuple # isobar decay ξ->ij
-    two_LS::Tuple # 0->ξ k decay
+    two_ls::Tuple{Int,Int} # isobar decay ξ->ij
+    two_LS::Tuple{Int,Int} # 0->ξ k decay
     #
     tbs::ThreeBodySystem # the structure with masses and spins
     #
@@ -45,10 +45,10 @@ function decay_chain(k, Xlineshape;
     parity::Char='+',
     Ps=SVector('+','+','+','+'))
     # 
-    (two_LS,two_ls) = first(
-            possibleLSls(k; two_s=two_s, Ps=Ps, two_js=tbs.two_js, parity=parity))
+    (LS,ls) = first(
+        possible_lsLS(k, two_s, parity, tbs.two_js, Ps))
     return decay_chain(; k=k, Xlineshape=Xlineshape,
-        two_s=two_s, two_ls=Tuple(two_ls), two_LS=Tuple(two_LS),
+        two_s=two_s, two_ls=Int.(2 .* LS), two_LS=Int.(2 .* ls),
         tbs=tbs)
 end
 
@@ -67,29 +67,11 @@ function decay_chains(k, Xlineshape;
     Ps=error("need parities: Ps=[P1,2,3,0]"),
     tbs=error("give three-body-system structure, tbs=..."))
     # 
-    LSlsv = possibleLSls(k; two_s=two_s, Ps=Ps, two_js=tbs.two_js, parity=parity)
+    LSlsv = possible_lsLS(k, two_s, parity, tbs.two_js, Ps)
     return [decay_chain(;k=k, Xlineshape=Xlineshape,
         two_s=two_s, two_ls=Tuple(two_ls), two_LS=Tuple(two_LS),
         tbs=tbs) for (two_LS,two_ls) in LSlsv]
 end
-
-function possibleLSls(k;
-    two_js=error("need spin values: [two_j1,2,3,0]"),
-    two_s=error("give two_s, i.e. the spin of the isobar"),
-    parity::Char=error("give the parity, parity=..."),
-    Ps=error("need parities: [P1,2,3,0]"))
-    # 
-    k = k; i,j = ij_from_k(k);
-    #
-    possible_ls = possibleLS((two_js[i],Ps[i]), (two_js[j],Ps[j]), (two_s,parity))
-    possible_LS = possibleLS((two_s,parity), (two_js[k],Ps[k]), (two_js[4],Ps[4]))
-    #
-    return collect(Iterators.product(
-        NamedTuple{(:two_L,:two_S)}.(possible_LS),
-        NamedTuple{(:two_l,:two_s)}.(possible_ls)))    
-end
-
-[(two_ls=Tuple(two_ls), two_LS=Tuple(two_LS)) for (two_LS,two_ls) in collect(Iterators.product(-4:0, 0:4))]
 
 function amplitude(σs, two_λs, dc)
     k = dc.k; i,j = ij_from_k(k);

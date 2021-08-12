@@ -34,4 +34,10 @@ end
     @test lims1(ms) == lims(1, ms)
     @test lims2(ms) == lims(2, ms)
     @test lims3(ms) == lims(3, ms)
+    # 
+    σs = randomPoint(ms)
+    @test ThreeBodyDecay.inrange(σs[1], lims1(ms))
+    @test ThreeBodyDecay.inrange(σs[2], lims2(ms))
+    @test ThreeBodyDecay.inrange(σs[3], lims3(ms))
+    @test inphrange(σs, ms)
 end

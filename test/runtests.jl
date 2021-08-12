@@ -1,4 +1,5 @@
 using SafeTestsets
+using ThreeBodyDecay
 
 # ThreeBodyDecay structure
 @safetestset "Test of the tbs structure" begin

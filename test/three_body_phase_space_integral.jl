@@ -20,7 +20,6 @@ end
   v_qtv *= QTB_mismatch_factor(ch) # helicity couplings
   # @show v_qtv
   v_fll = real(three_body_phase_space_integral(sp, tbs.ms))
-  @show v_fll
   #
   @test abs(v_qtv-v_fll)/v_fll < 1e-5
 end

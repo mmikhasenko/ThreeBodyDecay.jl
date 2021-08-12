@@ -75,8 +75,6 @@ ThreeBodySpins(two_h1,two_h2,two_h3;
     two_h0=error("used the format ThreeBodySpins(1,1,0; two_j0=2)")) =
     ThreeBodySpins(two_h1=two_h1,two_h2=two_h2,two_h3=two_h3,two_h0=two_h0)
 
-# dealing with spin 1/2
-x2(v) = Int(2v)
 # 
 # 
 @with_kw struct ThreeBodySystem
@@ -88,6 +86,10 @@ end
 ThreeBodySystem(ms::ThreeBodyMasses) = ThreeBodySystem(ms=ms)
 ThreeBodySystem(m1,m2,m3; m0, two_js=ThreeBodySpins(0,0,0,0)) = ThreeBodySystem(ThreeBodyMasses(m1,m2,m3; m0=m0), two_js)
 #
+two_j0(tbs::ThreeBodySystem) = tbs.two_js[4]
+two_j1(tbs::ThreeBodySystem) = tbs.two_js[1]
+two_j2(tbs::ThreeBodySystem) = tbs.two_js[2]
+two_j3(tbs::ThreeBodySystem) = tbs.two_js[3]
 
 # -----------------------------------------------------
 @with_kw struct ThreeBodyParities
@@ -186,8 +188,8 @@ end
 #
 inrange(x,r) = r[1]<x<r[2]
 inphrange(σs::Invariants, ms::ThreeBodyMasses) = Kibble(σs,ms^2) < 0 &&
-    inrange(σ1,lims1(ms)) && inrange(σ2,lims2(ms)) && inrange(σ3,lims3(ms))
-# 
+    inrange(σs[1],lims1(ms)) && inrange(σs[2],lims2(ms)) && inrange(σs[3],lims3(ms))
+#
 # 
 change_basis_3from1(τ1, ms::ThreeBodyMasses) = change_basis_3from1(τ1..., ms.m1^2, ms.m2^2, ms.m3^2, ms.m0^2) 
 change_basis_1from2(τ2, ms::ThreeBodyMasses) = change_basis_3from1(τ2..., ms.m2^2, ms.m3^2, ms.m1^2, ms.m0^2) 
