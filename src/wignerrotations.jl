@@ -1,28 +1,33 @@
 
-abstract type IndexWignerRotation end
-struct TrivialWR <: IndexWignerRotation
+abstract type AbstractWignerRotation end
+struct TriavialWignerRotation <: AbstractWignerRotation
     k::Int
 end
-struct HatWR{S} <: IndexWignerRotation
+struct Arg0WignerRotation <: AbstractWignerRotation
     k::Int
+    ispositive::Bool
 end
-struct ZetaRepWR{T,S} <: IndexWignerRotation
+struct Arg2WignerRotation <: AbstractWignerRotation
     k::Int
+    ispositive::Bool
+    iseven::Bool
 end
-struct ZetaAllWR{S} <: IndexWignerRotation
+struct Arg3WignerRotation <: AbstractWignerRotation
     k::Int
+    ispositive::Bool
 end
 
 
-ispositive(wr::TrivialWR) = true
-ispositive(wr::HatWR{S}) where S = S
-ispositive(wr::ZetaRepWR{T,S}) where {T,S} = S
-ispositive(wr::ZetaAllWR{S}) where S = S
+ispositive(wr::TriavialWignerRotation) = true
+ispositive(wr::Arg0WignerRotation) = wr.ispositive
+ispositive(wr::Arg2WignerRotation) = wr.ispositive
+ispositive(wr::Arg3WignerRotation) = wr.ispositive
 
-sameparticlereference(wr::ZetaRepWR{T,S}) where {T,S} = T==:S
+import Base:iseven
+iseven(wr::Arg2WignerRotation) = wr.iseven
 
 ijk(k::Int) = (k+1,k+2,k) |> x->mod.(x,Ref(Base.OneTo(3)))
-ijk(wr::IndexWignerRotation) = ijk(wr.k)
+ijk(wr::AbstractWignerRotation) = ijk(wr.k)
 
 issequential(i,j) = (j-i) ∈ (1,-2)
 
@@ -38,23 +43,23 @@ For `system_a` and `reference_b` the spectator notations are used, i.e.
 1 for the system (2,3), 2 for the system (3,1), and 3 for the system (1,2).
 """
 function wr(system_a, reference_b, particle_c=0)
-    system_a == reference_b && return TrivialWR(particle_c)
+    system_a == reference_b && return TriavialWignerRotation(particle_c)
     S = issequential(system_a, reference_b)
     A,B = S ? (system_a, reference_b) : (reference_b, system_a)
     # 
-    particle_c == 0 && return HatWR{S}(A)
+    particle_c == 0 && return Arg0WignerRotation(A,S)
     #
-    particle_c ∉ (system_a, reference_b) && return ZetaAllWR{S}(particle_c)
+    particle_c ∉ (system_a, reference_b) && return Arg3WignerRotation(particle_c,S)
     #
-    T = (particle_c == A) ? :S : :D
-    return ZetaRepWR{T,!(S)}(particle_c)
+    T = (particle_c == A)
+    return Arg2WignerRotation(particle_c,!(S),T)
 end
 
 
 
-cosζ(wr::TrivialWR,σs,msq) = 1.0
+cosζ(wr::TriavialWignerRotation,σs,msq) = 1.0
 
-function cosζ(wr::HatWR,σs,msq)
+function cosζ(wr::Arg0WignerRotation,σs,msq)
     i,j,k = ijk(wr)
     # 
     s = msq[4]
@@ -64,10 +69,10 @@ function cosζ(wr::HatWR,σs,msq)
     return (EE4s-2s*rest)/pp4s
 end
 
-function cosζ(wr::ZetaRepWR,σs,msq)
+function cosζ(wr::Arg2WignerRotation,σs,msq)
     i,j,k = ijk(wr)
     # 
-    if !(sameparticlereference(wr))
+    if !(iseven(wr))
         i,j = j,i 
     end
     # 
@@ -81,7 +86,7 @@ function cosζ(wr::ZetaRepWR,σs,msq)
 end
 
 # 
-function cosζ(wr::ZetaAllWR,σs,msq)
+function cosζ(wr::Arg3WignerRotation,σs,msq)
     i,j,k = ijk(wr)
     # 
     msq[k] ≈ 0 && return 1.0

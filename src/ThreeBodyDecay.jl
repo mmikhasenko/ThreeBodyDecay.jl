@@ -22,7 +22,8 @@ export σ1of2, σ2of3, σ3of1,
 include("kinematics.jl")
 
 export ispositive
-export TrivialWR, ZetaAllWR, ZetaRepWR, HatWR
+export TriavialWignerRotation
+export Arg3WignerRotation, Arg2WignerRotation, Arg0WignerRotation
 export wr
 export cosζ
 include("wignerrotations.jl")

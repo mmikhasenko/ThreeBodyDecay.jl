@@ -3,21 +3,9 @@ using ThreeBodyDecay
 using Test
 
 @testset "correct typearg" begin
-    @test typeof(wr(1,1,2)) <: TrivialWR
-    @test typeof(wr(2,2))   <: TrivialWR
+    @test typeof(wr(1,1,2)) <: TriavialWignerRotation
+    @test typeof(wr(2,2))   <: TriavialWignerRotation
     # 
-    @test typeof(wr(3,1)) <: HatWR{true}
-    @test typeof(wr(1,2)) <: HatWR{true}
-    # 
-    @test typeof(wr(1,2,2)) <: ZetaRepWR{:D,false}
-    @test typeof(wr(1,2,1)) <: ZetaRepWR{:S,false}
-    @test typeof(wr(1,3,2)) <: ZetaAllWR{false}
-    @test typeof(wr(2,1,2)) <: ZetaRepWR{:D,true}
-    @test typeof(wr(2,1,1)) <: ZetaRepWR{:S,true}
-    @test typeof(wr(1,2,3)) <: ZetaAllWR{true}
-end
-
-@testset "Properties of xxx" begin
     @test ispositive(wr(1,1,2)) == true
     @test ispositive(wr(3,3)) == true
     # 
@@ -29,6 +17,11 @@ end
     # 
     @test ispositive(wr(1,2,3)) == true
     @test ispositive(wr(3,2,1)) == false
+    # 
+    @test iseven(wr(2,1,2)) == false
+    @test iseven(wr(2,1,1)) == true
+    @test iseven(wr(1,2,2)) == false
+    @test iseven(wr(1,2,1)) == true
 end
 
 @testset "Consistency with old implementation" begin
