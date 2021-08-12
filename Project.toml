@@ -1,7 +1,7 @@
 name = "ThreeBodyDecay"
 uuid = "e6563dab-9ca1-5843-bde3-2ccf38d63843"
 authors = ["Misha Mikhasenko <mikhail.mikhasenko@gmail.com>"]
-version = "0.4.1"
+version = "0.4.2"
 
 [deps]
 Cuba = "8a292aeb-7a57-582c-b821-06e4c11590b1"
