@@ -95,8 +95,8 @@ cosζ13_for1(σs,msq) = cosζk1_for1(3,σs,msq)
 cosζ21_for1(σs,msq) = cosζk1_for1(2,σs,msq)
 cosζ21_for2(σs,msq) = cosζk2_for2(1,σs,msq)
 cosζ32_for2(σs,msq) = cosζk2_for2(3,σs,msq)
-cosζ32_for3(σs,msq) = cosζk2_for2(2,σs,msq)
-cosζ13_for3(σs,msq) = cosζk2_for2(1,σs,msq)
+cosζ32_for3(σs,msq) = cosζk3_for3(2,σs,msq)
+cosζ13_for3(σs,msq) = cosζk3_for3(1,σs,msq)
 
 """
     Wigner angle of particle 1 to relate chain-3 to chain-2
