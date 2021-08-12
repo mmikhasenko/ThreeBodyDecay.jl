@@ -3,28 +3,28 @@ abstract type AbstractWignerRotation end
 struct TriavialWignerRotation <: AbstractWignerRotation
     k::Int
 end
-struct Arg0WignerRotation <: AbstractWignerRotation
-    k::Int
-    ispositive::Bool
-end
-struct Arg2WignerRotation <: AbstractWignerRotation
+struct WignerRotation{N} <: AbstractWignerRotation
     k::Int
     ispositive::Bool
     iseven::Bool
 end
-struct Arg3WignerRotation <: AbstractWignerRotation
-    k::Int
-    ispositive::Bool
-end
 
+const Arg0WignerRotation = WignerRotation{0}
+const Arg2WignerRotation = WignerRotation{2}
+const Arg3WignerRotation = WignerRotation{3}
+
+WignerRotation{N}(k::Int, ispositive::Bool) where N =
+    WignerRotation{N}(k, ispositive, true)
 
 ispositive(wr::TriavialWignerRotation) = true
-ispositive(wr::Arg0WignerRotation) = wr.ispositive
-ispositive(wr::Arg2WignerRotation) = wr.ispositive
-ispositive(wr::Arg3WignerRotation) = wr.ispositive
+ispositive(wr::WignerRotation) = wr.ispositive
 
 import Base:iseven
-iseven(wr::Arg2WignerRotation) = wr.iseven
+iseven(wr::TriavialWignerRotation) = true
+iseven(wr::WignerRotation{0}) = true
+iseven(wr::WignerRotation{3}) = true
+iseven(wr::WignerRotation{2}) = wr.iseven
+
 
 ijk(k::Int) = (k+1,k+2,k) |> x->mod.(x,Ref(Base.OneTo(3)))
 ijk(wr::AbstractWignerRotation) = ijk(wr.k)
