@@ -21,7 +21,7 @@ lims2(ms::ThreeBodyMasses) = ((ms.m3+ms.m1)^2, (ms.m0-ms.m2)^2)
 lims3(ms::ThreeBodyMasses) = ((ms.m1+ms.m2)^2, (ms.m0-ms.m3)^2)
 #
 import Base: getindex, ^, length
-^(ms::ThreeBodyMasses,i::Int) = SVector(ms.m1,ms.m2,ms.m3,ms.m0).^i
+^(ms::ThreeBodyMasses,i::Int) = (ms.m1, ms.m2, ms.m3, ms.m0).^i
 # 
 function getindex(ms::ThreeBodyMasses, i::Int)
     (i==0 || i==4) && return ms.m0
@@ -34,8 +34,8 @@ nt(ms::ThreeBodyMasses) = NamedTuple{(:m0,:m1,:m2,:m3)}([ms.m0,ms.m1,ms.m2,ms.m3
 #
 import Base: iterate
 # 
-iterate(ms::ThreeBodyMasses) = iterate(SVector(ms.m1,ms.m2,ms.m3,ms.m0))
-iterate(ms::ThreeBodyMasses, state) = iterate(SVector(ms.m1,ms.m2,ms.m3,ms.m0),state)
+iterate(ms::ThreeBodyMasses) = iterate((ms.m1,ms.m2,ms.m3,ms.m0))
+iterate(ms::ThreeBodyMasses, state) = iterate((ms.m1,ms.m2,ms.m3,ms.m0),state)
 # 
 ThreeBodyMasses(m1,m2,m3;
     m0=error("used the format ThreeBodyMasses(0.15,0.5,0.94; m0=4.5)")) =
@@ -106,8 +106,8 @@ function getindex(Ps::ThreeBodyParities, i::Int)
     return Ps.P1
 end
 length(σs::ThreeBodyParities) = 4
-iterate(Ps::ThreeBodyParities)        = iterate(SVector(Ps.P1,Ps.P2,Ps.P3,Ps.P0))
-iterate(Ps::ThreeBodyParities, state) = iterate(SVector(Ps.P1,Ps.P2,Ps.P3,Ps.P0),state)
+iterate(Ps::ThreeBodyParities)        = iterate((Ps.P1,Ps.P2,Ps.P3,Ps.P0))
+iterate(Ps::ThreeBodyParities, state) = iterate((Ps.P1,Ps.P2,Ps.P3,Ps.P0),state)
 #
 ThreeBodyParities(P1,P2,P3;
     P0=error("used the format ThreeBodyParities(1,1,0; two_j0=2)")) =
@@ -128,8 +128,8 @@ function Invariants(ms::ThreeBodyMasses;σ1=-1.0,σ2=-1.0,σ3=-1.0)
     return Invariants(;σ3=σ3,σ1=σ1,σ2=sum(ms^2)-σ3-σ1)
 end
 # 
-iterate(σs::Invariants)        = iterate(SVector(σs.σ1,σs.σ2,σs.σ3))
-iterate(σs::Invariants, state) = iterate(SVector(σs.σ1,σs.σ2,σs.σ3),state)
+iterate(σs::Invariants)        = iterate((σs.σ1,σs.σ2,σs.σ3))
+iterate(σs::Invariants, state) = iterate((σs.σ1,σs.σ2,σs.σ3),state)
 length(σs::Invariants) = 3
 function getindex(σs::Invariants, i::Int)
     i==1 && return σs.σ1
@@ -141,9 +141,9 @@ nt(σs::Invariants) = NamedTuple{(:σ1,:σ2,:σ3)}([σs.σ1,σs.σ2,σs.σ3])
 
 # -----------------------------------------------------
 
-@with_kw struct DalitzPlotPoint
-    σs::Invariants
-    two_λs::SVector{4,Int}
+@with_kw struct DalitzPlotPoint{I,S}
+    σs::I
+    two_λs::S
 end
 #
 function randomPoint(ms::ThreeBodyMasses)
