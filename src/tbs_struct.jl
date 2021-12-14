@@ -7,15 +7,15 @@
 #              _|_|
 
 
-@with_kw struct ThreeBodyMasses
-    m1::Float64
-    m2::Float64
-    m3::Float64
-    m0::Float64
+@with_kw struct ThreeBodyMasses{T}
+    m1::T
+    m2::T
+    m3::T
+    m0::T
     ThreeBodyMasses(m1,m2,m3,m0) = m0<m1+m2+m3 ? error("m₀ should be bigger than m₁+m₂+m₃") : new(m1,m2,m3,m0)
 end
 
-lims(k::Int,ms::ThreeBodyMasses) = k==1 ? lims1(ms) : ((k==2) ? lims2(ms) : lims3(ms))
+lims(k::Int, ms::ThreeBodyMasses) = k==1 ? lims1(ms) : ((k==2) ? lims2(ms) : lims3(ms))
 lims1(ms::ThreeBodyMasses) = ((ms.m2+ms.m3)^2, (ms.m0-ms.m1)^2)
 lims2(ms::ThreeBodyMasses) = ((ms.m3+ms.m1)^2, (ms.m0-ms.m2)^2)
 lims3(ms::ThreeBodyMasses) = ((ms.m1+ms.m2)^2, (ms.m0-ms.m3)^2)
@@ -43,11 +43,11 @@ ThreeBodyMasses(m1,m2,m3;
 # 
 # -----------------------------------------------------
 
-@with_kw struct ThreeBodySpins
-    two_h1::Int
-    two_h2::Int
-    two_h3::Int
-    two_h0::Int
+@with_kw struct ThreeBodySpins{T}
+    two_h1::T
+    two_h2::T
+    two_h3::T
+    two_h0::T
     ThreeBodySpins(two_h1,two_h2,two_h3,two_h0) = isodd(two_h1+two_h2+two_h3+two_h0) ? error("baryon number is not conserved") : new(two_h1,two_h2,two_h3,two_h0)
 end
 function getindex(two_hs::ThreeBodySpins, i::Int)
@@ -58,8 +58,8 @@ function getindex(two_hs::ThreeBodySpins, i::Int)
     return two_hs.two_h1
 end
 length(σs::ThreeBodySpins) = 4
-iterate(two_hs::ThreeBodySpins)        = iterate(SVector(two_hs.two_h1,two_hs.two_h2,two_hs.two_h3,two_hs.two_h0))
-iterate(two_hs::ThreeBodySpins, state) = iterate(SVector(two_hs.two_h1,two_hs.two_h2,two_hs.two_h3,two_hs.two_h0),state)
+iterate(two_hs::ThreeBodySpins)        = iterate((two_hs.two_h1,two_hs.two_h2,two_hs.two_h3,two_hs.two_h0))
+iterate(two_hs::ThreeBodySpins, state) = iterate((two_hs.two_h1,two_hs.two_h2,two_hs.two_h3,two_hs.two_h0),state)
 #
 import Base:getproperty
 function getproperty(two_js::ThreeBodySpins, sym::Symbol)
@@ -77,9 +77,9 @@ ThreeBodySpins(two_h1,two_h2,two_h3;
 
 # 
 # 
-@with_kw struct ThreeBodySystem
-    ms::ThreeBodyMasses
-    two_js::ThreeBodySpins = ThreeBodySpins(0,0,0,0)
+@with_kw struct ThreeBodySystem{T,K}
+    ms::T
+    two_js::K = ThreeBodySpins(0,0,0,0)
 end
 #
 # convenient constructors
