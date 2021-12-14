@@ -30,7 +30,7 @@ function getindex(ms::ThreeBodyMasses, i::Int)
     i!=1 && error("i should be equal to 0,1,2,3 or 4")
     return ms.m1
 end
-nt(ms::ThreeBodyMasses) = NamedTuple{(:m0,m1,:m2,:m3)}([ms.m0,ms.m1,ms.m2,ms.m3])
+nt(ms::ThreeBodyMasses) = NamedTuple{(:m0,:m1,:m2,:m3)}([ms.m0,ms.m1,ms.m2,ms.m3])
 #
 import Base: iterate
 # 
