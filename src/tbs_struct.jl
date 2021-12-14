@@ -7,12 +7,13 @@
 #              _|_|
 
 
-@with_kw struct ThreeBodyMasses{T}
+@with_kw struct ThreeBodyMasses{T<:Number}
     m1::T
     m2::T
     m3::T
     m0::T
-    ThreeBodyMasses(m1,m2,m3,m0) = m0<m1+m2+m3 ? error("m₀ should be bigger than m₁+m₂+m₃") : new(m1,m2,m3,m0)
+    ThreeBodyMasses{T}(m1,m2,m3,m0) where {T<:Number} =
+        m0<m1+m2+m3 ? error("m₀ should be bigger than m₁+m₂+m₃") : new(m1,m2,m3,m0)
 end
 
 lims(k::Int, ms::ThreeBodyMasses) = k==1 ? lims1(ms) : ((k==2) ? lims2(ms) : lims3(ms))
@@ -48,7 +49,10 @@ ThreeBodyMasses(m1,m2,m3;
     two_h2::T
     two_h3::T
     two_h0::T
-    ThreeBodySpins(two_h1,two_h2,two_h3,two_h0) = isodd(two_h1+two_h2+two_h3+two_h0) ? error("baryon number is not conserved") : new(two_h1,two_h2,two_h3,two_h0)
+    ThreeBodySpins{T}(two_h1,two_h2,two_h3,two_h0) where {T} =
+        isodd(two_h1+two_h2+two_h3+two_h0) ?
+            error("baryon number is not conserved") :
+            new(two_h1,two_h2,two_h3,two_h0)
 end
 function getindex(two_hs::ThreeBodySpins, i::Int)
     (i==0 || i==4) && return two_hs.two_h0

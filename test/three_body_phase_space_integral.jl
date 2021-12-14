@@ -2,7 +2,7 @@ using Test
 using ThreeBodyDecay
 
 @testset "QaudGK vs Cuba within 0.01%" begin
-  ms = ThreeBodyMasses(m0=6,m1=1,m2=1.5,m3=2)
+  ms = ThreeBodyMasses(m0=6.0,m1=1.0,m2=1.5,m3=2.0)
   #
   v_qtv = RhoQTB(ms.m0^2,(s,σ)->1.0, ms^2)
   v_fll = real(three_body_phase_space_integral(σs->1.0, ms))
@@ -11,7 +11,7 @@ using ThreeBodyDecay
 end
 
 @testset "QaudGK vs Cuba for P-wave within 0.01%" begin
-  tbs = ThreeBodySystem(1,1.5,2, m0=6)
+  tbs = ThreeBodySystem(1.0,1.5,2.0, m0=6.0)
   #
   ch = decay_chain(1,(s,σ)->1.0; two_s=2, tbs=tbs, parity='-', Ps=['+','+','+','+'])
   sp = summed_over_polarization((σs,two_λ)->abs2(amplitude(σs,two_λ,ch)), tbs.two_js)
@@ -25,7 +25,7 @@ end
 end
 
 
-tbs = ThreeBodySystem(1,1.5,2; m0=6, two_js=ThreeBodySpins(0, 1, 0; two_h0=1))
+tbs = ThreeBodySystem(1.0,1.5,2.0; m0=6.0, two_js=ThreeBodySpins(0, 1, 0; two_h0=1))
 
 @testset "QaudGK vs Cuba for half-integer spin within 0.01%" begin
   #

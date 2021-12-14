@@ -1,7 +1,7 @@
 using ThreeBodyDecay
 using Test
 
-ms = ThreeBodyMasses(1,2,3.0; m0=120)
+ms = ThreeBodyMasses(1.0,2.0,3.0; m0=120.0)
 
 @testset "Three Body Masses structure" begin
     # 

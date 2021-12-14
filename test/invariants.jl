@@ -18,7 +18,7 @@ end
     @test length(σs) == 3
 end
 
-ms = ThreeBodyMasses(1.1, 3.3,5.5; m0=20)
+ms = ThreeBodyMasses(1.1, 3.3,5.5; m0=20.0)
 σs = Invariants(ms; σ3=4.5^2, σ2=10.1^2)
 
 @testset "Creation from two given" begin
