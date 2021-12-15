@@ -7,12 +7,12 @@
 #              _|_|
 
 
-@with_kw struct ThreeBodyMasses{T<:Number}
-    m1::T
-    m2::T
-    m3::T
-    m0::T
-    ThreeBodyMasses{T}(m1,m2,m3,m0) where {T<:Number} =
+@with_kw struct ThreeBodyMasses
+    m1::Float64
+    m2::Float64
+    m3::Float64
+    m0::Float64
+    ThreeBodyMasses(m1,m2,m3,m0) =
         m0<m1+m2+m3 ? error("m₀ should be bigger than m₁+m₂+m₃") : new(m1,m2,m3,m0)
 end
 
