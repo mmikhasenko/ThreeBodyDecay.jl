@@ -8,7 +8,7 @@ function four_vectors_in_binary_decay(cosθ, ϕ;
     E1 = (m0sq+m1sq-m2sq)/(2sqrt(m0sq));
     E2 = (m0sq-m1sq+m2sq)/(2sqrt(m0sq));
     √m0sq < √m1sq + √m2sq && error("!!! -√m0sq + √m1sq + √m2sq = $(-√m0sq + √m1sq + √m2sq)")
-    p = sqrt(λ(m0sq,m1sq,m2sq))/(2sqrt(m0sq));
+    p = sqrt(Kallen(m0sq,m1sq,m2sq))/(2sqrt(m0sq));
     #
     sinθ = sqrt(1-cosθ^2)
     p1 = MVector( p*sinθ*cos(ϕ),  p*sinθ*sin(ϕ),  p*cosθ, E1)

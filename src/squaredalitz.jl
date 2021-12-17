@@ -55,7 +55,7 @@ function jacobean_squaredalitz(k,σs,ms::ThreeBodyMasses)
     sqrtlimsk = sqrt.(lims(k, ms))
     xn = 2*(m - sqrtlimsk[1]) / (sqrtlimsk[2]-sqrtlimsk[1]) - 1
     dxdm = 2 / (sqrtlimsk[2]-sqrtlimsk[1]) / sqrt(1-xn^2) / π
-    ρρm = sqrt(λ(σs[k],ms[i]^2,ms[j]^2)*λ(ms[4]^2,σs[k],ms[k]^2)) / (σs[k]*ms[4]^2) * m
+    ρρm = sqrt(Kallen(σs[k],ms[i]^2,ms[j]^2)*Kallen(ms[4]^2,σs[k],ms[k]^2)) / (σs[k]*ms[4]^2) * m
     return ρρm / dydcθ / dxdm #
 end
 

@@ -1,8 +1,8 @@
 
-λ(x,y,z) = x^2+y^2+z^2 - 2x*y - 2y*z - 2z*x
-Kibble(σs,msq) = λ(λ(msq[4],msq[1],σs[1]),
-                   λ(msq[4],msq[2],σs[2]),
-                   λ(msq[4],msq[3],σs[3]))
+Kallen(x,y,z) = x^2+y^2+z^2 - 2x*y - 2y*z - 2z*x
+Kibble(σs,msq) = Kallen(Kallen(msq[4],msq[1],σs[1]),
+                        Kallen(msq[4],msq[2],σs[2]),
+                        Kallen(msq[4],msq[3],σs[3]))
 #
 """
     σkofi(k,z,σi,msq)
@@ -20,9 +20,9 @@ function σkofi(k,z,σi,msq)
     #
     s = msq[4]
     EE4σ = (σi+msq[j]-msq[k])*(s-σi-msq[i])
-    pp4σ_sq = λ(σi,msq[j],msq[k])*λ(s,σi,msq[i])
-    pp4σ_sq = (pp4σ_sq < 0) ? 0.0 : pp4σ_sq # for numerical errors
-    σk = msq[i]+msq[j] + (EE4σ + sqrt(pp4σ_sq)*z) / (2σi)
+    p²q²4σ = Kallen(σi,msq[j],msq[k])*Kallen(s,σi,msq[i])
+    p²q²4σ = (p²q²4σ < 0) ? 0.0 : p²q²4σ # for numerical errors
+    σk = msq[i]+msq[j] + (EE4σ + sqrt(p²q²4σ)*z) / (2σi)
     return σk
 end
 σ3of1(z,σ1,msq) = σkofi(3,z,σ1,msq)
@@ -63,7 +63,7 @@ function cosθij(k,σs,msq)
     #
     s = msq[4]
     EE4σ = (σs[k]+msq[i]-msq[j])*(s-σs[k]-msq[k])
-    pp4σ = sqrt(λ(σs[k],msq[i],msq[j])*λ(s,σs[k],msq[k]))
+    pp4σ = sqrt(Kallen(σs[k],msq[i],msq[j])*Kallen(s,σs[k],msq[k]))
     rest = σs[j]-msq[k]-msq[i]
     return (2σs[k]*rest-EE4σ)/pp4σ
 end

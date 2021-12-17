@@ -183,7 +183,7 @@ border23(ms; Nx::Int=300) = border(2, ms; Nx=Nx)
 # 
 function flatDalitzPlotSample(ms::ThreeBodyMasses; Nev::Int=10000, σbins::Int=500)
     @unpack m0,m1,m2,m3 = ms
-    density = getbinned1dDensity(σ1->sqrt(λ(σ1,m2^2,m3^2)*λ(σ1,m0^2,m1^2))/σ1, lims1(ms), σbins)
+    density = getbinned1dDensity(σ1->sqrt(Kallen(σ1,m2^2,m3^2)*Kallen(σ1,m0^2,m1^2))/σ1, lims1(ms), σbins)
     σ1v = [rand(density) for _ in 1:Nev]
     σ3v = [σ3of1(2*rand()-1,σ1,ms^2) for σ1 in σ1v]
     return [Invariants(ms; σ1=σ1, σ3=σ3) for (σ1,σ3) in zip(σ1v,σ3v)]

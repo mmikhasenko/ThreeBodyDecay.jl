@@ -64,7 +64,7 @@ function cosζ(wr::Arg0WignerRotation,σs,msq)
     # 
     s = msq[4]
     EE4s = (s+msq[i]-σs[i])*(s+msq[k]-σs[k])
-    pp4s = sqrt(λ(s,msq[i],σs[i])*λ(s,msq[k],σs[k]))
+    pp4s = sqrt(Kallen(s,msq[i],σs[i])*Kallen(s,msq[k],σs[k]))
     rest = σs[j]-msq[i]-msq[k]
     return (EE4s-2s*rest)/pp4s
 end
@@ -80,7 +80,7 @@ function cosζ(wr::Arg2WignerRotation,σs,msq)
     # 
     s = msq[4]
     EE4mksq = (s+msq[k]-σs[k])*(σs[i]-msq[k]-msq[j])
-    pp4mksq = sqrt(λ(s,msq[k],σs[k])*λ(msq[k],msq[j],σs[i]))
+    pp4mksq = sqrt(Kallen(s,msq[k],σs[k])*Kallen(msq[k],msq[j],σs[i]))
     rest = σs[j]-s-msq[j]
     return (2msq[k]*rest+EE4mksq)/pp4mksq
 end
@@ -93,7 +93,7 @@ function cosζ(wr::Arg3WignerRotation,σs,msq)
     # 
     s = msq[4]
     EE4m1sq = (σs[i]-msq[j]-msq[k])*(σs[j]-msq[k]-msq[i])
-    pp4m1sq = sqrt(λ(σs[i],msq[j],msq[k])*λ(σs[j],msq[k],msq[i]))
+    pp4m1sq = sqrt(Kallen(σs[i],msq[j],msq[k])*Kallen(σs[j],msq[k],msq[i]))
     rest = msq[i]+msq[j]-σs[k]
     return (2msq[k]*rest+EE4m1sq)/pp4m1sq
 end

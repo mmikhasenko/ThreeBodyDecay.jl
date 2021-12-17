@@ -10,9 +10,9 @@ function change_basis_3from1(σ1, cosθ1, ϕ1, cosθ23, ϕ23,
         # 2*(  E2 * E1 -
             2*( (σ1 + m2sq - m3sq)/(2*sqrt(σ1)) * (s-m1sq-σ1)/(2*sqrt(σ1)) -
             # |p2|*cos(theta23) * (-|p1|)
-            sqrt(λ(σ1, m2sq, m3sq)/(4*σ1))*cosθ23 * (-sqrtλσ1) );
+            sqrt(Kallen(σ1, m2sq, m3sq)/(4*σ1))*cosθ23 * (-sqrtλσ1) );
         # caluclate p3 in (23) frame
-        p23bu = sqrt(λ(σ1, m2sq, m3sq)/(4*σ1));
+        p23bu = sqrt(Kallen(σ1, m2sq, m3sq)/(4*σ1));
         p3_in23 = [(σ1 + m3sq - m2sq)/sqrt(4*σ1),
                    -p23bu*sqrt(1-cosθ23^2)*cos(ϕ23),
                    -p23bu*sqrt(1-cosθ23^2)*sin(ϕ23),
@@ -38,7 +38,7 @@ function change_basis_3from1(σ1, cosθ1, ϕ1, cosθ23, ϕ23,
         cosθ12_n = m2sq + m3sq + 2* (σ3+m2sq-m1sq)/(2*sqrt(σ3)) * (s-m3sq-σ3)/(2*sqrt(σ3)) - σ1;
         m3 = sqrt(m3sq)
         sqrtλσ3 = sqrt((sqrts-m3)^2-σ3)*sqrt((sqrts+m3)^2-σ3)
-        cosθ12_d = 2 * sqrt(λ(σ3, m1sq, m2sq)/(4*(σ3))) * sqrtλσ3 / (2*sqrt(σ3));
+        cosθ12_d = 2 * sqrt(Kallen(σ3, m1sq, m2sq)/(4*(σ3))) * sqrtλσ3 / (2*sqrt(σ3));
         cosθ12 = cosθ12_d ≈ 0.0+0.0im ? 2.0*rand()-1.00*one(σ1) : cosθ12_n/cosθ12_d;
 
         n1 = [0.,

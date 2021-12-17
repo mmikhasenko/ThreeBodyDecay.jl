@@ -5,10 +5,6 @@
 #    _|      _|    _|  _|    _|  _|          _|      _|  _|    _|  _|    _|      _|_|
 #    _|        _|_|_|  _|    _|    _|_|_|      _|_|  _|    _|_|    _|    _|  _|_|_|
 
-λ(x,y,z) = x^2+y^2+z^2 - 2x*y - 2y*z - 2z*x
-Kibble(σs,msq) = λ(λ(msq[4],msq[1],σs[1]),
-                   λ(msq[4],msq[2],σs[2]),
-                   λ(msq[4],msq[3],σs[3]))
 #
 ij_from_k(k) = (k==1 ? (2,3) : (k==2 ? (3,1) : (1,2)))
 #
@@ -25,7 +21,7 @@ function σkofi(k,z,σi,msq)
     #
     s = msq[4]
     EE4σ = (σi+msq[j]-msq[k])*(s-σi-msq[i])
-    pp4σ_sq = λ(σi,msq[j],msq[k])*λ(s,σi,msq[i])
+    pp4σ_sq = Kallen(σi,msq[j],msq[k])*Kallen(s,σi,msq[i])
     pp4σ_sq = (pp4σ_sq < 0) ? 0.0 : pp4σ_sq # for numerical errors
     σk = msq[i]+msq[j] + (EE4σ + sqrt(pp4σ_sq)*z) / (2σi)
     return σk
@@ -44,7 +40,7 @@ function cosθij(k,σs,msq)
     #
     s = msq[4]
     EE4σ = (σs[k]+msq[i]-msq[j])*(s-σs[k]-msq[k])
-    pp4σ = sqrt(λ(σs[k],msq[i],msq[j])*λ(s,σs[k],msq[k]))
+    pp4σ = sqrt(Kallen(σs[k],msq[i],msq[j])*Kallen(s,σs[k],msq[k]))
     rest = σs[j]-msq[k]-msq[i]
     return (2σs[k]*rest-EE4σ)/pp4σ
 end
@@ -62,7 +58,7 @@ function cosθhatk1(k,σs,msq)
     #
     s = msq[4]
     EE4s = (s+msq[i]-σs[i])*(s+msq[k]-σs[k])
-    pp4s = sqrt(λ(s,msq[i],σs[i])*λ(s,msq[k],σs[k]))
+    pp4s = sqrt(Kallen(s,msq[i],σs[i])*Kallen(s,msq[k],σs[k]))
     rest = σs[j]-msq[i]-msq[k]
     return (EE4s-2s*rest)/pp4s
 end
@@ -84,7 +80,7 @@ function cosζk1_for1(k,σs,msq)
     #
     s = msq[4]
     EE4m1sq = (s+msq[i]-σs[i])*(σs[k]-msq[i]-msq[j])
-    pp4m1sq = sqrt(λ(s,msq[i],σs[i])*λ(msq[i],msq[j],σs[k]))
+    pp4m1sq = sqrt(Kallen(s,msq[i],σs[i])*Kallen(msq[i],msq[j],σs[k]))
     rest = σs[j]-s-msq[j]
     return (2msq[i]*rest+EE4m1sq)/pp4m1sq
 end
@@ -105,7 +101,7 @@ function cosζ23_for1(σs,msq)
     msq[1] ≈ 0 && return 1.0
     s = msq[4]
     EE4m1sq = (σs[2]-msq[3]-msq[1])*(σs[3]-msq[1]-msq[2])
-    pp4m1sq = sqrt(λ(σs[2],msq[3],msq[1])*λ(σs[3],msq[1],msq[2]))
+    pp4m1sq = sqrt(Kallen(σs[2],msq[3],msq[1])*Kallen(σs[3],msq[1],msq[2]))
     rest = msq[2]+msq[3]-σs[1]
     return (2msq[1]*rest+EE4m1sq)/pp4m1sq
 end

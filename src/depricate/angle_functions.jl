@@ -11,7 +11,7 @@ function cosθhatk1(k,σs,msq)
     #
     s = msq[4]
     EE4s = (s+msq[i]-σs[i])*(s+msq[k]-σs[k])
-    pp4s = sqrt(λ(s,msq[i],σs[i])*λ(s,msq[k],σs[k]))
+    pp4s = sqrt(Kallen(s,msq[i],σs[i])*Kallen(s,msq[k],σs[k]))
     rest = σs[j]-msq[i]-msq[k]
     return (EE4s-2s*rest)/pp4s
 end
@@ -33,7 +33,7 @@ function cosζk1_for1(k,σs,msq)
     #
     s = msq[4]
     EE4m1sq = (s+msq[i]-σs[i])*(σs[k]-msq[i]-msq[j])
-    pp4m1sq = sqrt(λ(s,msq[i],σs[i])*λ(msq[i],msq[j],σs[k]))
+    pp4m1sq = sqrt(Kallen(s,msq[i],σs[i])*Kallen(msq[i],msq[j],σs[k]))
     rest = σs[j]-s-msq[j]
     return (2msq[i]*rest+EE4m1sq)/pp4m1sq
 end
@@ -54,7 +54,7 @@ function cosζ23_for1(σs,msq)
     msq[1] ≈ 0 && return 1.0
     s = msq[4]
     EE4m1sq = (σs[2]-msq[3]-msq[1])*(σs[3]-msq[1]-msq[2])
-    pp4m1sq = sqrt(λ(σs[2],msq[3],msq[1])*λ(σs[3],msq[1],msq[2]))
+    pp4m1sq = sqrt(Kallen(σs[2],msq[3],msq[1])*Kallen(σs[3],msq[1],msq[2]))
     rest = msq[2]+msq[3]-σs[1]
     return (2msq[1]*rest+EE4m1sq)/pp4m1sq
 end
