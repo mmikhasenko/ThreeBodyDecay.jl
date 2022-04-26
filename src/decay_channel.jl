@@ -9,7 +9,7 @@
 
 
 
-@with_kw struct decay_chain
+@with_kw struct decay_chain{T,X}
     k::Int
     #
     two_s::Int # isobar spin
@@ -17,9 +17,9 @@
     two_ls::Tuple{Int,Int} # isobar decay ξ->ij
     two_LS::Tuple{Int,Int} # 0->ξ k decay
     #
-    tbs::ThreeBodySystem # the structure with masses and spins
+    tbs::T # the structure with masses and spins
     #
-    Xlineshape::Function # lineshape
+    Xlineshape::X # lineshape
 end
 
 function printable_l(two_l)
