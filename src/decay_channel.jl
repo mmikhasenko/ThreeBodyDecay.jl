@@ -82,10 +82,12 @@ function amplitude(σs, two_λs, dc)
     two_js = tbs.two_js
     #
     itr_two_λs′ = itr(SVector{3}(tbs.two_js[1],tbs.two_js[2],tbs.two_js[3]))
-    f = sum(jls_coupling(two_js[i], two_λs′[i], two_js[j], two_λs′[j], two_s, dc.two_ls[1], dc.two_ls[2]) *
+    f = 0.0
+    for two_τ = -two_s:2:two_s, two_λs′ in itr_two_λs′
+        f += jls_coupling(two_js[i], two_λs′[i], two_js[j], two_λs′[j], two_s, dc.two_ls[1], dc.two_ls[2]) *
             Zksτ(k,two_s,two_τ,two_λs,two_λs′,σs,tbs) *
             jls_coupling(two_s, two_τ, two_js[k], two_λs′[k], two_js[4], dc.two_LS[1], dc.two_LS[2])
-        for two_τ = -two_s:2:two_s, two_λs′ in itr_two_λs′)
+    end
     lineshape = dc.Xlineshape(s,σs[k])
     return f * lineshape
 end
