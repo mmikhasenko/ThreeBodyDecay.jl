@@ -11,7 +11,7 @@ end
 
 
 include("wignerrotationdispatch.jl")
-
+include("test_depricated_wr.jl")
 
 @safetestset "four vectors" begin include("test_generation.jl") end
 
