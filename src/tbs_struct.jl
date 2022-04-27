@@ -199,8 +199,4 @@ change_basis_3from1(τ1, ms::ThreeBodyMasses) = change_basis_3from1(τ1..., ms.m
 change_basis_1from2(τ2, ms::ThreeBodyMasses) = change_basis_3from1(τ2..., ms.m2^2, ms.m3^2, ms.m1^2, ms.m0^2) 
 change_basis_2from3(τ3, ms::ThreeBodyMasses) = change_basis_3from1(τ3..., ms.m3^2, ms.m1^2, ms.m2^2, ms.m0^2) 
 
-# coupling scheme
-coupling_schemek(k,two_jp,tbs::ThreeBodySystem) = coupling_schemek(k,two_jp,collect(zip(tbs.two_js,tbs.Ps)))
-coupling_scheme23(two_jp,tbs::ThreeBodySystem)  = coupling_schemek(1,two_jp,tbs)
-coupling_scheme12(two_jp,tbs::ThreeBodySystem)  = coupling_schemek(3,two_jp,tbs)
-coupling_scheme31(two_jp,tbs::ThreeBodySystem)  = coupling_schemek(2,two_jp,tbs)
+

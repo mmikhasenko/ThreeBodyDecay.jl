@@ -23,7 +23,6 @@ include("kinematics.jl")
 
 export ispositive
 export TriavialWignerRotation
-export Arg3WignerRotation, Arg2WignerRotation, Arg0WignerRotation
 export wr
 export cosζ
 include("wignerrotations.jl")
@@ -81,16 +80,6 @@ export change_basis_3from1,
 include("cross_channel_relations.jl")
 
 #
-export jls, twochain
-
-export coupling_scheme, coupling_schemek,
-       coupling_scheme12, coupling_scheme23, coupling_scheme31
-
-export clebsch_for_chaink, jls_coupling
-
-export two_J,two_L,two_S,
-       two_j,two_l,two_s
-
 export HelicityRecoupling,
        HelicityRecoupling_doublearg
 export jp, @jp_str
