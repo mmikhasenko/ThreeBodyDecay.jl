@@ -132,12 +132,3 @@ cosθhatk3(k, σs, ms²) = cosζ(wr(k,3,0), σs, ms²)
 phase(two_λ1_minus_λ2) = (abs(two_λ1_minus_λ2) % 4 == 2 ? -1.0 : 1.0)
 phase(two_λ1,two_λ2) = phase(two_λ1 - two_λ2)
 
-"""
-    Phase for wigner d-functions for clockwise rotations
-        with a check if indices are in the sequential order.
-"""
-function phase(i,j,two_λ1,two_λ2)
-    (i==j) && return (two_λ1 == two_λ2 ? 1.0 : 0.0)
-    ((i,j)==(1,2) || (i,j)==(2,3) || (i,j)==(3,1)) && return 1.0
-    return phase(two_λ1,two_λ2)
-end

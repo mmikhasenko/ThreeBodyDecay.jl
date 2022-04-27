@@ -9,8 +9,6 @@ using ThreeBodyDecay
     include("test_invariants.jl")
 end
 
-@safetestset "Phases" begin include("test_phases.jl") end
-
 include("wignerrotationdispatch.jl")
 
 @safetestset "four vectors" begin include("test_generation.jl") end
