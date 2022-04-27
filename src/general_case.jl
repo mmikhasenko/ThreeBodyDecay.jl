@@ -25,6 +25,6 @@ function Zksτ(k, two_s,two_τ, two_λs, two_λs′, σs, tbs; refζs=(1,2,3,1))
     return val
 end
 
-wignerd_doublearg_sign(j,λ1,λ2, cosθ, ispositive) =
-    (ispositive ? 1 : x"-1"^*(λ1-λ2)) *
-        wignerd_doublearg(j,λ1,λ2, cosθ)
+wignerd_doublearg_sign(two_j,two_λ1, two_λ2, cosθ, ispositive) =
+    (ispositive ? 1 : x"-1"^div(two_λ1-two_λ2, 2)) *
+        wignerd_doublearg(two_j, two_λ1, two_λ2, cosθ)
