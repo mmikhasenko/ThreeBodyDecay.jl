@@ -1,6 +1,21 @@
 using Test
 using ThreeBodyDecay
 
+function QTB_mismatch_factor(dc)
+  k = dc.k; i,j = ij_from_k(k);
+  tbs = dc.tbs
+  two_js = tbs.two_js
+  two_s = dc.two_s
+  #
+  avHHsq =
+      sum((tbs.two_js[4]!=(two_τ-two_λs[k]) ? 0.0 : 1.0) *
+          ThreeBodyDecay.jls_coupling(two_js[i], two_λs[i], two_js[j], two_λs[j], two_s, dc.two_ls[1], dc.two_ls[2])^2 *
+          ThreeBodyDecay.jls_coupling(two_s, two_τ, two_js[k], two_λs[k], two_js[4], dc.two_LS[1], dc.two_LS[2])^2
+          for two_λs in itr(tbs.two_js),
+              two_τ in -dc.two_s:2:dc.two_s)
+  return avHHsq
+end
+
 @testset "QaudGK vs Cuba within 0.01%" begin
   ms = ThreeBodyMasses(m0=6.0,m1=1.0,m2=1.5,m3=2.0)
   #
@@ -26,6 +41,7 @@ end
 
 
 tbs = ThreeBodySystem(1.0,1.5,2.0; m0=6.0, two_js=ThreeBodySpins(0, 1, 0; two_h0=1))
+
 
 @testset "QaudGK vs Cuba for half-integer spin within 0.01%" begin
   #

@@ -13,8 +13,7 @@ function Zksτ(k, two_s, two_τ, two_λs, two_λs′, σs, tbs; refζs=(1,2,3,1)
     # 
     cosθ = cosθij(k,σs,ms²)
     #
-    val = sqrt(two_j0+1) * # the constant factors are important for the normalization
-            phase(tbs.two_js[k]-two_λs′[k]) * # particle-2 convention
+    val =   phase(tbs.two_js[k]-two_λs′[k]) * # particle-2 convention
         sqrt(two_s+1) * wignerd_doublearg(two_s, two_τ, two_λs′[i]-two_λs′[j], cosθ) *
             phase(tbs.two_js[j]-two_λs′[j]) # particle-2 convention
     # 
