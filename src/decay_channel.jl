@@ -40,16 +40,19 @@ printable_ls(two_ls) = (printable_s(two_ls[2]), printable_l(two_ls[1]))
     Returns the decay chain with the smallest LS, ls
 """
 function decay_chain(k, Xlineshape;
-    two_s=error("give two_s, i.e. the spin of the isobar"),
     tbs=error("give three-body-system structure"),
+    two_s=0,
     parity::Char='+',
     Ps=SVector('+','+','+','+'))
     # 
-    (LS,ls) = first(
-        possible_lsLS(k, two_s, parity, tbs.two_js, Ps))
-    return decay_chain(; k=k, Xlineshape=Xlineshape,
-        two_s=two_s, two_ls=Int.(2 .* LS), two_LS=Int.(2 .* ls),
-        tbs=tbs)
+    lsLS = vcat(possible_lsLS(k, two_s, parity, tbs.two_js, Ps)...)
+    length(lsLS) == 0 && error("there are no possible LS couplings")
+    # 
+    lsLS_sorted = sort(lsLS, by=x->x.LS[1])
+    @unpack ls, LS = lsLS_sorted[1]
+    # 
+    return decay_chain(; k, Xlineshape, tbs,
+        two_s, two_ls=Int.(2 .* ls), two_LS=Int.(2 .* LS))
 end
 
 """
@@ -62,15 +65,15 @@ end
     Returns an array of the decay chains with all possible couplings
 """
 function decay_chains(k, Xlineshape;
-    two_s=error("give two_s, i.e. the spin of the isobar, two_s=..."),
-    parity::Char=error("give the parity, parity=..."),
-    Ps=error("need parities: Ps=[P1,2,3,0]"),
-    tbs=error("give three-body-system structure, tbs=..."))
+    two_s = error("give two_s, i.e. the spin of the isobar, two_s=..."),
+    parity::Char = error("give the parity, parity=..."),
+    Ps = error("need parities: Ps=[P1,2,3,0]"),
+    tbs = error("give three-body-system structure, tbs=..."))
     # 
     LSlsv = possible_lsLS(k, two_s, parity, tbs.two_js, Ps)
-    return [decay_chain(;k=k, Xlineshape=Xlineshape,
-        two_s=two_s, two_ls=Tuple(two_ls), two_LS=Tuple(two_LS),
-        tbs=tbs) for (two_LS,two_ls) in LSlsv]
+    return [decay_chain(;k, Xlineshape, tbs, two_s,
+        two_ls=Int.(2 .* x.ls), two_LS=Int.(2 .* x.LS))
+        for x in LSlsv]
 end
 
 function amplitude(σs, two_λs, dc)

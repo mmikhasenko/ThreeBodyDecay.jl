@@ -48,3 +48,5 @@ end
 @safetestset "square dalitz" begin
     include("test_transformations_of_squaredalitz.jl")
 end
+
+include("test_inference.jl")
