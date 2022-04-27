@@ -1,7 +1,10 @@
-function Zksτ(k, two_s,two_τ, two_λs, two_λs′, σs, tbs; refζs=(1,2,3,1))
+function Zksτ(k, two_s, two_τ, two_λs, two_λs′, σs, tbs; refζs=(1,2,3,1))
     i,j = ij_from_k(k)
     #
     ms² = tbs.ms^2
+    two_js = tbs.two_js
+    two_j0 = two_js[4]
+    two_λ0 = two_λs[4]
     # 
     w0 = wr(k,refζs[4],0);
     wi = wr(k,refζs[i],i);
@@ -9,9 +12,6 @@ function Zksτ(k, two_s,two_τ, two_λs, two_λs′, σs, tbs; refζs=(1,2,3,1))
     wk = wr(k,refζs[k],k);
     # 
     cosθ = cosθij(k,σs,ms²)
-    two_λ0 = two_λs[4]
-    two_js = tbs.two_js
-    two_j0 = two_js[4]
     #
     val = sqrt(two_j0+1) * # the constant factors are important for the normalization
             phase(tbs.two_js[k]-two_λs′[k]) * # particle-2 convention
