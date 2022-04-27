@@ -1,5 +1,6 @@
 using ThreeBodyDecay
 using Test
+using Parameters
 
 @testset "Infererred type" begin
     tbs = ThreeBodySystem( 2.0, 1.0, 1.5; m0=6.0,
