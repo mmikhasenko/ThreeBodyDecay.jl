@@ -21,6 +21,9 @@ export σ1of2, σ2of3, σ3of1,
        σ1of3, σ2of1, σ3of2       
 include("kinematics.jl")
 
+export x_str
+include("utils.jl")
+
 export ispositive
 export TriavialWignerRotation
 export wr
