@@ -9,9 +9,9 @@ using ThreeBodyDecay
     include("test_invariants.jl")
 end
 
+@safetestset "Phases" begin include("test_phases.jl") end
 
 include("wignerrotationdispatch.jl")
-include("test_depricated_wr.jl")
 
 @safetestset "four vectors" begin include("test_generation.jl") end
 
@@ -23,7 +23,6 @@ include("test_depricated_wr.jl")
 end
 
 @safetestset "Permutations" begin include("test_wigner_permutations.jl") end
-@safetestset "Phases" begin include("test_phases.jl") end
 
 @safetestset "Sum rule" begin include("wigner_angle_sumrules.jl") end
 

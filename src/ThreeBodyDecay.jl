@@ -11,7 +11,7 @@ export Kallen, Kibble,
        inphrange,
        lims,lims1,lims2,lims3
 export phase
-export ijk
+export ijk, ij_from_k
 # 
 export cosθij
 export cosθ12, cosθ23, cosθ31
@@ -25,21 +25,19 @@ export ispositive
 export TriavialWignerRotation
 export wr
 export cosζ
-include("wignerrotations.jl")
-
-
-export cosθhatk1,cosθhatk2,cosθhatk3
-export cosζik_fork, cosζkj_fork
 # 
-export cosθhat12, cosθhat23, cosθhat31
+export cosζ12_for0, cosζ23_for0, cosζ31_for0
 # 
+export cosζ21_for1, cosζ21_for2
+export cosζ13_for1, cosζ13_for3
+export cosζ32_for3, cosζ32_for2
+# 
+export cosζ12_for3, cosζ23_for1,cosζ31_for2
+# 
+export cosθhatk1, cosθhatk2, cosθhatk3
 export cosζk1_for1, cosζk2_for2, cosζk3_for3
-export cosζ21_for1,cosζ21_for2
-export cosζ13_for1,cosζ13_for3
-export cosζ32_for3,cosζ32_for2
 # 
-export cosζ12_for3,cosζ23_for1,cosζ31_for2
-include("depricate/angle_functions.jl")
+include("wignerrotations.jl")
 
 
 export ThreeBodyMasses, ThreeBodySpins, ThreeBodyParities

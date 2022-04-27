@@ -28,6 +28,8 @@ iseven(wr::WignerRotation{2}) = wr.iseven
 
 ijk(k::Int) = (k+1,k+2,k) |> x->mod.(x,Ref(Base.OneTo(3)))
 ijk(wr::AbstractWignerRotation) = ijk(wr.k)
+# 
+ij_from_k(k::Int) = ijk(k)
 
 issequential(i,j) = (j-i) ∈ (1,-2)
 
@@ -96,4 +98,46 @@ function cosζ(wr::Arg3WignerRotation,σs,msq)
     pp4m1sq = sqrt(Kallen(σs[i],msq[j],msq[k])*Kallen(σs[j],msq[k],msq[i]))
     rest = msq[i]+msq[j]-σs[k]
     return (2msq[k]*rest+EE4m1sq)/pp4m1sq
+end
+
+# explicit
+cosζ21_for1(σs, ms²) = cosζ(wr(2,1,1), σs, ms²)
+cosζ21_for2(σs, ms²) = cosζ(wr(2,1,2), σs, ms²)
+cosζ13_for1(σs, ms²) = cosζ(wr(1,3,1), σs, ms²)
+cosζ13_for3(σs, ms²) = cosζ(wr(1,3,3), σs, ms²)
+cosζ32_for3(σs, ms²) = cosζ(wr(3,2,3), σs, ms²)
+cosζ32_for2(σs, ms²) = cosζ(wr(3,2,2), σs, ms²)
+
+cosζ12_for3(σs, ms²) = cosζ(wr(1,2,3), σs, ms²)
+cosζ23_for1(σs, ms²) = cosζ(wr(2,3,1), σs, ms²)
+cosζ31_for2(σs, ms²) = cosζ(wr(3,1,2), σs, ms²)
+
+cosζ12_for0(σs, ms²) = cosζ(wr(1,2,0), σs, ms²)
+cosζ23_for0(σs, ms²) = cosζ(wr(2,3,0), σs, ms²)
+cosζ31_for0(σs, ms²) = cosζ(wr(3,1,0), σs, ms²)
+
+# 
+cosζk1_for1(k, σs, ms²) = cosζ(wr(k,1,1), σs, ms²)
+cosζk2_for2(k, σs, ms²) = cosζ(wr(k,2,2), σs, ms²)
+cosζk3_for3(k, σs, ms²) = cosζ(wr(k,3,3), σs, ms²)
+
+cosθhatk1(k, σs, ms²) = cosζ(wr(k,1,0), σs, ms²)
+cosθhatk2(k, σs, ms²) = cosζ(wr(k,2,0), σs, ms²)
+cosθhatk3(k, σs, ms²) = cosζ(wr(k,3,0), σs, ms²)
+
+
+"""
+    Phase for wigner d-functions for clockwise rotations
+"""
+phase(two_λ1_minus_λ2) = (abs(two_λ1_minus_λ2) % 4 == 2 ? -1.0 : 1.0)
+phase(two_λ1,two_λ2) = phase(two_λ1 - two_λ2)
+
+"""
+    Phase for wigner d-functions for clockwise rotations
+        with a check if indices are in the sequential order.
+"""
+function phase(i,j,two_λ1,two_λ2)
+    (i==j) && return (two_λ1 == two_λ2 ? 1.0 : 0.0)
+    ((i,j)==(1,2) || (i,j)==(2,3) || (i,j)==(3,1)) && return 1.0
+    return phase(two_λ1,two_λ2)
 end

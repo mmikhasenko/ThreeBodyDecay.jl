@@ -47,7 +47,6 @@ function possible_lsLS(k::Int, jpR::jp, jps::T where T<:Vector{jp})
     return [(ls=ls, LS=LS) for (ls, LS) in Iterators.product(lsv, LSv)]
 end
 function possible_lsLS(k::Int, two_s::Int, parity::Char, two_js , Ps)
-    i,j = ij_from_k(k)
     jpR = jp(two_s//2, parity)
     jps = jp.(zip(two_js .// 2, Ps))
     return possible_lsLS(k, jpR, jps)
