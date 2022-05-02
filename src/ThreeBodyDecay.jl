@@ -7,7 +7,7 @@ using PartialWaveFunctions
 using Parameters
 using RecipesBase
 
-export Kallen, Kibble,
+export Kallen, KallenFact, Kibble,
        inphrange,
        lims,lims1,lims2,lims3
 export phase
@@ -91,7 +91,7 @@ include("coupling_scheme.jl")
 export Zksτ
 include("general_case.jl")
 
-export NoRecoupling, ParityRecoupling, RecoulingsLS
+export NoRecoupling, ParityRecoupling, RecoulingLS
 export DecayChain, DecayChainLS, DecayChainsLS
 export amplitude
 export itr, summed_over_polarization

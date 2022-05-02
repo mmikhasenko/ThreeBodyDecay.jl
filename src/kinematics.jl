@@ -1,6 +1,6 @@
 
-# Kallen(x,y,z) = x^2+y^2+z^2 - 2x*y - 2y*z - 2z*x
-Kallen(a²,b²,c²) = ((a,b,c)=sqrt.((a²,b²,c²)); (a-(b+c))*(a-(b-c))*(a+(b+c))*(a+(b-c)))
+Kallen(x,y,z) = x^2+y^2+z^2 - 2x*y - 2y*z - 2z*x
+KallenFact(a²,b²,c²) = ((a,b,c)=sqrt.((a²,b²,c²)); (a-(b+c))*(a-(b-c))*(a+(b+c))*(a+(b-c)))
 Kibble(σs,msq) = Kallen(Kallen(msq[4],msq[1],σs[1]),
                         Kallen(msq[4],msq[2],σs[2]),
                         Kallen(msq[4],msq[3],σs[3]))
