@@ -31,9 +31,9 @@ end
 end
 
 # JPC functions
-@safetestset "Couplings" begin include("test_couplings.jl") end
-
-@safetestset "LS amplitudes" begin
+@safetestset "Couplings" begin
+    include("test_couplings.jl")
+    include("test_recoupling.jl")
     include("test_ls_amplitude.jl")
     include("test_sum_over_polarization.jl")
 end

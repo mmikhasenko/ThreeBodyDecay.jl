@@ -81,8 +81,6 @@ export change_basis_3from1,
 include("cross_channel_relations.jl")
 
 #
-export HelicityRecoupling,
-       HelicityRecoupling_doublearg
 export jp, @jp_str
 export ⊗
 export possible_ls, possible_lsLS
@@ -92,7 +90,7 @@ include("coupling_scheme.jl")
 export Zksτ
 include("general_case.jl")
 
-export RecoulingsLS
+export NoRecoupling, ParityRecoupling, RecoulingsLS
 export DecayChain, DecayChainLS, DecayChainsLS
 export amplitude
 export itr, summed_over_polarization

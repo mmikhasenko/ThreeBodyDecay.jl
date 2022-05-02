@@ -11,13 +11,24 @@ abstract type Recoupling end
 @with_kw struct NoRecoupling <: Recoupling
     two_λa::Int
     two_λb::Int
-    two_ja::Int
-    two_jb::Int
 end
 
 amplitude(cs::NoRecoupling, two_λa, two_λb) =
     (cs.two_λa == two_λa) *
     (cs.two_λb == two_λb)
+
+@with_kw struct ParityRecoupling <: Recoupling
+    two_λa::Int
+    two_λb::Int
+    ηηηphaseisplus::Bool
+end
+ParityRecoupling(two_λa::Int, two_λb::Int, ηηηphasesign::Char) = ParityRecoupling(two_λa, two_λb, ηηηphasesign=='+')
+
+function amplitude(cs::ParityRecoupling, two_λa, two_λb)
+    (cs.two_λa == two_λa) * (cs.two_λb == two_λb) && return 1
+    (cs.two_λa == -two_λa) * (cs.two_λb == -two_λb) && return 2*cs.ηηηphaseisplus-1
+    return 0
+end
 
 @with_kw struct RecoulingsLS <: Recoupling
     two_j::Int
