@@ -11,15 +11,15 @@ tbs = ThreeBodySystem(ms.Jψ, ms.p, ms.K; m0=ms.Lb,   # masses m1,m2,m3,m0
                      [  '-',  '+',  '-',   '+'])) # parities
 #
 # chain-1, i.e. (2+3): Λs with the lowest ls, LS
-Λ1520  = DecayChainLS(1, (s,σ)->BW(σ, 1.5195, 0.017); two_s = 3/2|>x2, tbs=tbs)
-Λ1690  = DecayChainLS(1, (s,σ)->BW(σ, 1.685,  0.050); two_s = 1/2|>x2, tbs=tbs)
-Λ1810  = DecayChainLS(1, (s,σ)->BW(σ, 1.80,   0.090); two_s = 5/2|>x2, tbs=tbs)
+Λ1520  = DecayChainLS(1, σ->BW(σ, 1.5195, 0.017); two_s = 3/2|>x2, tbs=tbs)
+Λ1690  = DecayChainLS(1, σ->BW(σ, 1.685,  0.050); two_s = 1/2|>x2, tbs=tbs)
+Λ1810  = DecayChainLS(1, σ->BW(σ, 1.80,   0.090); two_s = 5/2|>x2, tbs=tbs)
 Λs = (Λ1520,Λ1690,Λ1810)
 #
 # chain-3, i.e. (1+2): Pentaquarks with the lowest ls, LS
-Pc4312 = DecayChainLS(3, (s,σ)->BW(σ, 4.312, 0.015); two_s = 1/2|>x2, tbs=tbs)
-Pc4440 = DecayChainLS(3, (s,σ)->BW(σ, 4.440, 0.010); two_s = 1/2|>x2, tbs=tbs)
-Pc4457 = DecayChainLS(3, (s,σ)->BW(σ, 4.457, 0.020); two_s = 3/2|>x2, tbs=tbs)
+Pc4312 = DecayChainLS(3, σ->BW(σ, 4.312, 0.015); two_s = 1/2|>x2, tbs=tbs)
+Pc4440 = DecayChainLS(3, σ->BW(σ, 4.440, 0.010); two_s = 1/2|>x2, tbs=tbs)
+Pc4457 = DecayChainLS(3, σ->BW(σ, 4.457, 0.020); two_s = 3/2|>x2, tbs=tbs)
 Pcs = (Pc4312,Pc4440,Pc4457)
 #
 A(σs,two_λs,cs) = sum(c*amplitude(σs,two_λs,dc) for (c, dc) in zip(cs, (Λs...,Pcs...)))

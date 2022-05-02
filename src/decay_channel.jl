@@ -105,7 +105,7 @@ function amplitude(σs, two_λs, dc)
                 two_js[i], two_js[j], two_js[k], two_js[4]
             )
     end
-    lineshape = dc.Xlineshape(s,σs[k])
+    lineshape = dc.Xlineshape(σs[k])
     return f * lineshape
 end
 #

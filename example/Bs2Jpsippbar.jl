@@ -11,12 +11,12 @@ tbs = ThreeBodySystem(ms.Jψ, ms.p, ms.p, m0=ms.Bs;   # masses m1,m2,m3,m0
                      [ '-',   '+',  '-',  '+'])) # parities
 #
 # chain 2,3, i.e. (2+3): Λs with the lowest ls, LS
-Pc4430_2  = DecayChainLS(2, (s,σ)->BW(σ, 4.330, 0.02); two_s = 1/2|>x2, parity='+', tbs=tbs)
-Pc4430_3  = DecayChainLS(3, (s,σ)->BW(σ, 4.330, 0.02); two_s = 1/2|>x2, parity='-', tbs=tbs)
+Pc4430_2  = DecayChainLS(2, σ->BW(σ, 4.330, 0.02); two_s = 1/2|>x2, parity='+', tbs=tbs)
+Pc4430_3  = DecayChainLS(3, σ->BW(σ, 4.330, 0.02); two_s = 1/2|>x2, parity='-', tbs=tbs)
 Pcs = (Pc4430_2, Pc4430_3)
 #
 # chain-1, i.e. (1+2): Pentaquarks with the lowest ls, LS
-ggS = DecayChainLS(1, (s,σ)->1.0; two_s = 1|>x2, tbs=tbs, parity='-')
+ggS = DecayChainLS(1, σ->1.0; two_s = 1|>x2, tbs=tbs, parity='-')
 ggL = (ggS,)
 #
 A(σs,two_λs,cs) = sum(c*amplitude(σs,two_λs,dc) for (c, dc) in zip(cs, (Pcs..., ggL...)))
