@@ -19,7 +19,7 @@ function amplitude(cs::CoulingsLS, two_τ, two_s,
            jls_coupling(two_s, two_τ, two_jk, two_λk, two_j0, cs.two_LS[1], cs.two_LS[2])
 end
 
-@with_kw struct decay_chain{X,V,T}
+@with_kw struct DecayChain{X,V,T}
     k::Int
     #
     two_s::Int # isobar spin
@@ -40,7 +40,7 @@ printable_s(two_s) = two_s//2
 printable_ls(two_ls) = (printable_s(two_ls[2]), printable_l(two_ls[1]))
 
 """
-    decay_chain(k, Xlineshape;
+    DecayChainLS(k, Xlineshape;
         two_s, # give two_s, i.e. the spin of the isobar
         parity, # 
         Ps, # need parities: [1,2,3,0]
@@ -48,7 +48,7 @@ printable_ls(two_ls) = (printable_s(two_ls[2]), printable_l(two_ls[1]))
 
     Returns the decay chain with the smallest LS, ls
 """
-function decay_chain(k, Xlineshape;
+function DecayChainLS(k, Xlineshape;
     tbs=error("give three-body-system structure"),
     two_s=0,
     parity::Char='+',
@@ -60,12 +60,12 @@ function decay_chain(k, Xlineshape;
     lsLS_sorted = sort(lsLS, by=x->x.LS[1])
     @unpack ls, LS = lsLS_sorted[1]
     # 
-    return decay_chain(; k, Xlineshape, tbs, two_s,
+    return DecayChain(; k, Xlineshape, tbs, two_s,
         couplingproduct=CoulingsLS(two_ls=Int.(2 .* ls), two_LS=Int.(2 .* LS)))
 end
 
 """
-    decay_chains(k, Xlineshape;
+    DecayChainsLS(k, Xlineshape;
         two_s, # give two_s, i.e. the spin of the isobar
         parity, # 
         Ps, # need parities: [1,2,3,0]
@@ -73,14 +73,14 @@ end
 
     Returns an array of the decay chains with all possible couplings
 """
-function decay_chains(k, Xlineshape;
+function DecayChainsLS(k, Xlineshape;
     two_s = error("give two_s, i.e. the spin of the isobar, two_s=..."),
     parity::Char = error("give the parity, parity=..."),
     Ps = error("need parities: Ps=[P1,2,3,0]"),
     tbs = error("give three-body-system structure, tbs=..."))
     # 
     LSlsv = possible_lsLS(k, two_s, parity, tbs.two_js, Ps)
-    return [decay_chain(;
+    return [DecayChain(;
         k, Xlineshape, tbs, two_s,
         couplingproduct = CoulingsLS(
             two_ls=Int.(2 .* x.ls), two_LS=Int.(2 .* x.LS)))

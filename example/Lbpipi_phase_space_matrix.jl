@@ -13,15 +13,15 @@ tbs = ThreeBodySystem(mπ,mΛb,mπ; m0=mΛb2S,
 dpp = randomPoint(tbs)
 
 # lineshape
-dc_Σb1 = decay_chain(1, (s,σ) -> BW(σ,mΣb,ΓΣb); tbs=tbs, two_s = 1, parity='+')
-dc_Σb3 = decay_chain(3, (s,σ) -> BW(σ,mΣb,ΓΣb); tbs=tbs, two_s = 1, parity='+')
+dc_Σb1 = DecayChainLS(1, (s,σ) -> BW(σ,mΣb,ΓΣb); tbs=tbs, two_s = 1, parity='+')
+dc_Σb3 = DecayChainLS(3, (s,σ) -> BW(σ,mΣb,ΓΣb); tbs=tbs, two_s = 1, parity='+')
 full_AΣb(σs,two_λs)   = sum(amplitude(σs, two_λs, ch) for ch in [dc_Σb1, dc_Σb3])
 
-dc_Σb_x1 = decay_chain(1, (s,σ) -> BW(σ,mΣb_x,ΓΣb_x); tbs=tbs, two_s = 3, parity='+')
-dc_Σb_x3 = decay_chain(3, (s,σ) -> BW(σ,mΣb_x,ΓΣb_x); tbs=tbs, two_s = 3, parity='+')
+dc_Σb_x1 = DecayChainLS(1, (s,σ) -> BW(σ,mΣb_x,ΓΣb_x); tbs=tbs, two_s = 3, parity='+')
+dc_Σb_x3 = DecayChainLS(3, (s,σ) -> BW(σ,mΣb_x,ΓΣb_x); tbs=tbs, two_s = 3, parity='+')
 full_AΣb_x(σs,two_λs) = sum(amplitude(σs, two_λs, ch) for ch in [dc_Σb_x1, dc_Σb_x3])
 
-dc_f0 = decay_chain(2, (s,σ) -> 1.0; tbs=tbs, two_s = 0, parity='+')
+dc_f0 = DecayChainLS(2, (s,σ) -> 1.0; tbs=tbs, two_s = 0, parity='+')
 full_Af0(σs,two_λs)   = amplitude(σs, two_λs, dc_f0)
 
 ####

@@ -29,7 +29,7 @@ end
 @testset "QaudGK vs Cuba for P-wave within 0.01%" begin
   tbs = ThreeBodySystem(1.0,1.5,2.0, m0=6.0)
   #
-  ch = decay_chain(1,(s,σ)->1.0; two_s=2, tbs=tbs, parity='-', Ps=['+','+','+','+'])
+  ch = DecayChainLS(1,(s,σ)->1.0; two_s=2, tbs=tbs, parity='-', Ps=['+','+','+','+'])
   sp = summed_over_polarization((σs,two_λ)->abs2(amplitude(σs,two_λ,ch)), tbs.two_js)
   #
   v_qtv = RhoQTB(tbs.ms.m0^2,(s,σ)->1.0, tbs.ms^2)
@@ -46,7 +46,7 @@ tbs = ThreeBodySystem(1.0,1.5,2.0; m0=6.0, two_js=ThreeBodySpins(0, 1, 0; two_h0
 
 @testset "QaudGK vs Cuba for half-integer spin within 0.01%" begin
   #
-  ch = decay_chain(1,(s,σ)->1.0; two_s=1, tbs=tbs, parity='-', Ps=['-','+','-','+'])
+  ch = DecayChainLS(1,(s,σ)->1.0; two_s=1, tbs=tbs, parity='-', Ps=['-','+','-','+'])
   sp = summed_over_polarization((σs,two_λ)->abs2(amplitude(σs,two_λ,ch)), tbs.two_js)
   #
   v_qtv = RhoQTB(tbs.ms.m0^2,(s,σ)->1.0, tbs.ms^2)
@@ -60,7 +60,7 @@ end
 
 @testset "QaudGK vs Cuba for half-integer spin and P-wave within 0.01%" begin
   #
-  ch = decay_chain(1,(s,σ)->1.0; two_s=1, tbs=tbs, parity='+', Ps=['-','+','-','+'])
+  ch = DecayChainLS(1,(s,σ)->1.0; two_s=1, tbs=tbs, parity='+', Ps=['-','+','-','+'])
   sp = summed_over_polarization((σs,two_λ)->abs2(amplitude(σs,two_λ,ch)), tbs.two_js)
   # sp = σs->abs2(amplitude(σs,[0,0,0,0],ch))
   #

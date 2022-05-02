@@ -23,7 +23,7 @@ The code inherits notations of the paper:
 ## API for describing the decay
 
 A type `ThreeBodySystem` is used to keep information of the three-body system (masses, spins, and parities).
-The `decay_chain` structure contain information on the spin of the intermediate resonance, its lineshape
+The `DecayChain` structure contain information on the spin of the intermediate resonance, its lineshape
 and $LS$ Clebsch-Gordan coefficient in the production and decay vertices.
 
 Here is an example for amplitude description for Λb ⟶ Jψ p K,
@@ -48,15 +48,15 @@ The lineshape of the isobar is specified by the second argument,
 it is a simple Breit-Wigner function in the example below.
 ```julia
 # chains-1, i.e. (2+3): Λs with the lowest ls, LS
-Λ1520  = decay_chain(1, (s,σ)->BW(σ, 1.5195, 0.0156); two_s = 3/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
-Λ1690  = decay_chain(1, (s,σ)->BW(σ, 1.685,  0.050 ); two_s = 1/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
-Λ1810  = decay_chain(1, (s,σ)->BW(σ, 1.80,   0.090 ); two_s = 5/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
+Λ1520  = DecayChainLS(1, (s,σ)->BW(σ, 1.5195, 0.0156); two_s = 3/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
+Λ1690  = DecayChainLS(1, (s,σ)->BW(σ, 1.685,  0.050 ); two_s = 1/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
+Λ1810  = DecayChainLS(1, (s,σ)->BW(σ, 1.80,   0.090 ); two_s = 5/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
 Λs = (Λ1520,Λ1690,Λ1810)
 #
 # chains-3, i.e. (1+2): Pentaquarks with the lowest ls, LS
-Pc4312 = decay_chain(3, (s,σ)->BW(σ, 4.312, 0.015); two_s = 1/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
-Pc4440 = decay_chain(3, (s,σ)->BW(σ, 4.440, 0.010); two_s = 1/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
-Pc4457 = decay_chain(3, (s,σ)->BW(σ, 4.457, 0.020); two_s = 3/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
+Pc4312 = DecayChainLS(3, (s,σ)->BW(σ, 4.312, 0.015); two_s = 1/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
+Pc4440 = DecayChainLS(3, (s,σ)->BW(σ, 4.440, 0.010); two_s = 1/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
+Pc4457 = DecayChainLS(3, (s,σ)->BW(σ, 4.457, 0.020); two_s = 3/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
 Pcs = (Pc4312,Pc4440,Pc4457)
 #
 A(σs,two_λs,cs) = sum(c*amplitude(σs,two_λs,dc) for (c, dc) in zip(cs, (Λs...,Pcs...)))
