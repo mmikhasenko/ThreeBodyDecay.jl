@@ -8,33 +8,36 @@
 #                                            _|_|
 
 abstract type Recoupling end
-struct NoRecoupling <: Recoupling
+@with_kw struct NoRecoupling <: Recoupling
+    two_λa::Int
+    two_λb::Int
+    two_ja::Int
+    two_jb::Int
 end
 
-amplitude(cs::NoRecoupling, two_τ, two_s,
-    two_λi, two_λj, two_λk,
-    two_ji, two_jj, two_jk, two_j0) = 1
+amplitude(cs::NoRecoupling, two_λa, two_λb) =
+    (cs.two_λa == two_λa) *
+    (cs.two_λb == two_λb)
 
 @with_kw struct RecoulingsLS <: Recoupling
-    two_ls::Tuple{Int,Int} # isobar decay ξ->ij
-    two_LS::Tuple{Int,Int} # 0->ξ k decay
+    two_j::Int
+    two_ls::Tuple{Int,Int}
+    two_ja::Int
+    two_jb::Int
 end
 
-function amplitude(cs::RecoulingsLS, two_τ, two_s,
-    two_λi, two_λj, two_λk,
-    two_ji, two_jj, two_jk, two_j0)
-    return jls_coupling(two_ji, two_λi, two_jj, two_λj, two_s, cs.two_ls[1], cs.two_ls[2]) *
-           jls_coupling(two_s, two_τ, two_jk, two_λk, two_j0, cs.two_LS[1], cs.two_LS[2])
-end
+amplitude(cs::RecoulingsLS, two_λa, two_λb) =
+    jls_coupling(cs.two_ja, two_λa, cs.two_jb, two_λb, cs.two_j, cs.two_ls[1], cs.two_ls[2])
 
-@with_kw struct DecayChain{X, V<:Recoupling, T}
+@with_kw struct DecayChain{X, V1<:Recoupling, V2<:Recoupling, T}
     k::Int
     #
     two_s::Int # isobar spin
     #
     Xlineshape::X # lineshape
     #
-    recoupling::V
+    HRk::V1
+    Hij::V2
     #
     tbs::T # the structure with masses and spins
 end
@@ -67,9 +70,11 @@ function DecayChainLS(k, Xlineshape;
     # 
     lsLS_sorted = sort(lsLS, by=x->x.LS[1])
     @unpack ls, LS = lsLS_sorted[1]
-    # 
+    #
+    i,j = ij_from_k(k)
     return DecayChain(; k, Xlineshape, tbs, two_s,
-        recoupling=RecoulingsLS(two_ls=Int.(2 .* ls), two_LS=Int.(2 .* LS)))
+        Hij=RecoulingsLS(two_s, Int.(2 .* ls), tbs.two_js[i], tbs.two_js[j]),
+        HRk=RecoulingsLS(tbs.two_js[4], Int.(2 .* LS), two_s, tbs.two_js[k]))
 end
 
 """
@@ -90,8 +95,8 @@ function DecayChainsLS(k, Xlineshape;
     LSlsv = possible_lsLS(k, two_s, parity, tbs.two_js, Ps)
     return [DecayChain(;
         k, Xlineshape, tbs, two_s,
-        recoupling = RecoulingsLS(
-            two_ls=Int.(2 .* x.ls), two_LS=Int.(2 .* x.LS)))
+            Hij=RecoulingsLS(two_s, Int.(2 .* ls), tbs.two_js[i], tbs.two_js[j]),
+            HRk=RecoulingsLS(tbs.two_js[4], Int.(2 .* LS), two_s, tbs.two_js[k]))
         for x in LSlsv]
 end
 
@@ -107,11 +112,8 @@ function amplitude(σs, two_λs, dc)
     f = 0.0
     for two_τ = -two_s:2:two_s, two_λs′ in itr_two_λs′
         f += Zksτ(k,two_s,two_τ,two_λs,two_λs′,σs,tbs) *
-            amplitude(dc.recoupling,
-                two_τ, two_s,
-                two_λs′[i], two_λs′[j], two_λs′[k],
-                two_js[i], two_js[j], two_js[k], two_js[4]
-            )
+            amplitude(dc.HRk, two_τ, two_λs′[k]) *
+            amplitude(dc.Hij, two_λs′[i], two_λs′[j])
     end
     lineshape = dc.Xlineshape(σs[k])
     return f * lineshape

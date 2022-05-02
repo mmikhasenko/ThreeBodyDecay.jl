@@ -1,17 +1,17 @@
-using Test
 using ThreeBodyDecay
+using Test
+using Parameters
 
 function QTB_mismatch_factor(dc)
   k = dc.k; i,j = ij_from_k(k);
-  tbs = dc.tbs
-  two_js = tbs.two_js
-  two_s = dc.two_s
-  HH = dc.recoupling
+  @unpack Hij, HRk = dc
+  @unpack two_s, tbs = dc
+  @unpack two_js = tbs
   #
   avHHsq =
       sum((tbs.two_js[4]!=(two_τ-two_λs[k]) ? 0.0 : 1.0) *
-          abs2(amplitude(HH, two_τ, two_s,
-            two_λs[i], two_λs[j], two_λs[k], two_js[i], two_js[j], two_js[k], two_js[4]))
+          abs2(amplitude(Hij, two_τ, two_λs[k])) *
+          abs2(amplitude(Hij, two_λs[i], two_λs[j]))
           for two_λs in itr(tbs.two_js),
               two_τ in -dc.two_s:2:dc.two_s)
   return avHHsq
