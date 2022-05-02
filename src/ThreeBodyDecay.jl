@@ -92,6 +92,7 @@ include("coupling_scheme.jl")
 export Zksτ
 include("general_case.jl")
 
+export CoulingsLS
 export decay_chain, decay_chains, amplitude
 export itr, summed_over_polarization
 include("decay_channel.jl")

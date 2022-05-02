@@ -7,19 +7,28 @@
 #                                                _|
 #                                            _|_|
 
+@with_kw struct CoulingsLS
+    two_ls::Tuple{Int,Int} # isobar decay ξ->ij
+    two_LS::Tuple{Int,Int} # 0->ξ k decay
+end
 
+function amplitude(cs::CoulingsLS, two_τ, two_s,
+    two_λi, two_λj, two_λk,
+    two_ji, two_jj, two_jk, two_j0)
+    return jls_coupling(two_ji, two_λi, two_jj, two_λj, two_s, cs.two_ls[1], cs.two_ls[2]) *
+           jls_coupling(two_s, two_τ, two_jk, two_λk, two_j0, cs.two_LS[1], cs.two_LS[2])
+end
 
-@with_kw struct decay_chain{T,X}
+@with_kw struct decay_chain{X,V,T}
     k::Int
     #
     two_s::Int # isobar spin
     #
-    two_ls::Tuple{Int,Int} # isobar decay ξ->ij
-    two_LS::Tuple{Int,Int} # 0->ξ k decay
+    Xlineshape::X # lineshape
+    #
+    couplingproduct::V
     #
     tbs::T # the structure with masses and spins
-    #
-    Xlineshape::X # lineshape
 end
 
 function printable_l(two_l)
@@ -51,8 +60,8 @@ function decay_chain(k, Xlineshape;
     lsLS_sorted = sort(lsLS, by=x->x.LS[1])
     @unpack ls, LS = lsLS_sorted[1]
     # 
-    return decay_chain(; k, Xlineshape, tbs,
-        two_s, two_ls=Int.(2 .* ls), two_LS=Int.(2 .* LS))
+    return decay_chain(; k, Xlineshape, tbs, two_s,
+        couplingproduct=CoulingsLS(two_ls=Int.(2 .* ls), two_LS=Int.(2 .* LS)))
 end
 
 """
@@ -71,8 +80,10 @@ function decay_chains(k, Xlineshape;
     tbs = error("give three-body-system structure, tbs=..."))
     # 
     LSlsv = possible_lsLS(k, two_s, parity, tbs.two_js, Ps)
-    return [decay_chain(;k, Xlineshape, tbs, two_s,
-        two_ls=Int.(2 .* x.ls), two_LS=Int.(2 .* x.LS))
+    return [decay_chain(;
+        k, Xlineshape, tbs, two_s,
+        couplingproduct = CoulingsLS(
+            two_ls=Int.(2 .* x.ls), two_LS=Int.(2 .* x.LS)))
         for x in LSlsv]
 end
 
@@ -87,9 +98,12 @@ function amplitude(σs, two_λs, dc)
     itr_two_λs′ = itr(SVector{3}(tbs.two_js[1],tbs.two_js[2],tbs.two_js[3]))
     f = 0.0
     for two_τ = -two_s:2:two_s, two_λs′ in itr_two_λs′
-        f += jls_coupling(two_js[i], two_λs′[i], two_js[j], two_λs′[j], two_s, dc.two_ls[1], dc.two_ls[2]) *
-            Zksτ(k,two_s,two_τ,two_λs,two_λs′,σs,tbs) *
-            jls_coupling(two_s, two_τ, two_js[k], two_λs′[k], two_js[4], dc.two_LS[1], dc.two_LS[2])
+        f += Zksτ(k,two_s,two_τ,two_λs,two_λs′,σs,tbs) *
+            amplitude(dc.couplingproduct,
+                two_τ, two_s,
+                two_λs′[i], two_λs′[j], two_λs′[k],
+                two_js[i], two_js[j], two_js[k], two_js[4]
+            )
     end
     lineshape = dc.Xlineshape(s,σs[k])
     return f * lineshape
