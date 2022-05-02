@@ -91,7 +91,7 @@ include("coupling_scheme.jl")
 export Zksτ
 include("general_case.jl")
 
-export NoRecoupling, ParityRecoupling, RecoulingLS
+export NoRecoupling, ParityRecoupling, RecouplingLS
 export DecayChain, DecayChainLS, DecayChainsLS
 export amplitude
 export itr, summed_over_polarization

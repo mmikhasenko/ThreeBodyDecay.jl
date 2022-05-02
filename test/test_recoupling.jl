@@ -9,7 +9,7 @@ using Parameters
     H_pc = ParityRecoupling(1,0, jp"1/2+"=>(jp"1/2+",jp"0-"))
     @test H_pc == ParityRecoupling(1,0,'-')
 
-    H_ls = RecoulingLS(possible_ls(reaction)[1] |> x2, reaction)
+    H_ls = RecouplingLS(possible_ls(reaction)[1] |> x2, reaction)
 
     factor = -1 / sqrt(2)
     @test amplitude(H_pc, 1, 0) * factor ≈ amplitude(H_ls, 1, 0)
