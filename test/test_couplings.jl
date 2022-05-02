@@ -2,6 +2,7 @@ using Test
 using ThreeBodyDecay
 
 @testset "jp_str macro" begin
+    @test jp"3+" == str2jp("3+")
     @test jp"1/2+" == jp(1//2, '+')
     @test jp"3/2-" == jp(3//2, '-')
     @test jp"3+" == jp(3, '+')

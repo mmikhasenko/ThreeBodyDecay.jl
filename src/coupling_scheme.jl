@@ -20,13 +20,19 @@ over2(two) = _over2.(two)
 ⊗(p1::Char,p2::Char) = p1==p2 ? '+' : '-'
 ⊗(jp1::jp, jp2::jp) = [jp(j, ⊗(jp1.p, jp2.p)) for j in abs(jp1.j-jp2.j):abs(jp1.j+jp2.j)]
 
-macro jp_str(p)
+function str2jp(p::String)
     !(contains(p, '/')) && return jp(Meta.parse(p[1:end-1]), p[end])
     p[end-2:end-1] != "/2" && error("the string should be `x/2±`, while it is $(p)")
     two_j = Meta.parse(p[1:end-3])
     !(typeof(two_j) <: Int) && error("the string should be `x/2±`, while it is $(p)")
     return jp(two_j//2, p[end])
 end
+
+macro jp_str(p)
+    return str2jp(p)
+end
+
+possible_ls((jp, (jp1, jp2))::Pair{jp, Tuple{jp, jp}}) = possible_ls(jp1, jp2; jp)
 
 function possible_ls(jp1::jp, jp2::jp; jp::jp)
     ls = Vector{Tuple{Int,vtype}}(undef,0)
@@ -37,7 +43,7 @@ function possible_ls(jp1::jp, jp2::jp; jp::jp)
             end
         end
     end
-    return ls
+    return sort(ls, by=x->x[1])
 end
 
 function possible_lsLS(k::Int, jpR::jp, jps::T where T<:Vector{jp})

@@ -81,7 +81,8 @@ export change_basis_3from1,
 include("cross_channel_relations.jl")
 
 #
-export jp, @jp_str
+export jp, str2jp
+export @jp_str
 export ⊗
 export possible_ls, possible_lsLS
 export possible_coupling_schemes

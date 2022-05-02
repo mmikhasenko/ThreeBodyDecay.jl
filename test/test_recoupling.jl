@@ -2,7 +2,23 @@ using ThreeBodyDecay
 using Test
 using Parameters
 
-@testset "ParityRecoupling" begin
+
+@testset "BasicParityRecoupling" begin
+    reaction = jp"1/2+"=>(jp"1/2+",jp"0-")
+
+    H_pc = ParityRecoupling(1,0, jp"1/2+"=>(jp"1/2+",jp"0-"))
+    @test H_pc == ParityRecoupling(1,0,'-')
+
+    H_ls = RecoulingsLS(possible_ls(reaction)[1] |> x2, reaction)
+
+    factor = -1 / sqrt(2)
+    @test amplitude(H_pc, 1, 0) * factor ≈ amplitude(H_ls, 1, 0)
+    @test amplitude(H_pc,-1, 0) * factor ≈ amplitude(H_ls,-1, 0)
+end
+
+
+
+@testset "DecayChainCouplings" begin
     mΛb = 5.61960
     mπ = 0.14
     # intermediate resonances
@@ -28,7 +44,18 @@ using Parameters
     @test amplitude(σs, [0,-1,0, 1], dc_pc) != 0
     @test amplitude(σs, [0,-1,0,-1], dc_pc) != 0
     # 
-
+    dc_pv = DecayChain(
+        k=1,
+        Xlineshape=σ->BW(σ,mΣb,ΓΣb),
+        tbs=tbs, two_s = 1,
+        Hij=ParityRecoupling(1,0,'-'),
+        HRk=NoRecoupling(1,0))
+    #
+    @test amplitude(σs, [0, 1,0, 1], dc_pv) != 0
+    @test amplitude(σs, [0,-1,0, 1], dc_pv) != 0
+    @test amplitude(σs, [0,-1,0,-1], dc_pv) == 0im
+    @test amplitude(σs, [0,-1,0,-1], dc_pv) == 0im
+    # 
     dc_pv = DecayChain(
         k=1,
         Xlineshape=σ->BW(σ,mΣb,ΓΣb),
