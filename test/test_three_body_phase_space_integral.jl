@@ -6,7 +6,7 @@ function QTB_mismatch_factor(dc)
   tbs = dc.tbs
   two_js = tbs.two_js
   two_s = dc.two_s
-  HH = dc.couplingproduct
+  HH = dc.recoupling
   #
   avHHsq =
       sum((tbs.two_js[4]!=(two_τ-two_λs[k]) ? 0.0 : 1.0) *

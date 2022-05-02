@@ -7,26 +7,34 @@
 #                                                _|
 #                                            _|_|
 
-@with_kw struct CoulingsLS
+abstract type Recoupling end
+struct NoRecoupling <: Recoupling
+end
+
+amplitude(cs::NoRecoupling, two_τ, two_s,
+    two_λi, two_λj, two_λk,
+    two_ji, two_jj, two_jk, two_j0) = 1
+
+@with_kw struct RecoulingsLS <: Recoupling
     two_ls::Tuple{Int,Int} # isobar decay ξ->ij
     two_LS::Tuple{Int,Int} # 0->ξ k decay
 end
 
-function amplitude(cs::CoulingsLS, two_τ, two_s,
+function amplitude(cs::RecoulingsLS, two_τ, two_s,
     two_λi, two_λj, two_λk,
     two_ji, two_jj, two_jk, two_j0)
     return jls_coupling(two_ji, two_λi, two_jj, two_λj, two_s, cs.two_ls[1], cs.two_ls[2]) *
            jls_coupling(two_s, two_τ, two_jk, two_λk, two_j0, cs.two_LS[1], cs.two_LS[2])
 end
 
-@with_kw struct DecayChain{X,V,T}
+@with_kw struct DecayChain{X, V<:Recoupling, T}
     k::Int
     #
     two_s::Int # isobar spin
     #
     Xlineshape::X # lineshape
     #
-    couplingproduct::V
+    recoupling::V
     #
     tbs::T # the structure with masses and spins
 end
@@ -61,7 +69,7 @@ function DecayChainLS(k, Xlineshape;
     @unpack ls, LS = lsLS_sorted[1]
     # 
     return DecayChain(; k, Xlineshape, tbs, two_s,
-        couplingproduct=CoulingsLS(two_ls=Int.(2 .* ls), two_LS=Int.(2 .* LS)))
+        recoupling=RecoulingsLS(two_ls=Int.(2 .* ls), two_LS=Int.(2 .* LS)))
 end
 
 """
@@ -82,7 +90,7 @@ function DecayChainsLS(k, Xlineshape;
     LSlsv = possible_lsLS(k, two_s, parity, tbs.two_js, Ps)
     return [DecayChain(;
         k, Xlineshape, tbs, two_s,
-        couplingproduct = CoulingsLS(
+        recoupling = RecoulingsLS(
             two_ls=Int.(2 .* x.ls), two_LS=Int.(2 .* x.LS)))
         for x in LSlsv]
 end
@@ -99,7 +107,7 @@ function amplitude(σs, two_λs, dc)
     f = 0.0
     for two_τ = -two_s:2:two_s, two_λs′ in itr_two_λs′
         f += Zksτ(k,two_s,two_τ,two_λs,two_λs′,σs,tbs) *
-            amplitude(dc.couplingproduct,
+            amplitude(dc.recoupling,
                 two_τ, two_s,
                 two_λs′[i], two_λs′[j], two_λs′[k],
                 two_js[i], two_js[j], two_js[k], two_js[4]
