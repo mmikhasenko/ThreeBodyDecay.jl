@@ -65,16 +65,6 @@ length(σs::ThreeBodySpins) = 4
 iterate(two_hs::ThreeBodySpins)        = iterate((two_hs.two_h1,two_hs.two_h2,two_hs.two_h3,two_hs.two_h0))
 iterate(two_hs::ThreeBodySpins, state) = iterate((two_hs.two_h1,two_hs.two_h2,two_hs.two_h3,two_hs.two_h0),state)
 #
-import Base:getproperty
-function getproperty(two_js::ThreeBodySpins, sym::Symbol)
-    (sym in fieldnames(ThreeBodySpins)) && return getfield(two_js, sym)
-    (sym == :two_j1 || sym == :two_λ1) && return getfield(two_js, :two_h1)
-    (sym == :two_j2 || sym == :two_λ2) && return getfield(two_js, :two_h2)
-    (sym == :two_j3 || sym == :two_λ3) && return getfield(two_js, :two_h3)
-    (sym == :two_j0 || sym == :two_λ0) && return getfield(two_js, :two_h0)
-    error("no property $(sym)")
-end
-# 
 ThreeBodySpins(two_h1,two_h2,two_h3;
     two_h0=error("used the format ThreeBodySpins(1,1,0; two_j0=2)")) =
     ThreeBodySpins(two_h1=two_h1,two_h2=two_h2,two_h3=two_h3,two_h0=two_h0)
