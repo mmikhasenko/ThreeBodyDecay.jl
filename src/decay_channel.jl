@@ -110,11 +110,12 @@ function DecayChainsLS(k, Xlineshape;
     Ps = error("need parities: Ps=[P1,2,3,0]"),
     tbs = error("give three-body-system structure, tbs=..."))
     # 
+    i,j = ij_from_k(k)
     LSlsv = possible_lsLS(k, two_s, parity, tbs.two_js, Ps)
     return [DecayChain(;
         k, Xlineshape, tbs, two_s,
-            Hij=RecouplingLS(two_s, Int.(2 .* ls), tbs.two_js[i], tbs.two_js[j]),
-            HRk=RecouplingLS(tbs.two_js[4], Int.(2 .* LS), two_s, tbs.two_js[k]))
+            Hij=RecouplingLS(two_s, Int.(2 .* x.ls), tbs.two_js[i], tbs.two_js[j]),
+            HRk=RecouplingLS(tbs.two_js[4], Int.(2 .* x.LS), two_s, tbs.two_js[k]))
         for x in LSlsv]
 end
 
