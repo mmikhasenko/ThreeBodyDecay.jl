@@ -37,7 +37,7 @@ for ξ in isobars
     @unpack key, JP, lineshape, m, Γ = ξ
     # 
     qn = str2jp(JP)
-    k = key[1] == "Λ" ? 1 : 3
+    k = key[1] == 'Λ' ? 1 : 3
     ξf = eval(quote
         $(lineshape)(m=$(m), Γ=$Γ)
     end)
@@ -63,11 +63,46 @@ cs = rand(length(chains))
 I(σsλ, model) = sum(abs2, model.cs .* amplitude.(Ref(σsλ), model.chains))
 
 const σsλ0 = randomPoint(tbs)
-# amplitude.(Ref(σsλ0), chains)
 
 const model = (; cs, chains)
 
-I(σsλ0, model)
+
+
+
+
+
+using PrettyTables
+
+function summarystr(dc::DecayChain{BW})
+    @unpack m, Γ = dc.Xlineshape
+    sm, sΓ = string.(round.(Int, (m, Γ) .* 1e3))
+    (kξ, kB) = dc.k == 1 ? ("Λ", "J/ψ") : ("Pc", "K")
+    two_ls = dc.HRk.two_ls
+    return "[ $(kξ)($(sm)) $(kB) ]_{$(two_ls[2])/2} $(div(two_ls[1],2))-wave"
+end
+
+belapsedbychain = [@belapsed amplitude($(σsλ0), $(ch)) for ch in model.chains]
+extrema(belapsedbychain .* 1e6)
+
+pretty_table(hcat(summarystr.(model.chains), belapsedbychain .* 1e6),
+    header = (["wave name", "@time amplitude(wave)"],
+            ["", "[μs]"]), show_omitted_cell_summary = false)
+# 
+# ┌──────────────────────────────┬───────────────────────┐
+# │                    wave name │ @time amplitude(wave) │
+# │                              │                  [μs] │
+# ├──────────────────────────────┼───────────────────────┤
+# │ [ Λ(1520) J/ψ ]_{1/2} 0-wave │                  14.0 │
+# │ [ Λ(1520) J/ψ ]_{3/2} 2-wave │                  14.2 │
+# │ [ Λ(1520) J/ψ ]_{5/2} 2-wave │                  14.3 │
+# │ [ Λ(1520) J/ψ ]_{1/2} 1-wave │                  13.9 │
+# │ [ Λ(1520) J/ψ ]_{3/2} 1-wave │                  14.2 │
+# │ [ Λ(1520) J/ψ ]_{5/2} 3-wave │                  14.3 │
+# │              ⋮               │            ⋮           │
+# └──────────────────────────────┴───────────────────────┘
+#                                          22 rows omitted
+
+
 
 function timeonN(Nev)
     ph = flatDalitzPlotSample(ms; Nev)
@@ -80,11 +115,10 @@ end
 Nev = [1, 10, 100, 1000]
 belapsed = timeonN.(Nev)
 
-using PrettyTables
-
 t = pretty_table(hcat(Nev, belapsed),
     header = (["N", "Time"], ["[ev]", "s"]))
 # 
+# I.(phλ, Ref(model))
 # ┌────────┬───────────┐
 # │      N │      Time │
 # │   [ev] │         s │
