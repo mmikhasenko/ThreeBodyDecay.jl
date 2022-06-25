@@ -76,8 +76,21 @@ function timeonN(Nev)
     return @belapsed I.($(phλ), $(Ref(model)))
 end
 
-timeonN(1)
-timeonN(10)
-timeonN(100)
-timeonN(1000)
 
+Nev = [1, 10, 100, 1000]
+belapsed = timeonN.(Nev)
+
+using PrettyTables
+
+t = pretty_table(hcat(Nev, belapsed),
+    header = (["N", "Time"], ["[ev]", "s"]))
+# 
+# ┌────────┬───────────┐
+# │      N │      Time │
+# │   [ev] │         s │
+# ├────────┼───────────┤
+# │    1.0 │ 0.0004376 │
+# │   10.0 │ 0.0044119 │
+# │  100.0 │ 0.0445829 │
+# │ 1000.0 │  0.469103 │
+# └────────┴───────────┘
