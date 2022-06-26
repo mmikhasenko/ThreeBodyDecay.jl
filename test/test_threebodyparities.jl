@@ -1,7 +1,7 @@
 using ThreeBodyDecay
 using Test
 
-Ps = ThreeBodyParities('+','-','+'; P0='+')
+Ps = ThreeBodyParities('+', '-', '+'; P0='+')
 
 @testset "Three Body Parities structure" begin
     # 
@@ -11,7 +11,7 @@ Ps = ThreeBodyParities('+','-','+'; P0='+')
     @test Ps.P0 == Ps[4] == '+'
     # 
     @test_throws BoundsError Ps[5]
-    @test_throws ErrorException ThreeBodyParities('+','+','+')
+    @test_throws ErrorException ThreeBodyParities('+', '+', '+')
 end
 
 @testset "operations and interate" begin
