@@ -3,32 +3,33 @@ using Plots
 using StaticArrays
 using Parameters
 using BenchmarkTools
+using PrettyTables
 
 @with_kw struct BW
     m::Float64
     Γ::Float64
 end
 
-(bw::BW)(σ::Float64) = 1/(bw.m^2-σ-1im*bw.m*bw.Γ)
+(bw::BW)(σ::Float64) = 1 / (bw.m^2 - σ - 1im * bw.m * bw.Γ)
 
 const mΛb = 5.62
 const mJψ = 3.09
-const mp=0.938
+const mp = 0.938
 const mK = 0.49367
 # 
-const ms = ThreeBodyMasses(mJψ,mp,mK,m0=mΛb)
-const tbs = ThreeBodySystem(;ms, two_js=(2,1,0,1))
+const ms = ThreeBodyMasses(mJψ, mp, mK, m0=mΛb)
+const tbs = ThreeBodySystem(; ms, two_js=(2, 1, 0, 1))
 #
-const Ps_pc = SVector('-','+','-','+');
-const Ps_pv = SVector('-','+','-','-');
+const Ps_pc = SVector('-', '+', '-', '+');
+const Ps_pv = SVector('-', '+', '-', '-');
 
 isobars = [
-    (key = "Λ1520",  JP="3/2-", lineshape=:BW, m=1.5195,  Γ=0.016),
-    (key = "Λ1600",  JP="1/2+", lineshape=:BW, m=1.630,   Γ=0.250),
-    (key = "Λ1670",  JP="1/2-", lineshape=:BW, m=1.685,   Γ=0.050),
-    (key = "Pc4312", JP="1/2-", lineshape=:BW, m=4.312,  Γ=0.012),
-    (key = "Pc4440", JP="1/2-", lineshape=:BW, m=4.440,  Γ=0.008),
-    (key = "Pc4457", JP="3/2-", lineshape=:BW, m=4.457,  Γ=0.002)    
+    (key="Λ1520", JP="3/2-", lineshape=:BW, m=1.5195, Γ=0.016),
+    (key="Λ1600", JP="1/2+", lineshape=:BW, m=1.630, Γ=0.250),
+    (key="Λ1670", JP="1/2-", lineshape=:BW, m=1.685, Γ=0.050),
+    (key="Pc4312", JP="1/2-", lineshape=:BW, m=4.312, Γ=0.012),
+    (key="Pc4440", JP="1/2-", lineshape=:BW, m=4.440, Γ=0.008),
+    (key="Pc4457", JP="3/2-", lineshape=:BW, m=4.457, Γ=0.002)
 ]
 
 chains = []
@@ -57,10 +58,16 @@ for ξ in isobars
     push!(chains, dc_pv...)
     #
 end
-
+chains = vcat(chains...)
 cs = rand(length(chains))
 
-I(σsλ, model) = sum(abs2, model.cs .* amplitude.(Ref(σsλ), model.chains))
+function I(model, σsλ)
+    v = 0.0im
+    for (c, ch) in zip(model.cs, model.chains)
+        v += c * amplitude(ch, σsλ)
+    end
+    return abs2(v)
+end
 
 const σsλ0 = randomPoint(tbs)
 
@@ -68,10 +75,6 @@ const model = (; cs, chains)
 
 
 
-
-
-
-using PrettyTables
 
 function summarystr(dc::DecayChain{BW})
     @unpack m, Γ = dc.Xlineshape
@@ -81,12 +84,12 @@ function summarystr(dc::DecayChain{BW})
     return "[ $(kξ)($(sm)) $(kB) ]_{$(two_ls[2])/2} $(div(two_ls[1],2))-wave"
 end
 
-belapsedbychain = [@belapsed amplitude($(σsλ0), $(ch)) for ch in model.chains]
+belapsedbychain = [@belapsed amplitude($(ch), $(σsλ0)) for ch in model.chains]
 extrema(belapsedbychain .* 1e6)
 
 pretty_table(hcat(summarystr.(model.chains), belapsedbychain .* 1e6),
-    header = (["wave name", "@time amplitude(wave)"],
-            ["", "[μs]"]), show_omitted_cell_summary = false)
+    header=(["wave name", "@time amplitude(wave)"],
+        ["", "[μs]"]), show_omitted_cell_summary=false)
 # 
 # ┌──────────────────────────────┬───────────────────────┐
 # │                    wave name │ @time amplitude(wave) │
@@ -109,7 +112,7 @@ function timeonN(Nev)
     ph = flatDalitzPlotSample(ms; Nev)
     phλ = DalitzPlotPoint.(ph, Ref(σsλ0.two_λs))
     # 
-    return @belapsed I.($(phλ), $(Ref(model)))
+    return @belapsed I.($(Ref(model)), $(phλ))
 end
 
 
@@ -117,15 +120,25 @@ Nev = [1, 10, 100, 1000]
 belapsed = timeonN.(Nev)
 
 t = pretty_table(hcat(Nev, belapsed),
-    header = (["N", "Time"], ["[ev]", "[s]"]))
+    header=(["N", "Time"], ["[ev]", "[s]"]))
 # 
 # I.(phλ, Ref(model))
 # ┌────────┬───────────┐
 # │      N │      Time │
-# │   [ev] │         s │
+# │   [ev] │       [s] │
 # ├────────┼───────────┤
-# │    1.0 │  0.000364 │
-# │   10.0 │  0.003775 │
-# │  100.0 │ 0.0739603 │
-# │ 1000.0 │   0.83642 │
+# │    1.0 │ 0.0003994 │
+# │   10.0 │ 0.0040236 │
+# │  100.0 │ 0.0403715 │
+# │ 1000.0 │  0.409975 │
 # └────────┴───────────┘
+
+# compilation
+@profview I(σsλ0, model)
+# pure runtime
+@profview I(σsλ0, model)
+
+using InteractiveUtils
+
+I(σsλ0, model)
+@code_warntype I(σsλ0, model)

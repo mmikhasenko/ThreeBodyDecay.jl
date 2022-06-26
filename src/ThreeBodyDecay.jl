@@ -88,9 +88,6 @@ export possible_ls, possible_lsLS
 export possible_coupling_schemes
 include("coupling_scheme.jl")
 
-export Zksτ
-include("general_case.jl")
-
 export NoRecoupling, ParityRecoupling, RecouplingLS
 export DecayChain, DecayChainLS, DecayChainsLS
 export amplitude

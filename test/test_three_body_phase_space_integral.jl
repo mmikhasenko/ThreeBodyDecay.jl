@@ -31,7 +31,7 @@ end
   tbs = ThreeBodySystem(1.0, 1.5, 2.0, m0=6.0)
   #
   ch = DecayChainLS(1, σ -> 1.0; two_s=2, tbs=tbs, parity='-', Ps=['+', '+', '+', '+'])
-  sp = summed_over_polarization((σs, two_λ) -> abs2(amplitude(σs, two_λ, ch)), tbs.two_js)
+  sp = summed_over_polarization((σs, two_λ) -> abs2(amplitude(ch, σs, two_λ)), tbs.two_js)
   #
   v_qtv = RhoQTB(tbs.ms.m0^2, σ -> 1.0, tbs.ms^2)
   v_qtv *= QTB_mismatch_factor(ch) # helicity couplings
@@ -48,7 +48,7 @@ tbs = ThreeBodySystem(1.0, 1.5, 2.0; m0=6.0, two_js=ThreeBodySpins(0, 1, 0; two_
 @testset "QaudGK vs Cuba for half-integer spin within 0.01%" begin
   #
   ch = DecayChainLS(1, σ -> 1.0; two_s=1, tbs=tbs, parity='-', Ps=['-', '+', '-', '+'])
-  sp = summed_over_polarization((σs, two_λ) -> abs2(amplitude(σs, two_λ, ch)), tbs.two_js)
+  sp = summed_over_polarization((σs, two_λ) -> abs2(amplitude(ch, σs, two_λ)), tbs.two_js)
   #
   v_qtv = RhoQTB(tbs.ms.m0^2, σ -> 1.0, tbs.ms^2)
   v_qtv *= QTB_mismatch_factor(ch) # helicity couplings
@@ -62,8 +62,8 @@ end
 @testset "QaudGK vs Cuba for half-integer spin and P-wave within 0.01%" begin
   #
   ch = DecayChainLS(1, σ -> 1.0; two_s=1, tbs=tbs, parity='+', Ps=['-', '+', '-', '+'])
-  sp = summed_over_polarization((σs, two_λ) -> abs2(amplitude(σs, two_λ, ch)), tbs.two_js)
-  # sp = σs->abs2(amplitude(σs,[0,0,0,0],ch))
+  sp = summed_over_polarization((σs, two_λ) -> abs2(amplitude(ch, σs, two_λ)), tbs.two_js)
+  # sp = σs->abs2(amplitude(ch,σs,[0,0,0,0]))
   #
   v_qtv = RhoQTB(tbs.ms.m0^2, σ -> 1.0, tbs.ms^2)
   v_qtv *= QTB_mismatch_factor(ch) # helicity couplings

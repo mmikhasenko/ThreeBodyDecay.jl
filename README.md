@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.com/mmikhasenko/ThreeBodyDecay.jl.svg?branch=master)](https://travis-ci.com/mmikhasenko/ThreeBodyDecay.jl)
 [![Build Status](https://ci.appveyor.com/api/projects/status/github/mmikhasenko/ThreeBodyDecay.jl?svg=true)](https://ci.appveyor.com/project/mmikhasenko/ThreeBodyDecay-jl)
 [![Codecov](https://codecov.io/gh/mmikhasenko/ThreeBodyDecay.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/mmikhasenko/ThreeBodyDecay.jl)
+
 <!-- [![Coveralls](https://coveralls.io/repos/github/mmikhasenko/ThreeBodyDecay.jl/badge.svg?branch=master)](https://coveralls.io/github/mmikhasenko/ThreeBodyDecay.jl?branch=master) -->
 
 A framework for the amplitude analysis of multibody decay chains.
@@ -13,12 +14,13 @@ All particles can have arbitrary spin.
 
 The framework is based on the publication, "Dalitz-plot decomposition for three-body decays" by JPAC Collaboration (M Mikhasenko at al.) [(arxiv)](http://inspirehep.net/record/1758460).
 The code inherits notations of the paper:
- - Particles are numbered 1,2,3, and 0 for the decay products and the mother particle, respectively.
- - `s` is a total invariant mass of three particles,
- - `σ` is a two-particle invariant mass squared, `σₖ = (pᵢ+pⱼ)²`,
- - `θᵢⱼ` is a scattering angle, an angle between `vec pᵢ` and `- vec pₖ`.
- - `hat θₖ₍ⱼ₎` is a isobar angle (the Wigner angle of the 0-particle), an angle of `vec pⱼ+pⱼ` with respect the the chain `j`.
- - `ζᵏᵢ₍₀₎` is the Wigner angle for the final-state particle (see the paper for the definition).
+
+- Particles are numbered 1,2,3, and 0 for the decay products and the mother particle, respectively.
+- `s` is a total invariant mass of three particles,
+- `σ` is a two-particle invariant mass squared, `σₖ = (pᵢ+pⱼ)²`,
+- `θᵢⱼ` is a scattering angle, an angle between `vec pᵢ` and `- vec pₖ`.
+- `hat θₖ₍ⱼ₎` is a isobar angle (the Wigner angle of the 0-particle), an angle of `vec pⱼ+pⱼ` with respect the the chain `j`.
+- `ζᵏᵢ₍₀₎` is the Wigner angle for the final-state particle (see the paper for the definition).
 
 ## API for describing the decay
 
@@ -40,12 +42,14 @@ tbs = ThreeBodySystem(ms.Jψ, ms.p, ms.K; m0=ms.Lb,   # masses m1,m2,m3,m0
 Concerving = ThreeBodyParities('-',  '+',  '-'; P0='+')
 Violating  = ThreeBodyParities('-',  '+',  '-'; P0='-')
 ```
+
 `ThreeBodySystem` creates an immutable structure that describes the setup.
 Two work with particles with non-integer spin, the doubled quantum numbers are stored.
 
 The following code creates six possible decay channels.
 The lineshape of the isobar is specified by the second argument,
 it is a simple Breit-Wigner function in the example below.
+
 ```julia
 # chains-1, i.e. (2+3): Λs with the lowest ls, LS
 Λ1520  = DecayChainLS(1, σ->BW(σ, 1.5195, 0.0156); two_s = 3/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
@@ -59,14 +63,17 @@ Pc4440 = DecayChainLS(3, σ->BW(σ, 4.440, 0.010); two_s = 1/2|>x2, parity = '+'
 Pc4457 = DecayChainLS(3, σ->BW(σ, 4.457, 0.020); two_s = 3/2|>x2, parity = '+', Ps=Concerving, tbs=tbs)
 Pcs = (Pc4312,Pc4440,Pc4457)
 #
-A(σs,two_λs,cs) = sum(c*amplitude(σs,two_λs,dc) for (c, dc) in zip(cs, (Λs...,Pcs...)))
+A(σs,two_λs,cs) = sum(c*amplitude(dc,σs,two_λs) for (c, dc) in zip(cs, (Λs...,Pcs...)))
 ```
+
 Amplitudes for the decay chains are added coherently with complex constants.
+
 - the invariant variables, `σs = [σ₁,σ₂,σ₃]`,
 - helicities `two_λs = [λ₁,λ₂,λ₃,λ₀]`
 - and complex couplings `cs = [c₁,c₂,...]`
 
 The intensity (and probability) is a squared amplitude summed over the summed over helicities for the case the decay particle is unpolarized.
+
 ```julia
 I(σs,cs) = sum(abs2(A(σs,two_λs,cs)) for two_λs in itr(tbs.two_js))
 #
@@ -79,24 +86,29 @@ I(σs) = I(σs,[1, 1.1, 0.4im, 2.2, 2.1im, -0.3im]) # set the couplings
 # Plotting API
 
 Visualization discuss below exploits the `Plots.jl` module with `matplotlib` backend.
+
 ```julia
 using Plots
 pyplot()
 ```
+
 A natural way to visualize the three-body decay with two degrees of freedom
 is a correlation plot of the subchannel invariant masses squared.
 Kinematic limits can visualized using the `border` function.
 Plot in the σ₁σ₃ variables is obtained by
+
 ```julia
 plot(
   plot(border31(tbs), xlab="σ₁ (GeV²)", ylab="σ₃ (GeV²)"),
   plot(border12(tbs), xlab="σ₂ (GeV²)", ylab="σ₁ (GeV²)"))
 ```
+
 ![border31](example/plot/border31_12.png)
 
 A phase-space sample is generated using the `flatDalitzPlotSample` function.
 By weighting the sample one gets the intensity distribution.
 The intensity function can also be plotted on the Dalitz plan using a grid.
+
 ```julia
 using TypedTables # converint inteface of selecting columns
 #
@@ -107,4 +119,5 @@ plot(layout=(900,350), layout=grid(1,2), xlab="σ₁ (GeV²)", ylab="σ₃ (GeV�
 histogram2d!(sp=1, σsv.σ1, σsv.σ3, weights=weights, lab="weighted phase space"))
 plot!(sp=2, I, tbs.ms; iσx=1, iσy=3, lab="on a grid")
 ```
+
 ![Scatter and Histogram](example/plot/dalitz31.png)

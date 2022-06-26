@@ -10,8 +10,8 @@ using Parameters
 
     @unpack σs, two_λs = randomPoint(tbs)
 
-    @inferred Complex{Float64} amplitude(σs, two_λs, dc)
+    @inferred Complex{Float64} amplitude(dc, σs, two_λs)
 
     # using InteractiveUtils
-    # @code_warntype amplitude(σs, two_λs, dc)
+    # @code_warntype amplitude(dc, σs, two_λs)
 end

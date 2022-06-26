@@ -4,7 +4,7 @@ using Zygote
 
 
 tbs = let m1 = 0.938, m2 = 0.49367, m3 = 0.13957, m0 = 2.46867
-    ThreeBodySystem(m1,m2,m3,m0)
+    ThreeBodySystem(m1, m2, m3, m0)
 end
 
 #
@@ -20,34 +20,34 @@ end
 #     histogram2d(σ1v, σ3v, lab="", bins=100)
 # end
 
-const Ks892  = BreitWigner(0.89176, 0.05)
-const Λ1520  = BreitWigner(1.5195,  0.0156)
-const Δ1232  = BreitWigner(1.232,   0.112)
+const Ks892 = BreitWigner(0.89176, 0.05)
+const Λ1520 = BreitWigner(1.5195, 0.0156)
+const Δ1232 = BreitWigner(1.232, 0.112)
 
-model = [(1,Ks892),
-         (3,Λ1520),
-         (2,Δ1232)]
+model = [(1, Ks892),
+    (3, Λ1520),
+    (2, Δ1232)]
 
-function scalar_amplitude(σs, model, cs)
-    mod = [1.1,2.2im, 3.3]
+function scalar_amplitude(model, σs, cs)
+    mod = [1.1, 2.2im, 3.3]
     #
     A = 0.0im
-    for (me,c) in zip(model,cs)
-        (ch,ξ) = me
-    # for (m,c) in zip(mod,cs)
+    for (me, c) in zip(model, cs)
+        (ch, ξ) = me
+        # for (m,c) in zip(mod,cs)
         # A += c * amp(σs[ch],ξ)
         A += c * mod[ch]
     end
     return A
 end
 
-const cs0 = [1.2im, 2.1, 2.3+1im]
+const cs0 = [1.2im, 2.1, 2.3 + 1im]
 
-let σ1 = 1.0, σ3=4.0
-    scalar_amplitude([σ1,gσ2(σ3,σ1,tbs),σ3], model, cs0)
+let σ1 = 1.0, σ3 = 4.0
+    scalar_amplitude(model, [σ1, gσ2(σ3, σ1, tbs), σ3], cs0)
 end
 
-scalar_amplitude_squared(σs, model, cs) = abs2(scalar_amplitude(σs, model, cs))
+scalar_amplitude_squared(model, σs, cs) = abs2(scalar_amplitude(model, σs, cs))
 
 # @time let
 #     σ3v, σ1v = flatDalitzPlotSample31(tbs; Nev=100000)
@@ -57,12 +57,14 @@ scalar_amplitude_squared(σs, model, cs) = abs2(scalar_amplitude(σs, model, cs)
 
 # getbinned2dDensity(g, xlim, ylim,  Nrows, Ncols)
 
-diff_through_pars(cs) = let σ1 = 1.0, σ3=4.0,
-    σs = [σ1,gσ2(σ3,σ1,tbs),σ3]
-    return gradient(x->scalar_amplitude_squared(σs, model, x), cs)
-end
+diff_through_pars(cs) =
+    let σ1 = 1.0, σ3 = 4.0,
+        σs = [σ1, gσ2(σ3, σ1, tbs), σ3]
 
-diff_through_pars([1.1im,1.1,1.1])
+        return gradient(x -> scalar_amplitude_squared(σs, model, x), cs)
+    end
+
+diff_through_pars([1.1im, 1.1, 1.1])
 
 let
 end

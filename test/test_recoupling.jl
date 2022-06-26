@@ -41,10 +41,10 @@ end
     # 
     σs = randomPoint(tbs.ms)
     # 
-    @test amplitude(σs, [0, 1, 0, 1], dc_pc) != 0
-    @test amplitude(σs, [0, 1, 0, -1], dc_pc) != 0
-    @test amplitude(σs, [0, -1, 0, 1], dc_pc) != 0
-    @test amplitude(σs, [0, -1, 0, -1], dc_pc) != 0
+    @test amplitude(dc_pc, σs, [0, 1, 0, 1]) != 0
+    @test amplitude(dc_pc, σs, [0, 1, 0, -1]) != 0
+    @test amplitude(dc_pc, σs, [0, -1, 0, 1]) != 0
+    @test amplitude(dc_pc, σs, [0, -1, 0, -1]) != 0
     # 
     dc_pv = DecayChain(
         k=1,
@@ -53,10 +53,10 @@ end
         Hij=ParityRecoupling(1, 0, '-'),
         HRk=NoRecoupling(1, 0))
     #
-    @test amplitude(σs, [0, 1, 0, 1], dc_pv) != 0
-    @test amplitude(σs, [0, -1, 0, 1], dc_pv) != 0
-    @test amplitude(σs, [0, -1, 0, -1], dc_pv) == 0im
-    @test amplitude(σs, [0, -1, 0, -1], dc_pv) == 0im
+    @test amplitude(dc_pv, σs, [0, 1, 0, 1]) != 0
+    @test amplitude(dc_pv, σs, [0, -1, 0, 1]) != 0
+    @test amplitude(dc_pv, σs, [0, -1, 0, -1]) == 0im
+    @test amplitude(dc_pv, σs, [0, -1, 0, -1]) == 0im
     # 
     dc_pv = DecayChain(
         k=1,
@@ -65,8 +65,8 @@ end
         Hij=ParityRecoupling(1, 0, '-'),
         HRk=NoRecoupling(1, 0))
     #
-    @test amplitude(σs, [0, 1, 0, 1], dc_pv) != 0
-    @test amplitude(σs, [0, -1, 0, 1], dc_pv) != 0
-    @test amplitude(σs, [0, -1, 0, -1], dc_pv) == 0im
-    @test amplitude(σs, [0, -1, 0, -1], dc_pv) == 0im
+    @test amplitude(dc_pv, σs, [0, 1, 0, 1]) != 0
+    @test amplitude(dc_pv, σs, [0, -1, 0, 1]) != 0
+    @test amplitude(dc_pv, σs, [0, -1, 0, -1]) == 0im
+    @test amplitude(dc_pv, σs, [0, -1, 0, -1]) == 0im
 end
