@@ -50,32 +50,20 @@ const ParityTuple = NamedTuple{(:P1,:P2,:P3,:P0), NTuple{4, Char}}
 #
 ThreeBodyParities(P1,P2,P3;
     P0=error("used the format ThreeBodyParities('+','-','+'; P0='±')")) =
-    ParityTuple((;P1,P2,P3,P0))
+    ParityTuple((P1,P2,P3,P0))
 # -----------------------------------------------------
 
 # Dynamic variables
-@with_kw struct Invariants
-    σ1::Float64
-    σ2::Float64
-    σ3::Float64
-end
-function Invariants(ms::MassTuple;σ1=-1.0,σ2=-1.0,σ3=-1.0)
+const MandestamTuple = NamedTuple{(:σ1,:σ2,:σ3), NTuple{3, Float64}}
+
+function Invariants(ms::MassTuple; σ1=-1.0, σ2=-1.0, σ3=-1.0)
     sign(σ1)+sign(σ2)+sign(σ3)!=1 && error("the method works with TWO invariants given: $((σ1,σ2,σ3))")
-    σ3 < 0 && return Invariants(;σ1=σ1,σ2=σ2,σ3=sum(ms^2)-σ1-σ2)
-    σ1 < 0 && return Invariants(;σ2=σ2,σ3=σ3,σ1=sum(ms^2)-σ2-σ3)
-    return Invariants(;σ3=σ3,σ1=σ1,σ2=sum(ms^2)-σ3-σ1)
+    σ3 < 0 && return MandestamTuple((σ1,σ2,σ3=sum(ms^2)-σ1-σ2))
+    σ1 < 0 && return MandestamTuple((sum(ms^2)-σ2-σ3,σ2,σ3))
+    return MandestamTuple((σ1=σ1,σ2=sum(ms^2)-σ3-σ1,σ3=σ3))
 end
-# 
-iterate(σs::Invariants)        = iterate((σs.σ1,σs.σ2,σs.σ3))
-iterate(σs::Invariants, state) = iterate((σs.σ1,σs.σ2,σs.σ3),state)
-length(σs::Invariants) = 3
-function getindex(σs::Invariants, i::Int)
-    i==1 && return σs.σ1
-    i==2 && return σs.σ2
-    i!=3 && error("i should be equal to 1,2, or 3")
-    return σs.σ3
-end
-nt(σs::Invariants) = NamedTuple{(:σ1,:σ2,:σ3)}([σs.σ1,σs.σ2,σs.σ3])
+Invariants(; σ1,σ2,σ3) = MandestamTuple((σ1,σ2,σ3))
+Invariants(σ1,σ2,σ3) = MandestamTuple((σ1,σ2,σ3))
 
 # -----------------------------------------------------
 
@@ -87,7 +75,7 @@ end
 function randomPoint(ms::MassTuple)
     σ1 = lims1(ms)[1] + rand()* (lims1(ms)[2]-lims1(ms)[1])
     σ3 = σ3of1(2rand()-1, σ1, ms^2)
-    return Invariants(ms;σ1=σ1,σ3=σ3);
+    return Invariants(ms; σ1=σ1, σ3=σ3);
 end
 
 function randomPoint(tbs::ThreeBodySystem)
@@ -125,7 +113,7 @@ end
 
 #
 inrange(x,r) = r[1]<x<r[2]
-inphrange(σs::Invariants, ms::MassTuple) = Kibble(σs,ms^2) < 0 &&
+inphrange(σs::MandestamTuple, ms::MassTuple) = Kibble(σs,ms^2) < 0 &&
     inrange(σs[1],lims1(ms)) && inrange(σs[2],lims2(ms)) && inrange(σs[3],lims3(ms))
 #
 # 
