@@ -8,11 +8,11 @@ function invs(σx,σy; iσx,iσy,ms)
     # error()
 end
 
-@recipe function f(ms::ThreeBodyMasses, intensity::Function)
+@recipe function f(ms::MassTuple, intensity::Function)
     return (intensity, ms)
 end
 
-@recipe function f(intensity::Function, ms::ThreeBodyMasses; iσx = 1, iσy = 2, Ngrid = 100)
+@recipe function f(intensity::Function, ms::MassTuple; iσx = 1, iσy = 2, Ngrid = 100)
     # 
     σxv = range(lims(iσx,ms)..., length=Ngrid)
     σyv = range(lims(iσy,ms)..., length=Ngrid)

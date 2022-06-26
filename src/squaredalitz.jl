@@ -3,7 +3,7 @@
 
     Calculate normalized values in square coordinates, -1 ≤ x,y ≤ 1
 """
-function squaredalitz(k,σs,ms::ThreeBodyMasses)
+function squaredalitz(k,σs,ms::MassTuple)
     cθ = cosθij(k,σs,ms^2)
     cθ = cθ ≥ 1.0 ? 1.0 : (cθ ≤ -1.0 ? -1.0 : cθ)
     y = acos(cθ) / π
@@ -22,7 +22,7 @@ squaredalitz3(σs,ms) = squaredalitz(3,σs,ms)
 
     Inverse transformation from square coordinates
 """
-function invsquaredalitz(k,x,y,ms::ThreeBodyMasses)
+function invsquaredalitz(k,x,y,ms::MassTuple)
     mlimsk = sqrt.(lims(k, ms))
     # 
     _mk = mlimsk[1] + (mlimsk[2]-mlimsk[1]) * (cos(x*π) + 1) / 2
@@ -44,7 +44,7 @@ invsquaredalitz3(x,y,ms) = invsquaredalitz(3,x,y,ms)
 
 calculates jacobian of transformation to square coordinates
 """
-function jacobean_squaredalitz(k,σs,ms::ThreeBodyMasses)
+function jacobean_squaredalitz(k,σs,ms::MassTuple)
     (i,j) = ij_from_k(k)
     #
     cθ = cosθij(k,σs,ms^2)
