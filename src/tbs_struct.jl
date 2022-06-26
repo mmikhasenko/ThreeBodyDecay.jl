@@ -22,41 +22,22 @@ import Base: getindex, ^, length, iterate
 
 
 # -----------------------------------------------------
-@with_kw struct ThreeBodySpins{T}
-    two_h1::T
-    two_h2::T
-    two_h3::T
-    two_h0::T
-    ThreeBodySpins{T}(two_h1,two_h2,two_h3,two_h0) where {T} =
-        isodd(two_h1+two_h2+two_h3+two_h0) ?
-            error("baryon number is not conserved") :
-            new(two_h1,two_h2,two_h3,two_h0)
-end
-function getindex(two_hs::ThreeBodySpins, i::Int)
-    (i==0 || i==4) && return two_hs.two_h0
-    i==2 && return two_hs.two_h2
-    i==3 && return two_hs.two_h3
-    i!=1 && error("i should be equal to 0,1,2,3 or 4")
-    return two_hs.two_h1
-end
-length(σs::ThreeBodySpins) = 4
-iterate(two_hs::ThreeBodySpins)        = iterate((two_hs.two_h1,two_hs.two_h2,two_hs.two_h3,two_hs.two_h0))
-iterate(two_hs::ThreeBodySpins, state) = iterate((two_hs.two_h1,two_hs.two_h2,two_hs.two_h3,two_hs.two_h0),state)
-#
-ThreeBodySpins(two_h1,two_h2,two_h3;
-    two_h0=error("used the format ThreeBodySpins(1,1,0; two_j0=2)")) =
-    ThreeBodySpins(two_h1=two_h1,two_h2=two_h2,two_h3=two_h3,two_h0=two_h0)
+const SpinTuple = NamedTuple{(:two_h1,:two_h2,:two_h3,:two_h0), NTuple{4, Int}}
 
+ThreeBodySpins(two_h1,two_h2,two_h3; two_h0 = error("used the format ThreeBodySpins(1,1,0; two_h0=2)")) =
+    isodd(two_h1+two_h2+two_h3+two_h0) ?
+        error("baryon number is not conserved") :
+        SpinTuple((two_h1,two_h2,two_h3,two_h0))
 # 
 # 
 @with_kw struct ThreeBodySystem{T,K}
     ms::T
-    two_js::K = ThreeBodySpins(0,0,0,0)
+    two_js::K = ThreeBodySpins(0,0,0; two_h0=0)
 end
 #
 # convenient constructors
 ThreeBodySystem(ms::MassTuple) = ThreeBodySystem(ms=ms)
-ThreeBodySystem(m1,m2,m3; m0, two_js=ThreeBodySpins(0,0,0,0)) = ThreeBodySystem(ThreeBodyMasses(m1,m2,m3; m0=m0), two_js)
+ThreeBodySystem(m1,m2,m3; m0, two_js=ThreeBodySpins(0,0,0; two_h0 = 0)) = ThreeBodySystem(ThreeBodyMasses(m1,m2,m3; m0=m0), two_js)
 #
 two_j0(tbs::ThreeBodySystem) = tbs.two_js[4]
 two_j1(tbs::ThreeBodySystem) = tbs.two_js[1]
@@ -64,27 +45,12 @@ two_j2(tbs::ThreeBodySystem) = tbs.two_js[2]
 two_j3(tbs::ThreeBodySystem) = tbs.two_js[3]
 
 # -----------------------------------------------------
-@with_kw struct ThreeBodyParities
-    P1::Char
-    P2::Char
-    P3::Char
-    P0::Char
-end
-function getindex(Ps::ThreeBodyParities, i::Int)
-    (i==0 || i==4) && return Ps.P0
-    i==2 && return Ps.P2
-    i==3 && return Ps.P3
-    i!=1 && error("i should be equal to 0,1,2,3 or 4")
-    return Ps.P1
-end
-length(σs::ThreeBodyParities) = 4
-iterate(Ps::ThreeBodyParities)        = iterate((Ps.P1,Ps.P2,Ps.P3,Ps.P0))
-iterate(Ps::ThreeBodyParities, state) = iterate((Ps.P1,Ps.P2,Ps.P3,Ps.P0),state)
+
+const ParityTuple = NamedTuple{(:P1,:P2,:P3,:P0), NTuple{4, Char}}
 #
 ThreeBodyParities(P1,P2,P3;
-    P0=error("used the format ThreeBodyParities(1,1,0; two_j0=2)")) =
-    ThreeBodyParities(P1=P1,P2=P2,P3=P3,P0=P0)
-
+    P0=error("used the format ThreeBodyParities('+','-','+'; P0='±')")) =
+    ParityTuple((;P1,P2,P3,P0))
 # -----------------------------------------------------
 
 # Dynamic variables
