@@ -8,8 +8,8 @@ using Parameters
 using RecipesBase
 
 export Kallen, KallenFact, Kibble,
-       inphrange,
-       lims,lims1,lims2,lims3
+        inphrange,
+        lims, lims1, lims2, lims3
 export phase
 export ijk, ij_from_k
 # 
@@ -18,7 +18,7 @@ export cosθ12, cosθ23, cosθ31
 # 
 export σkofi, σkofj
 export σ1of2, σ2of3, σ3of1,
-       σ1of3, σ2of1, σ3of2       
+        σ1of3, σ2of1, σ3of2
 include("kinematics.jl")
 
 export x_str, minusone
@@ -35,7 +35,7 @@ export cosζ21_for1, cosζ21_for2
 export cosζ13_for1, cosζ13_for3
 export cosζ32_for3, cosζ32_for2
 # 
-export cosζ12_for3, cosζ23_for1,cosζ31_for2
+export cosζ12_for3, cosζ23_for1, cosζ31_for2
 # 
 export cosθhatk1, cosθhatk2, cosθhatk3
 export cosζk1_for1, cosζk2_for2, cosζk3_for3
@@ -56,7 +56,7 @@ include("tbs_struct.jl")
 
 # density
 export getbinned1dDensity,
-       getbinned2dDensity
+        getbinned2dDensity
 export gridded_density_function
 include("rand_corr.jl")
 
@@ -100,17 +100,17 @@ include("decay_channel.jl")
 include("dalitzplotsrecipe.jl")
 
 export squaredalitz,
-       squaredalitz1,
-       squaredalitz2,
-       squaredalitz3
+        squaredalitz1,
+        squaredalitz2,
+        squaredalitz3
 export invsquaredalitz,
-       invsquaredalitz1,
-       invsquaredalitz2,
-       invsquaredalitz3
+        invsquaredalitz1,
+        invsquaredalitz2,
+        invsquaredalitz3
 export jacobean_squaredalitz,
-       jacobean_squaredalitz1,
-       jacobean_squaredalitz2,
-       jacobean_squaredalitz3
+        jacobean_squaredalitz1,
+        jacobean_squaredalitz2,
+        jacobean_squaredalitz3
 include("squaredalitz.jl")
 
 end  # module ThreeBodyDecay
