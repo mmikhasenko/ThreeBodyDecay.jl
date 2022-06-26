@@ -11,7 +11,9 @@ end
 
 include("wignerrotationdispatch.jl")
 
-@safetestset "four vectors" begin include("test_generation.jl") end
+@safetestset "four vectors" begin
+    include("test_generation.jl")
+end
 
 # angular functions
 @safetestset "Angular Functions block" begin
@@ -20,9 +22,13 @@ include("wignerrotationdispatch.jl")
     include("check_lineshape_functions.jl")
 end
 
-@safetestset "Permutations" begin include("test_wigner_permutations.jl") end
+@safetestset "Permutations" begin
+    include("test_wigner_permutations.jl")
+end
 
-@safetestset "Sum rule" begin include("wigner_angle_sumrules.jl") end
+@safetestset "Sum rule" begin
+    include("wigner_angle_sumrules.jl")
+end
 
 # Lineshapes
 @safetestset "Lineshapes" begin
@@ -43,7 +49,9 @@ end
     include("test_three_body_phase_space_integral.jl")
 end
 # examples
-@safetestset "Complete example" begin include("test_Xic_decay.jl") end
+@safetestset "Complete example" begin
+    include("test_Xic_decay.jl")
+end
 
 @safetestset "square dalitz" begin
     include("test_transformations_of_squaredalitz.jl")

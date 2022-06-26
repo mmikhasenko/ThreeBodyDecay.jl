@@ -2,7 +2,7 @@ using ThreeBodyDecay
 using Test
 
 @testset "Border and Flat Dalitz" begin
-    ms = ThreeBodyMasses(6.0,1.1,1.3,1.5)
+    ms = ThreeBodyMasses(6.0, 1.1, 1.3, 1.5)
     fDP = flatDalitzPlotSample(ms)
     b = border31(ms)
     # make better test!
