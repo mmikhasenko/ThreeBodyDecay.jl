@@ -10,7 +10,7 @@ using Test
         parity='-',
         Ps=['+', '+', '+', '+'],
         tbs=tbs)
-    @test sum(reim(amplitude(dpp, dc)) .≈ 0.0) == 0
+    @test sum(reim(amplitude(dc, dpp)) .≈ 0.0) == 0
 end
 
 
@@ -22,6 +22,6 @@ end
     #
     dc = DecayChainLS(3, σ -> 1 / (4.1^2 - σ - 0.1im); two_s=3, parity='-', Ps=['+', '-', '-', '+'], tbs=tbs)
     # @show amplitude(dpp, dc)
-    @test sum(reim(amplitude(dpp, dc)) .≈ 0.0) == 0
+    @test sum(reim(amplitude(dc, dpp)) .≈ 0.0) == 0
     # testing something else?
 end

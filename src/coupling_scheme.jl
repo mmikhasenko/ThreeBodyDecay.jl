@@ -55,7 +55,7 @@ function possible_lsLS(k::Int, jpR::jp, jps::T where {T<:Vector{jp}})
 end
 function possible_lsLS(k::Int, two_s::Int, parity::Char, two_js, Ps)
     jpR = jp(two_s // 2, parity)
-    jps = jp.(zip(two_js .// 2, Ps))
+    jps = jp.(zip(Tuple(two_js) .// 2, Ps))
     return possible_lsLS(k, jpR, jps)
 end
 

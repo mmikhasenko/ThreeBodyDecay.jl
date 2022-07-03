@@ -110,35 +110,60 @@ function DecayChainsLS(k, Xlineshape;
     Ps=error("need parities: Ps=[P1,2,3,0]"),
     tbs=error("give three-body-system structure, tbs=..."))
     # 
+    i, j = ij_from_k(k)
     LSlsv = possible_lsLS(k, two_s, parity, tbs.two_js, Ps)
     return [DecayChain(;
         k, Xlineshape, tbs, two_s,
-        Hij=RecouplingLS(two_s, Int.(2 .* ls), tbs.two_js[i], tbs.two_js[j]),
-        HRk=RecouplingLS(tbs.two_js[4], Int.(2 .* LS), two_s, tbs.two_js[k]))
+        Hij=RecouplingLS(two_s, Int.(2 .* x.ls), tbs.two_js[i], tbs.two_js[j]),
+        HRk=RecouplingLS(tbs.two_js[4], Int.(2 .* x.LS), two_s, tbs.two_js[k]))
             for x in LSlsv]
 end
 
-function amplitude(σs, two_λs, dc)
-    k = dc.k
+
+wignerd_doublearg_sign(two_j, two_λ1, two_λ2, cosθ, ispositive) =
+    (ispositive ? 1 : x"-1"^div(two_λ1 - two_λ2, 2)) *
+    wignerd_doublearg(two_j, two_λ1, two_λ2, cosθ)
+
+function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
+
+    @unpack k, tbs, two_s, HRk, Hij = dc
+    # 
     i, j = ij_from_k(k)
-    tbs = dc.tbs
-    s = tbs.ms.m0^2
     #
-    two_s = dc.two_s
+    ms² = tbs.ms^2
     two_js = tbs.two_js
+    # 
+    w0 = wr(k, refζs[4], 0)
+    wi = wr(k, refζs[i], i)
+    wj = wr(k, refζs[j], j)
+    wk = wr(k, refζs[k], k)
+    # 
+    cosζ0 = cosζ(w0, σs, ms²)
+    cosζi = cosζ(wi, σs, ms²)
+    cosζj = cosζ(wj, σs, ms²)
+    cosζk = cosζ(wk, σs, ms²)
     #
-    itr_two_λs′ = itr(SVector{3}(tbs.two_js[1], tbs.two_js[2], tbs.two_js[3]))
+    cosθ = cosθij(k, σs, ms²)
+    # 
+    itr_two_λs′ = itr(SVector{3}(two_js[1], two_js[2], two_js[3]))
     f = 0.0
     for two_τ = -two_s:2:two_s, two_λs′ in itr_two_λs′
-        f += Zksτ(k, two_s, two_τ, two_λs, two_λs′, σs, tbs) *
-             amplitude(dc.HRk, two_τ, two_λs′[k]) *
-             amplitude(dc.Hij, two_λs′[i], two_λs′[j])
+        f +=
+            wignerd_doublearg_sign(two_js[4], two_λs[4], two_τ - two_λs′[k], cosζ0, ispositive(w0)) *
+            # 
+            amplitude(HRk, two_τ, two_λs′[k]) * phase(two_js[k] - two_λs′[k]) * # particle-2 convention
+            sqrt(two_s + 1) * wignerd_doublearg(two_s, two_τ, two_λs′[i] - two_λs′[j], cosθ) *
+            amplitude(Hij, two_λs′[i], two_λs′[j]) * phase(two_js[j] - two_λs′[j]) * # particle-2 convention
+            # 
+            wignerd_doublearg_sign(two_js[i], two_λs′[i], two_λs[i], cosζi, ispositive(wi)) *
+            wignerd_doublearg_sign(two_js[j], two_λs′[j], two_λs[j], cosζj, ispositive(wj)) *
+            wignerd_doublearg_sign(two_js[k], two_λs′[k], two_λs[k], cosζk, ispositive(wk))
     end
     lineshape = dc.Xlineshape(σs[k])
     return f * lineshape
 end
 #
-amplitude(dpp, dc) = amplitude(dpp.σs, dpp.two_λs, dc)
+amplitude(dc::DecayChain, dpp) = amplitude(dc, dpp.σs, dpp.two_λs)
 #
 summed_over_polarization(fn, two_js) = σs -> sum(fn(σs, two_λs) for two_λs in itr(two_js))
 #

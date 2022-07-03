@@ -24,7 +24,7 @@ using ThreeBodyDecay
     dc_Σb_x1 = DecayChainLS(1, σ -> BW(σ, mΣb_x, ΓΣb_x); tbs=tbs, two_s=3, parity='+', Ps=['-', '+', '-', '+'])
     dc_Σb_x3 = DecayChainLS(3, σ -> BW(σ, mΣb_x, ΓΣb_x); tbs=tbs, two_s=3, parity='+', Ps=['-', '+', '-', '+'])
 
-    full_a(σs, two_λs) = sum(amplitude(σs, two_λs, ch) for ch in [dc_Σb1, dc_Σb_x1, dc_Σb3, dc_Σb_x3])
+    full_a(σs, two_λs) = sum(amplitude(ch, σs, two_λs) for ch in [dc_Σb1, dc_Σb_x1, dc_Σb3, dc_Σb_x3])
     full_a(dpp) = full_a(dpp.σs, dpp.two_λs)
     #
     total_I(σs) = sum(abs2(full_a(σs, two_λs)) for two_λs in itr(tbs.two_js))

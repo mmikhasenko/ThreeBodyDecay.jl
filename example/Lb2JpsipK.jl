@@ -1,79 +1,146 @@
 using ThreeBodyDecay
 using Plots
+using StaticArrays
+using Parameters
+using BenchmarkTools
+using PrettyTables
 
+@with_kw struct BW
+    m::Float64
+    Γ::Float64
+end
 
-H1(two_τ,two_j,two_L) = CG_doublearg(two_L,0,two_j,two_τ,1,two_τ)
-H2(two_μ,two_λ,two_j,two_s,two_l) = CG_doublearg(2,two_μ,1,         -two_λ,two_s,two_μ-two_λ)*
-                              CG_doublearg(two_l,0,two_s,two_μ-two_λ,two_j,two_μ-two_λ)
+(bw::BW)(σ::Float64) = 1 / (bw.m^2 - σ - 1im * bw.m * bw.Γ)
+
+const mΛb = 5.62
+const mJψ = 3.09
+const mp = 0.938
+const mK = 0.49367
+# 
+const ms = ThreeBodyMasses(mJψ, mp, mK, m0=mΛb)
+const tbs = ThreeBodySystem(; ms, two_js=(2, 1, 0, 1))
 #
-I(cosθ,two_j,two_s,two_l,two_L) = sum(abs2,
-    H1(two_τ,two_j,two_L)*
-    wignerd_doublearg(two_j,two_τ,two_μ-two_λ,cosθ)*
-    H2(two_μ,two_λ,two_j,two_s,two_l) for two_μ=-2:2:2, two_λ=-1:2:1, two_τ=(-two_j):2:two_j)
+const Ps_pc = SVector('-', '+', '-', '+');
+const Ps_pv = SVector('-', '+', '-', '-');
 
-let jp = (3,"-")
-    ( :LS=>possibleLS((1,"+"),jp,(0,"-")),
-      :ls=>possibleLS(jp,(2,"-"),(1,"+")) )
-end
+isobars = [
+    (key="Λ1520", JP="3/2-", lineshape=:BW, m=1.5195, Γ=0.016),
+    (key="Λ1600", JP="1/2+", lineshape=:BW, m=1.630, Γ=0.250),
+    (key="Λ1670", JP="1/2-", lineshape=:BW, m=1.685, Γ=0.050),
+    (key="Pc4312", JP="1/2-", lineshape=:BW, m=4.312, Γ=0.012),
+    (key="Pc4440", JP="1/2-", lineshape=:BW, m=4.440, Γ=0.008),
+    (key="Pc4457", JP="3/2-", lineshape=:BW, m=4.457, Γ=0.002)
+]
 
-let
-    two_j,two_s,two_l,two_L = 3,3,2,2
-    plot(cosθ->I(cosθ,two_j,two_s,two_l,two_L),-1,1)
-end
-############################################################
-
-const Lb2JpK = let mLb = 5.62, mJψ = 3.09, mp=0.938, mK = 0.49367
-    ThreeBodySystem(mJψ,mp,mK,mLb)
-end
-
-function plot_dalitz_with_projections(f=(σ3,σ1)->1.0)
-    # layout = @layout [a{0.8h}; grid(1,2)]
-    layout = @layout [a{0.65w,0.7h} b; c _]
-    plot(layout=layout, size=(800,600), link=:both)
+chains = []
+for ξ in isobars
+    # 
+    @unpack key, JP, lineshape, m, Γ = ξ
+    # 
+    qn = str2jp(JP)
+    k = key[1] == 'Λ' ? 1 : 3
+    ξf = eval(quote
+        $(lineshape)(m=$(m), Γ=$Γ)
+    end)
+    # 
+    dc_pc = DecayChainsLS(k, ξf;
+        tbs,
+        two_s=ThreeBodyDecay.two_j(qn),
+        parity=qn.p,
+        Ps=Ps_pc)
+    push!(chains, dc_pc...)
     #
-    σ1v = LinRange(Lb2JpK.mthsq[1],Lb2JpK.sthsq[1], 202)
-    σ3v = LinRange(Lb2JpK.mthsq[3],Lb2JpK.sthsq[3], 200)
-    cal = [Kibble31(σ3,σ1,Lb2JpK) < 0 ? f(σ3,σ1) : NaN for σ3 in σ3v, σ1 in σ1v]
-    heatmap!(σ1v, σ3v, cal, c=:viridis, colorbar=false, sp=1,
-        ylab="m[J/psi p] (GeV^2)", xlab="m[p K] (GeV^2)")
+    dc_pv = DecayChainsLS(k, ξf;
+        tbs,
+        two_s=ThreeBodyDecay.two_j(qn),
+        parity=qn.p,
+        Ps=Ps_pv)
+    push!(chains, dc_pv...)
     #
-    calz = map(z->isnan(z) ? 0.0 : z, cal)
-    plot!(sum(calz, dims=2)[:,1], σ3v, lab="", xaxis=false, l=(2,:black), sp=2)
-    plot!(σ1v, sum(calz, dims=1)[1,:], lab="", yaxis=false, l=(2,:black), sp=3)
+end
+chains = vcat(chains...)
+cs = rand(length(chains))
+
+function I(model, σsλ)
+    v = 0.0im
+    for (c, ch) in zip(model.cs, model.chains)
+        v += c * amplitude(ch, σsλ)
+    end
+    return abs2(v)
+end
+
+const σsλ0 = randomPoint(tbs)
+
+const model = (; cs, chains)
+
+
+
+
+function summarystr(dc::DecayChain{BW})
+    @unpack m, Γ = dc.Xlineshape
+    sm, sΓ = string.(round.(Int, (m, Γ) .* 1e3))
+    (kξ, kB) = dc.k == 1 ? ("Λ", "J/ψ") : ("Pc", "K")
+    two_ls = dc.HRk.two_ls
+    return "[ $(kξ)($(sm)) $(kB) ]_{$(two_ls[2])/2} $(div(two_ls[1],2))-wave"
+end
+
+belapsedbychain = [@belapsed amplitude($(ch), $(σsλ0)) for ch in model.chains]
+extrema(belapsedbychain .* 1e6)
+
+pretty_table(hcat(summarystr.(model.chains), belapsedbychain .* 1e6),
+    header=(["wave name", "@time amplitude(wave)"],
+        ["", "[μs]"]), show_omitted_cell_summary=false)
+# 
+# ┌──────────────────────────────┬───────────────────────┐
+# │                    wave name │ @time amplitude(wave) │
+# │                              │                  [μs] │
+# ├──────────────────────────────┼───────────────────────┤
+# │ [ Λ(1520) J/ψ ]_{1/2} 0-wave │                  14.3 │
+# │ [ Λ(1520) J/ψ ]_{3/2} 2-wave │                  14.7 │
+# │ [ Λ(1520) J/ψ ]_{5/2} 2-wave │                  14.8 │
+# │ [ Λ(1520) J/ψ ]_{1/2} 1-wave │                  14.5 │
+# │ [ Λ(1520) J/ψ ]_{3/2} 1-wave │                  14.8 │
+# │ [ Λ(1520) J/ψ ]_{5/2} 3-wave │                  14.8 │
+# │ [ Λ(1630) J/ψ ]_{1/2} 1-wave │                   7.4 │
+# │ [ Λ(1630) J/ψ ]_{3/2} 1-wave │                 7.525 │
+# │ [ Λ(1630) J/ψ ]_{1/2} 0-wave │                   7.4 │
+# │              ⋮               │           ⋮           │
+# └──────────────────────────────┴───────────────────────┘
+#                                          22 rows omitted
+
+
+
+function timeonN(Nev)
+    ph = flatDalitzPlotSample(ms; Nev)
+    phλ = DalitzPlotPoint.(ph, Ref(σsλ0.two_λs))
+    # 
+    return @belapsed I.($(Ref(model)), $(phλ))
 end
 
 
-############################################################
+Nev = [1, 10, 100, 1000]
+belapsed = timeonN.(Nev)
 
-function A(σ3,σ1, CS, Cs)
-    σ = [σ1, 0.0, σ3]
-    return sum(c*amp(σ[ch[1]], ch[2]) for (ch,c) in zip(CS,Cs))
-end
+t = pretty_table(hcat(Nev, belapsed),
+    header=(["N", "Time"], ["[ev]", "[s]"]))
+# 
+# I.(phλ, Ref(model))
+# ┌────────┬───────────┐
+# │      N │      Time │
+# │   [ev] │       [s] │
+# ├────────┼───────────┤
+# │    1.0 │ 0.0003994 │
+# │   10.0 │ 0.0040236 │
+# │  100.0 │ 0.0403715 │
+# │ 1000.0 │  0.409975 │
+# └────────┴───────────┘
 
-I(σ3,σ1, CS, Cs) = abs2(A(σ3,σ1, CS, Cs))
+# compilation
+@profview I(σsλ0, model)
+# pure runtime
+@profview I(σsλ0, model)
 
-Λ1405  = BreitWigner(1.405,   0.090)
-Λ1520  = BreitWigner(1.5195,  0.0156)
-Λ1690  = BreitWigner(1.685,   0.050)
-Λ1810  = BreitWigner(1.80,    0.090)
+using InteractiveUtils
 
-model = [(1,Λ1405),
- (1,Λ1520),
- (1,BreitWigner(1.6,0.2)),
- (1,Λ1690),
- (1,Λ1810),
- (3,BreitWigner(4.45,0.06))]
-
-
-σ3v, σ1v = flatDalitzPlotSample31(tbs; Nev=1000)
-
-
-I(σ3v[1],σ1v[1],
-    model,
-    [0.9, 1.0, 0.7, 0.2, 0.3, 0.2im])
-
-# let
-#     plot_dalitz_with_projections((σ3,σ1)->I(σ3,σ1,
-#         model,
-#         [0.9, 1.0, 0.7, 0.2, 0.3, 0.2im]))
-# end
+I(σsλ0, model)
+@code_warntype I(σsλ0, model)
