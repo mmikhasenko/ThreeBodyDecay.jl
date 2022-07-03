@@ -41,7 +41,7 @@ let
         xlab=L"\cos\,\theta_{12}")
     #
     σ1v, σ2v, σ3v = flatDalitzPlotSample(tbs; Nev=10000)
-    cosθ12v = [cosθ12(σs, tbs.msq) for σs in zip(σ1v, σ2v, σ3v)]
+    cosθ12v = [cosθ12(σs, tbs.ms^2) for σs in zip(σ1v, σ2v, σ3v)]
     #
     weights = [I(σs) for σs in zip(σ1v, σ2v, σ3v)]
     weights_ni = [Ini(σs) for σs in zip(σ1v, σ2v, σ3v)]

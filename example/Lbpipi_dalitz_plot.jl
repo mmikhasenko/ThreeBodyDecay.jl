@@ -33,7 +33,7 @@ total_I(σs) = sum(abs2(full_a(σs, two_λs)) for two_λs in Iterators.product(
     -tbs.two_js[4]:2:tbs.two_js[4]))
 
 σ3v, σ1v = flatDalitzPlotSample31(tbs)
-σ2v = [gσ2(σ3, σ1, tbs.msq) for (σ3, σ1) in zip(σ3v, σ1v)]
+σ2v = [gσ2(σ3, σ1, tbs.ms^2) for (σ3, σ1) in zip(σ3v, σ1v)]
 
 cala = [full_a(DalitzPlotPoint31(σ3, σ1, tbs)) for (σ3, σ1) in zip(σ3v, σ1v)]
 cali = abs2.(cala)
@@ -47,7 +47,7 @@ let
     σ2v = range(tbs.mthsq[2], tbs.sthsq[2], length=150)
     cali = [
         let dpp = DalitzPlotPoint23(σ2, σ3, tbs)
-            Kibble(dpp.σs, tbs.msq) < 0 ? total_I(dpp.σs) : NaN
+            Kibble(dpp.σs, tbs.ms^2) < 0 ? total_I(dpp.σs) : NaN
         end for (σ3, σ2) in Iterators.product(σ3v, σ2v)
     ]
     heatmap(σ2v, σ3v, cali)

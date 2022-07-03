@@ -31,7 +31,7 @@ let
     #
     σ3v = range(tbs.mthsq[3], tbs.sthsq[3], length=100)
     σ2v = range(tbs.mthsq[2], tbs.sthsq[2], length=100)
-    cal = [inphrange((gσ1(σ2, σ3, tbs.msq), σ2, σ3), tbs) ? I([gσ1(σ2, σ3, tbs.msq), σ2, σ3]) : NaN
+    cal = [inphrange((gσ1(σ2, σ3, tbs.ms^2), σ2, σ3), tbs) ? I([gσ1(σ2, σ3, tbs.ms^2), σ2, σ3]) : NaN
            for (σ2, σ3) in Iterators.product(σ2v, σ3v)]
     heatmap!(σ2v, σ3v, cal - cal', colorbar=false, c=:viridis, title="unpolarized intensity")
 end
