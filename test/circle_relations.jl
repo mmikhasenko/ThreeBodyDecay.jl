@@ -10,7 +10,7 @@ using ThreeBodyDecay
     #
     τ1 = (sum(lims1(tbs.ms)) / 2.0, 0.3, 0.3, 0.3, 0.3)
     τ3 = change_basis_3from1(τ1, tbs.ms)
-    # @show [τ1...,        tbs.msq...,    tbs.s]
+    # @show [τ1...,        tbs.ms^2...,    tbs.s]
     τ2 = change_basis_2from3(τ3, tbs.ms)
     τ1p = change_basis_1from2(τ2, tbs.ms)
     @test sum(τ1p .≈ τ1) == 5
