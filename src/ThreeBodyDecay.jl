@@ -7,7 +7,7 @@ using PartialWaveFunctions
 using Parameters
 using RecipesBase
 
-export Kallen, KallenFact, Kibble,
+export Kallen, sqrtKallenFact, Kibble,
         inphrange,
         lims, lims1, lims2, lims3
 export phase
