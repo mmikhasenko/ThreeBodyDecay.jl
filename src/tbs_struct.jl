@@ -90,17 +90,35 @@ end
 #        _|
 #    _|_|
 
-function border(k, ms::MassTuple; Nx::Int=300)
-    (i, j) = ij_from_k(k)
-    σiv = range(lims(i, ms)..., length=Nx)
-    σkm = [σkofi(k, -1.0, σi, ms^2) for σi in σiv]
-    σkp = [σkofi(k, 1.0, σi, ms^2) for σi in σiv]
-    return (σiv, [σkm σkp])
+polardalitz2invariants(θ, T0) =
+    Polynomial([T0 / 3, -cos(θ)]),
+    Polynomial([T0 / 3, cos(θ + π / 3)]),
+    Polynomial([T0 / 3, cos(θ - π / 3)])
+
+function border(ms::MassTuple; Nx::Int=300)
+    thresholds = ((ms.m2 + ms.m3), (ms.m3 + ms.m1), (ms.m1 + ms.m2))
+    T0 = sum(abs2, ms) .- sum(abs2, thresholds)
+
+    ϕ(σs) = Kibble(σs, ms^2)
+    # 
+    σs(θ) = thresholds .^ 2 .+ polardalitz2invariants(θ, T0)
+    rborder(θ) = minimum(filter(x -> x > 0, roots(ϕ(σs(θ)))))
+    σsborder(θ) = # evaluate the polynomials
+        map(σs(θ)) do P
+            P(rborder(θ))
+        end
+    θs = range(-π, π, length=Nx)
+    return MandestamTuple.(σsborder.(θs))
 end
-#
-border31(ms; Nx::Int=300) = border(3, ms; Nx=Nx)
-border12(ms; Nx::Int=300) = border(1, ms; Nx=Nx)
-border23(ms; Nx::Int=300) = border(2, ms; Nx=Nx)
+
+# border13, border12, border21, border23, border32
+for (i, j) in ((1, 2), (2, 1), (2, 3), (3, 2), (3, 1), (1, 3))
+    eval(quote
+        $(Symbol(:border, i, j))(ms; Nx::Int=300) =
+            NamedTuple{$(Symbol(:σ, i), Symbol(:σ, j))}.(border(ms; Nx))
+    end)
+end
+
 # 
 function flatDalitzPlotSample(ms::MassTuple; Nev::Int=10000, σbins::Int=500)
     @unpack m0, m1, m2, m3 = ms

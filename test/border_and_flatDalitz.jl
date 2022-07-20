@@ -2,10 +2,11 @@ using ThreeBodyDecay
 using Test
 
 @testset "Border and Flat Dalitz" begin
-    ms = ThreeBodyMasses(6.0, 1.1, 1.3, 1.5)
+    ms = ThreeBodyMasses(1.1, 1.3, 1.5; m0=6.0)
     fDP = flatDalitzPlotSample(ms)
-    b = border31(ms)
-    # make better test!
-    #   It would be great to check if all points in `dDP` are inside of `b`
-    @test true
+    b = border(ms)
+    borderKibblemax = maximum(abs.(Kibble.(b, Ref(ms^2))))
+    phspKibblemax = maximum(abs.(Kibble.(fDP, Ref(ms^2))))
+    # 
+    @test borderKibblemax / phspKibblemax < 1e-7
 end
