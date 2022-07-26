@@ -6,9 +6,12 @@
 #                  _|
 #              _|_|
 
-const MassTuple = NamedTuple{(:m1, :m2, :m3, :m0),NTuple{4,Float64}}
-ThreeBodyMasses(m1, m2, m3; m0) =
-    m0 < m1 + m2 + m3 ? error("m₀ should be bigger than m₁+m₂+m₃") : MassTuple((m1, m2, m3, m0))
+const MassTuple{T} = NamedTuple{(:m1, :m2, :m3, :m0),NTuple{4,T}}
+function ThreeBodyMasses(m1, m2, m3; m0)
+    tm0 = typeof(m0)
+    tm0 <: Number && (m0 < m1 + m2 + m3) && error("m₀ should be bigger than m₁+m₂+m₃")
+    MassTuple{tm0}((m1, m2, m3, m0))
+end
 # 
 ThreeBodyMasses(; m1, m2, m3, m0) = ThreeBodyMasses(m1, m2, m3; m0)
 
