@@ -22,7 +22,7 @@ function σkofi(k, z, σi, msq)
     s = msq[4]
     EE4σ = (σi + msq[j] - msq[k]) * (s - σi - msq[i])
     p²q²4σ = Kallen(σi, msq[j], msq[k]) * Kallen(s, σi, msq[i])
-    p²q²4σ = (p²q²4σ < 0) ? 0.0 : p²q²4σ # for numerical errors
+    # p²q²4σ = (p²q²4σ < 0) ? 0.0 : p²q²4σ # for numerical errors
     σk = msq[i] + msq[j] + (EE4σ + sqrt(p²q²4σ) * z) / (2σi)
     return σk
 end
