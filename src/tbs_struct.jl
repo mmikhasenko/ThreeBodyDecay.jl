@@ -6,9 +6,12 @@
 #                  _|
 #              _|_|
 
-const MassTuple = NamedTuple{(:m1, :m2, :m3, :m0),NTuple{4,Float64}}
-ThreeBodyMasses(m1, m2, m3; m0) =
-    m0 < m1 + m2 + m3 ? error("m₀ should be bigger than m₁+m₂+m₃") : MassTuple((m1, m2, m3, m0))
+const MassTuple{T} = NamedTuple{(:m1, :m2, :m3, :m0),NTuple{4,T}}
+function ThreeBodyMasses(m1, m2, m3; m0)
+    tm0 = typeof(m0)
+    tm0 <: Number && (m0 < m1 + m2 + m3) && error("m₀ should be bigger than m₁+m₂+m₃")
+    MassTuple{tm0}((m1, m2, m3, m0))
+end
 # 
 ThreeBodyMasses(; m1, m2, m3, m0) = ThreeBodyMasses(m1, m2, m3; m0)
 
@@ -53,16 +56,27 @@ ThreeBodyParities(P1, P2, P3;
 # -----------------------------------------------------
 
 # Dynamic variables
-const MandestamTuple = NamedTuple{(:σ1, :σ2, :σ3),NTuple{3,Float64}}
+const MandestamTuple{T} = NamedTuple{(:σ1, :σ2, :σ3),NTuple{3,T}}
 
-function Invariants(ms::MassTuple; σ1=-1.0, σ2=-1.0, σ3=-1.0)
-    sign(σ1) + sign(σ2) + sign(σ3) != 1 && error("the method works with TWO invariants given: $((σ1,σ2,σ3))")
-    σ3 < 0 && return MandestamTuple((σ1, σ2, σ3=sum(ms^2) - σ1 - σ2))
-    σ1 < 0 && return MandestamTuple((sum(ms^2) - σ2 - σ3, σ2, σ3))
-    return MandestamTuple((σ1=σ1, σ2=sum(ms^2) - σ3 - σ1, σ3=σ3))
+"""
+    Invariants(ms::MassTuple{T}; σ1, σ2)
+    Invariants(ms::MassTuple{T}; σ1, σ3)
+    Invariants(ms::MassTuple{T}; σ2, σ3)
+
+Construct a tuple of (σ1, σ2, σ3) from just two invariants and the mass tuple.
+"""
+function Invariants(ms::MassTuple{T};
+    σ1=-one(ms.m0), σ2=-one(ms.m0), σ3=-one(ms.m0)) where {T}
+    # 
+    !((σ1 == -one(ms.m0)) || (σ2 == -one(ms.m0)) || (σ3 == -one(ms.m0))) &&
+        error("the method works with TWO invariants given: $((σ1,σ2,σ3))")
+    # 
+    σ3 == -one(ms.m0) && return MandestamTuple{T}((σ1, σ2, σ3=sum(ms^2) - σ1 - σ2))
+    σ1 == -one(ms.m0) && return MandestamTuple{T}((sum(ms^2) - σ2 - σ3, σ2, σ3))
+    return MandestamTuple{T}((σ1=σ1, σ2=sum(ms^2) - σ3 - σ1, σ3=σ3))
 end
-Invariants(; σ1, σ2, σ3) = MandestamTuple((σ1, σ2, σ3))
-Invariants(σ1, σ2, σ3) = MandestamTuple((σ1, σ2, σ3))
+Invariants(; σ1, σ2, σ3) = MandestamTuple{typeof(σ1)}((σ1, σ2, σ3))
+Invariants(σ1, σ2, σ3) = MandestamTuple{typeof(σ1)}((σ1, σ2, σ3))
 
 # -----------------------------------------------------
 
