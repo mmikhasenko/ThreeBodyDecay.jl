@@ -46,7 +46,7 @@ function possible_ls(jp1::jp, jp2::jp; jp::jp)
     return sort(ls, by=x -> x[1])
 end
 
-function possible_lsLS(k::Int, jpR::jp, jps::T where {T<:Vector{jp}})
+function possible_lsLS(k::Int, jpR::jp, jps::Vector{T} where {T<:jp})
     i, j = ij_from_k(k)
     lsv = possible_ls(jps[i], jps[j]; jp=jpR)
     LSv = possible_ls(jpR, jps[k]; jp=jps[4])
