@@ -8,22 +8,22 @@
 #                                            _|_|
 
 abstract type Recoupling end
-@with_kw struct NoRecoupling{T} <: Recoupling
-    two_λa::T
-    two_λb::T
+@with_kw struct NoRecoupling <: Recoupling
+    two_λa::Int
+    two_λb::Int
 end
 
 amplitude(cs::NoRecoupling, two_λa, two_λb) =
     (cs.two_λa == two_λa) *
     (cs.two_λb == two_λb)
 
-@with_kw struct ParityRecoupling{T} <: Recoupling
-    two_λa::T
-    two_λb::T
+@with_kw struct ParityRecoupling <: Recoupling
+    two_λa::Int
+    two_λb::Int
     ηηηphaseisplus::Bool
 end
-ParityRecoupling(two_λa, two_λb, ηηηphasesign::Char) = ParityRecoupling(two_λa, two_λb, ηηηphasesign == '+')
-function ParityRecoupling(two_λa, two_λb, (jp, (jp1, jp2))::Pair{jp,Tuple{jp,jp}})
+ParityRecoupling(two_λa::Int, two_λb::Int, ηηηphasesign::Char) = ParityRecoupling(two_λa, two_λb, ηηηphasesign == '+')
+function ParityRecoupling(two_λa::Int, two_λb::Int, (jp, (jp1, jp2))::Pair{jp,Tuple{jp,jp}})
     ηηη = jp1.p ⊗ jp2.p ⊗ jp.p
     ηηηphase = (2 * (ηηη == '+') - 1) * x"-1"^(jp.j - jp1.j - jp2.j)
     return ParityRecoupling(two_λa, two_λb, ηηηphase == 1)
@@ -35,18 +35,17 @@ function amplitude(cs::ParityRecoupling, two_λa, two_λb)
     return 0
 end
 
-@with_kw struct RecouplingLS{T} <: Recoupling
-    two_j::T
-    two_ls::Tuple{T,T}
-    two_ja::T
-    two_jb::T
+@with_kw struct RecouplingLS <: Recoupling
+    two_j::Int
+    two_ls::Tuple{Int,Int}
+    two_ja::Int
+    two_jb::Int
 end
 RecouplingLS(two_ls, (jp, (jpa, jpb))::Pair{jp,Tuple{jp,jp}}) =
     RecouplingLS(jp.j |> x2, two_ls, jpa.j |> x2, jpb.j |> x2)
 
 amplitude(cs::RecouplingLS, two_λa, two_λb) =
-    (@show (two_λa, two_λb) .|> typeof;
-    jls_coupling(cs.two_ja, two_λa, cs.two_jb, two_λb, cs.two_j, cs.two_ls[1], cs.two_ls[2]))
+    jls_coupling(cs.two_ja, two_λa, cs.two_jb, two_λb, cs.two_j, cs.two_ls[1], cs.two_ls[2])
 
 @with_kw struct DecayChain{X,V1<:Recoupling,V2<:Recoupling,T}
     k::Int
@@ -92,8 +91,8 @@ function DecayChainLS(k, Xlineshape;
     #
     i, j = ij_from_k(k)
     return DecayChain(; k, Xlineshape, tbs, two_s,
-        Hij=RecouplingLS(two_s, div.((2 .* ls), 1), tbs.two_js[i], tbs.two_js[j]),
-        HRk=RecouplingLS(tbs.two_js[4], div.((2 .* LS), 1), two_s, tbs.two_js[k]))
+        Hij=RecouplingLS(two_s, Int.(2 .* ls), tbs.two_js[i], tbs.two_js[j]),
+        HRk=RecouplingLS(tbs.two_js[4], Int.(2 .* LS), two_s, tbs.two_js[k]))
 end
 
 """
@@ -115,8 +114,8 @@ function DecayChainsLS(k, Xlineshape;
     LSlsv = possible_lsLS(k, two_s, parity, tbs.two_js, Ps)
     return [DecayChain(;
         k, Xlineshape, tbs, two_s,
-        Hij=RecouplingLS(two_s, div.((2 .* x.ls), 1), tbs.two_js[i], tbs.two_js[j]),
-        HRk=RecouplingLS(tbs.two_js[4], div.((2 .* x.LS), 1), two_s, tbs.two_js[k]))
+        Hij=RecouplingLS(two_s, Int.(2 .* x.ls), tbs.two_js[i], tbs.two_js[j]),
+        HRk=RecouplingLS(tbs.two_js[4], Int.(2 .* x.LS), two_s, tbs.two_js[k]))
             for x in LSlsv]
 end
 
