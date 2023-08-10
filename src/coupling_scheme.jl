@@ -37,7 +37,7 @@ possible_ls((jp, (jp1, jp2))::Pair{jp,Tuple{jp,jp}}) = possible_ls(jp1, jp2; jp)
 function possible_ls(jp1::jp, jp2::jp; jp::jp)
     ls = Vector{Tuple{Int,Number}}(undef, 0)
     for s in abs(jp1.j - jp2.j):abs(jp1.j + jp2.j)
-        for l in Int(abs(jp.j - s)):Int(abs(jp.j + s))
+        for l in div(abs(jp.j - s), 1):div(abs(jp.j + s), 1)
             if jp1.p ⊗ jp2.p ⊗ jp.p == (isodd(l) ? '-' : '+')
                 push!(ls, (l, s))
             end
