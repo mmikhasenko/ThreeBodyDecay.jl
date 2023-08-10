@@ -37,7 +37,7 @@ possible_ls((jp, (jp1, jp2))::Pair{jp,Tuple{jp,jp}}) = possible_ls(jp1, jp2; jp)
 function possible_ls(jp1::jp, jp2::jp; jp::jp)
     ls = Vector{Tuple{Int,Number}}(undef, 0)
     for s in abs(jp1.j - jp2.j):abs(jp1.j + jp2.j)
-        for l in div(abs(jp.j - s), 1):div(abs(jp.j + s), 1)
+        for l in Int(abs(jp.j - s)):Int(abs(jp.j + s))
             if jp1.p ⊗ jp2.p ⊗ jp.p == (isodd(l) ? '-' : '+')
                 push!(ls, (l, s))
             end
@@ -59,8 +59,8 @@ function possible_lsLS(k::Int, two_s, parity::Char, two_js, Ps)
 end
 
 function jls_coupling(two_j1, two_λ1, two_j2, two_λ2, two_j, two_l, two_s)
-    x1 = one(two_λ1)
-    sqrt((two_l * x1 + 1) / (two_j * x1 + 1)) *
-    CG_doublearg(two_j1, two_λ1, two_j2, -two_λ2, two_s, two_λ1 - two_λ2) *
-    CG_doublearg(two_l, zero(two_λ1 - two_λ2), two_s, two_λ1 - two_λ2, two_j, two_λ1 - two_λ2)
+    T1 = one(two_λ1) # type consistency
+    return sqrt((two_l * T1 + 1) / (two_j * T1 + 1)) *
+           CG_doublearg(two_j1, two_λ1, two_j2, -two_λ2, two_s, two_λ1 - two_λ2) *
+           CG_doublearg(two_l, zero(two_λ1 - two_λ2), two_s, two_λ1 - two_λ2, two_j, two_λ1 - two_λ2)
 end
