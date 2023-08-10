@@ -147,7 +147,8 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
     cosθ = cosθij(k, σs, ms²)
     # 
     itr_two_λs′ = itr(SVector{3}(two_js[1], two_js[2], two_js[3]))
-    f = 0.0
+    lineshape = dc.Xlineshape(σs[k])
+    f = zero(lineshape)
     for two_τ = -two_s:2:two_s, two_λs′ in itr_two_λs′
         f +=
             wignerd_doublearg_sign(two_js[4], two_λs[4], two_τ - two_λs′[k], cosζ0, ispositive(w0)) *
@@ -160,7 +161,6 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
             wignerd_doublearg_sign(two_js[j], two_λs′[j], two_λs[j], cosζj, ispositive(wj)) *
             wignerd_doublearg_sign(two_js[k], two_λs′[k], two_λs[k], cosζk, ispositive(wk))
     end
-    lineshape = dc.Xlineshape(σs[k])
     return f * lineshape
 end
 #
