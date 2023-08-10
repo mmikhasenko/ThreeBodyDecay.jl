@@ -93,6 +93,11 @@ end
 RhoQTB(s, m1, m2, Γ1, m1th) = RhoQTB(s, σ -> BW(σ, m1, Γ1), [m2, m1th / 2, m1th / 2] .^ 2)
 iRhoQTB(s, m1, m2, Γ1, m1th) = 1im * RhoQTB(s, m1, m2, Γ1, m1th)
 
+"""
+    three_body_phase_space_integral(function_σs, ms)
+    
+Computes the phase-space integral over the Dalitz plot (dsigma1 x dsigma3). Returns complex value
+"""
 function three_body_phase_space_integral(function_σs, ms)
     m1sq, m2sq, m3sq, s = ms^2
     #
