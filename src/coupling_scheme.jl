@@ -58,7 +58,9 @@ function possible_lsLS(k::Int, two_s, parity::Char, two_js, Ps)
     return possible_lsLS(k, jpR, jps)
 end
 
-jls_coupling(two_j1, two_λ1, two_j2, two_λ2, two_j, two_l, two_s) =
-    sqrt((two_l + 1) / (two_j + 1)) *
+function jls_coupling(two_j1, two_λ1, two_j2, two_λ2, two_j, two_l, two_s)
+    x1 = one(two_λ1)
+    sqrt((two_l * x1 + 1) / (two_j * x1 + 1)) *
     CG_doublearg(two_j1, two_λ1, two_j2, -two_λ2, two_s, two_λ1 - two_λ2) *
     CG_doublearg(two_l, zero(two_λ1 - two_λ2), two_s, two_λ1 - two_λ2, two_j, two_λ1 - two_λ2)
+end

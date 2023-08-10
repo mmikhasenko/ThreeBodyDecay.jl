@@ -145,24 +145,20 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
     #
     cosθ = cosθij(k, σs, ms²)
     #
-    itr_two_λs′ = itr(SVector{4,typeof(two_λs[1])}(two_js[1], two_js[2], two_js[3], two_js[4]))
+    T = typeof(two_λs[1])
+    x1 = one(T)
+    # 
+    itr_two_λs′ = itr(SVector{4,T}(two_js[1], two_js[2], two_js[3], two_js[4]))
     lineshape = dc.Xlineshape(σs[k])
     f = zero(lineshape)
     for two_λs′ in itr_two_λs′
         # two_λs′[4] = two_τ - two_λs′[k]
         # two_τ = two_λs′[4] + two_λs′[k]
-        @show f
-        @show wignerd_doublearg_sign(two_js[4], two_λs[4], two_λs[4], cosζ0, ispositive(w0))
-        @show wignerd_doublearg_sign(two_js[i], two_λs[i], two_λs[i], cosζi, ispositive(wi))
-        @show wignerd_doublearg_sign(two_js[j], two_λs[j], two_λs[j], cosζj, ispositive(wj))
-        @show wignerd_doublearg_sign(two_js[k], two_λs[k], two_λs[k], cosζk, ispositive(wk))
-        @show wignerd_doublearg(two_s, two_λs[4] + two_λs[k], two_λs[i] - two_λs[j], cosθ)
-        # 
         f +=
             wignerd_doublearg_sign(two_js[4], two_λs[4], two_λs′[4], cosζ0, ispositive(w0)) *
             # 
             amplitude(HRk, two_λs′[4] + two_λs′[k], two_λs′[k]) * phase(two_js[k] - two_λs′[k]) * # particle-2 convention
-            wignerd_doublearg(two_s, two_λs′[4] + two_λs′[k], two_λs′[i] - two_λs′[j], cosθ) *
+            sqrt(two_s * x1 + 1) * wignerd_doublearg(two_s, two_λs′[4] + two_λs′[k], two_λs′[i] - two_λs′[j], cosθ) *
             amplitude(Hij, two_λs′[i], two_λs′[j]) * phase(two_js[j] - two_λs′[j]) * # particle-2 convention
             # 
             wignerd_doublearg_sign(two_js[i], two_λs′[i], two_λs[i], cosζi, ispositive(wi)) *
