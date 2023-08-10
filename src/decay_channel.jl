@@ -23,7 +23,7 @@ amplitude(cs::NoRecoupling, two_λa, two_λb) =
     ηηηphaseisplus::Bool
 end
 ParityRecoupling(two_λa::Int, two_λb::Int, ηηηphasesign::Char) = ParityRecoupling(two_λa, two_λb, ηηηphasesign == '+')
-function ParityRecoupling(two_λa::Int, two_λb::Int, (jp, (jp1, jp2))::Pair{jp,Tuple{jp,jp}})
+function ParityRecoupling(two_λa::Int, two_λb::Int, (jp, (jp1, jp2))::Pair{A,Tuple{B,C}} where {A<:jp,B<:jp,C<:jp})
     ηηη = jp1.p ⊗ jp2.p ⊗ jp.p
     ηηηphase = (2 * (ηηη == '+') - 1) * x"-1"^(jp.j - jp1.j - jp2.j)
     return ParityRecoupling(two_λa, two_λb, ηηηphase == 1)
@@ -41,7 +41,7 @@ end
     two_ja::Int
     two_jb::Int
 end
-RecouplingLS(two_ls, (jp, (jpa, jpb))::Pair{jp,Tuple{jp,jp}}) =
+RecouplingLS(two_ls, (jp, (jpa, jpb))::Pair{A,Tuple{B,C}} where {A<:jp,B<:jp,C<:jp}) =
     RecouplingLS(jp.j |> x2, two_ls, jpa.j |> x2, jpb.j |> x2)
 
 amplitude(cs::RecouplingLS, two_λa, two_λb) =

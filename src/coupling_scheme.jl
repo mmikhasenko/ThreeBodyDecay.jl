@@ -32,7 +32,7 @@ macro jp_str(p)
     return str2jp(p)
 end
 
-possible_ls((jp, (jp1, jp2))::Pair{jp,Tuple{jp,jp}}) = possible_ls(jp1, jp2; jp)
+possible_ls((jp, (jp1, jp2))::Pair{A,Tuple{B,C}} where {A<:jp,B<:jp,C<:jp}) = possible_ls(jp1, jp2; jp)
 
 function possible_ls(jp1::jp, jp2::jp; jp::jp)
     ls = Vector{Tuple{Int,Number}}(undef, 0)
