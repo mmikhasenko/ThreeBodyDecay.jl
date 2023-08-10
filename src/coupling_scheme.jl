@@ -1,11 +1,10 @@
 
-vtype = Union{Rational{Int},Int}
-struct jp
-    j::vtype
+struct jp{T<:Number}
+    j::T
     p::Char
 end
 
-jp(v::Tuple{vtype,Char}) = jp(v[1], v[2])
+jp(v::Tuple{T,Char} where {T<:Number}) = jp(v[1], v[2])
 
 import Base: length
 length(jp1::jp) = 0
@@ -36,7 +35,7 @@ end
 possible_ls((jp, (jp1, jp2))::Pair{jp,Tuple{jp,jp}}) = possible_ls(jp1, jp2; jp)
 
 function possible_ls(jp1::jp, jp2::jp; jp::jp)
-    ls = Vector{Tuple{Int,vtype}}(undef, 0)
+    ls = Vector{Tuple{Int,Number}}(undef, 0)
     for s in abs(jp1.j - jp2.j):abs(jp1.j + jp2.j)
         for l in Int(abs(jp.j - s)):Int(abs(jp.j + s))
             if jp1.p ⊗ jp2.p ⊗ jp.p == (isodd(l) ? '-' : '+')
