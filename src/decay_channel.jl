@@ -8,18 +8,18 @@
 #                                            _|_|
 
 abstract type Recoupling end
-@with_kw struct NoRecoupling <: Recoupling
-    two_λa::Int
-    two_λb::Int
+@with_kw struct NoRecoupling{T} <: Recoupling
+    two_λa::T
+    two_λb::T
 end
 
 amplitude(cs::NoRecoupling, two_λa, two_λb) =
     (cs.two_λa == two_λa) *
     (cs.two_λb == two_λb)
 
-@with_kw struct ParityRecoupling <: Recoupling
-    two_λa::Int
-    two_λb::Int
+@with_kw struct ParityRecoupling{T} <: Recoupling
+    two_λa::T
+    two_λb::T
     ηηηphaseisplus::Bool
 end
 ParityRecoupling(two_λa::Int, two_λb::Int, ηηηphasesign::Char) = ParityRecoupling(two_λa, two_λb, ηηηphasesign == '+')
@@ -35,11 +35,11 @@ function amplitude(cs::ParityRecoupling, two_λa, two_λb)
     return 0
 end
 
-@with_kw struct RecouplingLS <: Recoupling
-    two_j::Int
-    two_ls::Tuple{Int,Int}
-    two_ja::Int
-    two_jb::Int
+@with_kw struct RecouplingLS{T} <: Recoupling
+    two_j::T
+    two_ls::Tuple{T,T}
+    two_ja::T
+    two_jb::T
 end
 RecouplingLS(two_ls, (jp, (jpa, jpb))::Pair{jp,Tuple{jp,jp}}) =
     RecouplingLS(jp.j |> x2, two_ls, jpa.j |> x2, jpb.j |> x2)
