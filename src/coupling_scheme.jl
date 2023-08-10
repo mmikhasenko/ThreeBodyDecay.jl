@@ -61,4 +61,4 @@ end
 jls_coupling(two_j1, two_λ1, two_j2, two_λ2, two_j, two_l, two_s) =
     sqrt((two_l + 1) / (two_j + 1)) *
     CG_doublearg(two_j1, two_λ1, two_j2, -two_λ2, two_s, two_λ1 - two_λ2) *
-    CG_doublearg(two_l, 0, two_s, two_λ1 - two_λ2, two_j, two_λ1 - two_λ2)
+    CG_doublearg(two_l, zero(two_λ1 - two_λ2), two_s, two_λ1 - two_λ2, two_j, two_λ1 - two_λ2)
