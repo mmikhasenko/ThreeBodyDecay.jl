@@ -22,8 +22,8 @@ amplitude(cs::NoRecoupling, two_λa, two_λb) =
     two_λb::T
     ηηηphaseisplus::Bool
 end
-ParityRecoupling(two_λa::Int, two_λb::Int, ηηηphasesign::Char) = ParityRecoupling(two_λa, two_λb, ηηηphasesign == '+')
-function ParityRecoupling(two_λa::Int, two_λb::Int, (jp, (jp1, jp2))::Pair{jp,Tuple{jp,jp}})
+ParityRecoupling(two_λa, two_λb, ηηηphasesign::Char) = ParityRecoupling(two_λa, two_λb, ηηηphasesign == '+')
+function ParityRecoupling(two_λa, two_λb, (jp, (jp1, jp2))::Pair{jp,Tuple{jp,jp}})
     ηηη = jp1.p ⊗ jp2.p ⊗ jp.p
     ηηηphase = (2 * (ηηη == '+') - 1) * x"-1"^(jp.j - jp1.j - jp2.j)
     return ParityRecoupling(two_λa, two_λb, ηηηphase == 1)
@@ -92,8 +92,8 @@ function DecayChainLS(k, Xlineshape;
     #
     i, j = ij_from_k(k)
     return DecayChain(; k, Xlineshape, tbs, two_s,
-        Hij=RecouplingLS(two_s, Int.(2 .* ls), tbs.two_js[i], tbs.two_js[j]),
-        HRk=RecouplingLS(tbs.two_js[4], Int.(2 .* LS), two_s, tbs.two_js[k]))
+        Hij=RecouplingLS(two_s, div.((2 .* ls), 1), tbs.two_js[i], tbs.two_js[j]),
+        HRk=RecouplingLS(tbs.two_js[4], div.((2 .* LS), 1), two_s, tbs.two_js[k]))
 end
 
 """
@@ -115,8 +115,8 @@ function DecayChainsLS(k, Xlineshape;
     LSlsv = possible_lsLS(k, two_s, parity, tbs.two_js, Ps)
     return [DecayChain(;
         k, Xlineshape, tbs, two_s,
-        Hij=RecouplingLS(two_s, Int.(2 .* x.ls), tbs.two_js[i], tbs.two_js[j]),
-        HRk=RecouplingLS(tbs.two_js[4], Int.(2 .* x.LS), two_s, tbs.two_js[k]))
+        Hij=RecouplingLS(two_s, div.((2 .* x.ls), 1), tbs.two_js[i], tbs.two_js[j]),
+        HRk=RecouplingLS(tbs.two_js[4], div.((2 .* x.LS), 1), two_s, tbs.two_js[k]))
             for x in LSlsv]
 end
 
