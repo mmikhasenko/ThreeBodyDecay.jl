@@ -1,11 +1,10 @@
 
-vtype = Union{Rational{Int},Int}
-struct jp
-    j::vtype
+struct jp{T<:Number}
+    j::T
     p::Char
 end
 
-jp(v::Tuple{vtype,Char}) = jp(v[1], v[2])
+jp(v::Tuple{T,Char} where {T<:Number}) = jp(v[1], v[2])
 
 import Base: length
 length(jp1::jp) = 0
@@ -36,7 +35,7 @@ end
 possible_ls((jp, (jp1, jp2))::Pair{jp,Tuple{jp,jp}}) = possible_ls(jp1, jp2; jp)
 
 function possible_ls(jp1::jp, jp2::jp; jp::jp)
-    ls = Vector{Tuple{Int,vtype}}(undef, 0)
+    ls = Vector{Tuple{Int,Number}}(undef, 0)
     for s in abs(jp1.j - jp2.j):abs(jp1.j + jp2.j)
         for l in Int(abs(jp.j - s)):Int(abs(jp.j + s))
             if jp1.p ⊗ jp2.p ⊗ jp.p == (isodd(l) ? '-' : '+')
@@ -47,19 +46,21 @@ function possible_ls(jp1::jp, jp2::jp; jp::jp)
     return sort(ls, by=x -> x[1])
 end
 
-function possible_lsLS(k::Int, jpR::jp, jps::T where {T<:Vector{jp}})
+function possible_lsLS(k::Int, jpR::jp, jps::Vector{T} where {T<:jp})
     i, j = ij_from_k(k)
     lsv = possible_ls(jps[i], jps[j]; jp=jpR)
     LSv = possible_ls(jpR, jps[k]; jp=jps[4])
     return [(ls=ls, LS=LS) for (ls, LS) in Iterators.product(lsv, LSv)]
 end
-function possible_lsLS(k::Int, two_s::Int, parity::Char, two_js, Ps)
+function possible_lsLS(k::Int, two_s, parity::Char, two_js, Ps)
     jpR = jp(two_s // 2, parity)
     jps = jp.(zip(Tuple(two_js) .// 2, Ps))
     return possible_lsLS(k, jpR, jps)
 end
 
-jls_coupling(two_j1, two_λ1, two_j2, two_λ2, two_j, two_l, two_s) =
-    sqrt((two_l + 1) / (two_j + 1)) *
-    CG_doublearg(two_j1, two_λ1, two_j2, -two_λ2, two_s, two_λ1 - two_λ2) *
-    CG_doublearg(two_l, 0, two_s, two_λ1 - two_λ2, two_j, two_λ1 - two_λ2)
+function jls_coupling(two_j1, two_λ1, two_j2, two_λ2, two_j, two_l, two_s)
+    T1 = one(two_λ1) # type consistency
+    return sqrt((two_l * T1 + 1) / (two_j * T1 + 1)) *
+           CG_doublearg(two_j1, two_λ1, two_j2, -two_λ2, two_s, two_λ1 - two_λ2) *
+           CG_doublearg(two_l, zero(two_λ1 - two_λ2), two_s, two_λ1 - two_λ2, two_j, two_λ1 - two_λ2)
+end
