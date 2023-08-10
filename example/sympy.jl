@@ -39,45 +39,63 @@ function spinparity(p)
     getproperty.(jpv, :j) .|> x2 |> ThreeBodyDecay.ParityTuple
 end
 
+
+collect("1/2+" => ("1/2+", "0-", "0-"))
 # Ξc(J) -> Ξc(3/2+) [-> Ξc(1/2+) π(0+)] π(0+) 
 reaction = "1/2+" => ("1/2+", "0-", "0-")
 js, Ps = reaction |> spinparity
-tbs = ThreeBodySystem(ms, jv)
+tbs = ThreeBodySystem(ms, js)
 
 Rjp = jp"3/2+"
 R(σ) = Sym("R")
 # 
-dcv = DecayChainsLS(3, R; two_s=Rjp.j |> x2, parity=Rjp.p, Ps, tbs)
-dc = dcv[1, 1]
+dc = DecayChainLS(3, R; two_s=Rjp.j |> x2, parity=Rjp.p, Ps, tbs)
 
 # 
-fullexpression = amplitude(dc[1, 1], σs, (1, 0, 0, 1))
+fullexpression = amplitude(dc, σs, (1, 0, 0, 1))
 
 import ThreeBodyDecay: cosθij, cosζ
 import ThreeBodyDecay.PartialWaveFunctions: wignerd_doublearg
-import ThreeBodyDecay: MandestamTuple, WignerRotation, wr
+import ThreeBodyDecay: MassTuple, MandestamTuple, WignerRotation, wr
 
-struct cosHold{T}
+struct cosHold{T,X}
     angle::T
+    expession::X
 end
 
-Sym("θ12") |> typeof
+struct StickySymTuple{X,N}
+    data::NamedTuple{X,NTuple{N,Sym}}
+end
+Base.getproperty(mnt::StickySymTuple, name::Symbol) = getproperty(getfield(mnt, :data), name)
+Base.getindex(mnt::StickySymTuple, i::Int) = getfield(mnt, :data)[i]
 
-function cosθij(k, σs::MandestamTuple{Sym}, msq)
+sσs = StickySymTuple(σs)
+
+function cosθij(k, σs::StickySymTuple{(:σ1, :σ2, :σ3),3}, msq)
     i, j, _ = ijk(k)
     θ = Sym(Symbol("θ_", i, j))[1]
-    cosHold(θ)
+    cosHold(θ, cosθij(k, getfield(σs, :data), msq))
 end
+
+cosθ12(σs, ms^2)
+cosθ12(σs |> StickySymTuple, ms^2)
 
 label(wr::WignerRotation) = "^$(wr.k)_" *
                             (ispositive(wr) ? "+" : "-") *
                             (iseven(wr) ? "e" : "0")
 # 
-label(wr(1, 2, 3))
-# 
-cosζ(wr::WignerRotation{0}, σs::MandestamTuple{Sym}, msq) = Sym("ζ" * label(wr)) |> cosHold
-cosζ(wr::WignerRotation{2}, σs::MandestamTuple{Sym}, msq) = Sym("ζ" * label(wr)) |> cosHold
-cosζ(wr::WignerRotation{3}, σs::MandestamTuple{Sym}, msq) = Sym("ζ" * label(wr)) |> cosHold
+for N in (0, 2, 3)
+    eval(:(
+        function cosζ(wr::WignerRotation{$(N)},
+            σs::StickySymTuple{(:σ1, :σ2, :σ3),3}, msq)
+            ζ = Sym("ζ" * label(wr))
+            return cosHold(ζ, cosζ(wr, getfield(σs, :data), msq))
+        end
+    ))
+end
+
+cosζ(wr(1, 2, 1), σs, ms^2)
+cosζ(wr(1, 2, 1), σs |> StickySymTuple, ms^2)
 
 function wignerd_doublearg(two_j, two_λ1, two_λ2, cosθ::cosHold)
     half = 1 / Sym(2)
@@ -85,9 +103,8 @@ function wignerd_doublearg(two_j, two_λ1, two_λ2, cosθ::cosHold)
         0, cosθ.angle, 0)
 end
 
-
-amplitude(dc, σs, (1, 0, 0, 1); refζs=(1, 2, 3, 1)).doit() |> simplify
+amplitude(dc, σs |> StickySymTuple, (1, 0, 0, 1); refζs=(3, 1, 1, 3)).doit() |> simplify
 # 
 sum(itr(js)) do two_λs
-    amplitude(dc, σs, two_λs).doit()^2
+    amplitude(dc, σs |> StickySymTuple, two_λs; refζs=(3, 1, 1, 3)).doit()^2
 end |> simplify
