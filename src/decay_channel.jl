@@ -45,7 +45,8 @@ RecouplingLS(two_ls, (jp, (jpa, jpb))::Pair{jp,Tuple{jp,jp}}) =
     RecouplingLS(jp.j |> x2, two_ls, jpa.j |> x2, jpb.j |> x2)
 
 amplitude(cs::RecouplingLS, two_λa, two_λb) =
-    jls_coupling(cs.two_ja, two_λa, cs.two_jb, two_λb, cs.two_j, cs.two_ls[1], cs.two_ls[2])
+    (@show (two_λa, two_λb) .|> typeof;
+    jls_coupling(cs.two_ja, two_λa, cs.two_jb, two_λb, cs.two_j, cs.two_ls[1], cs.two_ls[2]))
 
 @with_kw struct DecayChain{X,V1<:Recoupling,V2<:Recoupling,T}
     k::Int

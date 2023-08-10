@@ -24,7 +24,7 @@ import Base: getindex, ^, length, iterate
 ^(ms::MassTuple, i::Int) = Tuple(ms) .^ i
 
 # -----------------------------------------------------
-const SpinTuple = NamedTuple{(:two_h1, :two_h2, :two_h3, :two_h0),NTuple{4,Int}}
+const SpinTuple{T} = NamedTuple{(:two_h1, :two_h2, :two_h3, :two_h0),NTuple{4,T}}
 
 ThreeBodySpins(two_h1, two_h2, two_h3; two_h0=error("used the format ThreeBodySpins(1,1,0; two_h0=2)")) =
     isodd(two_h1 + two_h2 + two_h3 + two_h0) ?
