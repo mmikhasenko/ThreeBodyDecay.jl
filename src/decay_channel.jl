@@ -145,7 +145,7 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
     #
     cosθ = cosθij(k, σs, ms²)
     #
-    itr_two_λs′ = itr(SVector{3,typeof(two_λs[1])}(two_js[1], two_js[2], two_js[3], two_js[4]))
+    itr_two_λs′ = itr(SVector{4,typeof(two_λs[1])}(two_js[1], two_js[2], two_js[3], two_js[4]))
     lineshape = dc.Xlineshape(σs[k])
     f = zero(lineshape)
     for two_λs′ in itr_two_λs′
