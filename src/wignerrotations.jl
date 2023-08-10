@@ -59,7 +59,7 @@ end
 
 
 
-cosζ(wr::TriavialWignerRotation, σs, msq) = 1.0
+cosζ(wr::TriavialWignerRotation, σs, msq) = one(σs[1])
 
 function cosζ(wr::Arg0WignerRotation, σs, msq)
     i, j, k = ijk(wr)
@@ -78,7 +78,7 @@ function cosζ(wr::Arg2WignerRotation, σs, msq)
         i, j = j, i
     end
     # 
-    msq[k] ≈ 0 && return 1.0
+    msq[k] ≈ 0 && return one(σs[1])
     # 
     s = msq[4]
     EE4mksq = (s + msq[k] - σs[k]) * (σs[i] - msq[k] - msq[j])
@@ -91,7 +91,7 @@ end
 function cosζ(wr::Arg3WignerRotation, σs, msq)
     i, j, k = ijk(wr)
     # 
-    msq[k] ≈ 0 && return 1.0
+    msq[k] ≈ 0 && return one(σs[1])
     # 
     s = msq[4]
     EE4m1sq = (σs[i] - msq[j] - msq[k]) * (σs[j] - msq[k] - msq[i])
@@ -129,6 +129,6 @@ cosθhatk3(k, σs, ms²) = cosζ(wr(k, 3, 0), σs, ms²)
 """
     Phase for wigner d-functions for clockwise rotations
 """
-phase(two_λ1_minus_λ2) = (abs(two_λ1_minus_λ2) % 4 == 2 ? -1.0 : 1.0)
+phase(two_λ1_minus_λ2) = (abs(two_λ1_minus_λ2) % 4 == 2 ? -one(two_λ1_minus_λ2) : one(two_λ1_minus_λ2))
 phase(two_λ1, two_λ2) = phase(two_λ1 - two_λ2)
 
