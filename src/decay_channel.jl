@@ -120,6 +120,16 @@ function DecayChainsLS(k, Xlineshape;
 end
 
 
+wignerd_doublearg(two_j, two_λ1, two_λ2, wr::TriavialWignerRotation) = 
+    wignerd_doublearg(two_j, two_λ1, two_λ2, 1)
+
+function wignerd_doublearg(two_j, two_λ1, two_λ2, wr::WignerRotation{N}) where N
+    phase = ispositive(wr) ? 1 : x"-1"^div(two_λ1 - two_λ2, 2)
+    _cosζ = cosζ(wr, σs, ms²)
+    d = wignerd_doublearg(two_j, two_λ1, two_λ2, cosθ)
+    return d*phase
+end
+
 wignerd_doublearg_sign(two_j, two_λ1, two_λ2, cosθ, ispositive) =
     (ispositive ? 1 : x"-1"^div(two_λ1 - two_λ2, 2)) *
     wignerd_doublearg(two_j, two_λ1, two_λ2, cosθ)
@@ -138,11 +148,6 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
     wj = wr(k, refζs[j], j)
     wk = wr(k, refζs[k], k)
     # 
-    cosζ0 = cosζ(w0, σs, ms²)
-    cosζi = cosζ(wi, σs, ms²)
-    cosζj = cosζ(wj, σs, ms²)
-    cosζk = cosζ(wk, σs, ms²)
-    #
     cosθ = cosθij(k, σs, ms²)
     #
     T = typeof(two_λs[1])
@@ -155,15 +160,15 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
         # two_λs′[4] = two_τ - two_λs′[k]
         # two_τ = two_λs′[4] + two_λs′[k]
         f +=
-            wignerd_doublearg_sign(two_js[4], two_λs[4], two_λs′[4], cosζ0, ispositive(w0)) *
+            wignerd_doublearg_sign(two_js[4], two_λs[4], two_λs′[4], w0) *
             # 
             amplitude(HRk, two_λs′[4] + two_λs′[k], two_λs′[k]) * phase(two_js[k] - two_λs′[k]) * # particle-2 convention
             sqrt(two_s * T1 + 1) * wignerd_doublearg(two_s, two_λs′[4] + two_λs′[k], two_λs′[i] - two_λs′[j], cosθ) *
             amplitude(Hij, two_λs′[i], two_λs′[j]) * phase(two_js[j] - two_λs′[j]) * # particle-2 convention
             # 
-            wignerd_doublearg_sign(two_js[i], two_λs′[i], two_λs[i], cosζi, ispositive(wi)) *
-            wignerd_doublearg_sign(two_js[j], two_λs′[j], two_λs[j], cosζj, ispositive(wj)) *
-            wignerd_doublearg_sign(two_js[k], two_λs′[k], two_λs[k], cosζk, ispositive(wk))
+            wignerd_doublearg_sign(two_js[i], two_λs′[i], two_λs[i], wi) *
+            wignerd_doublearg_sign(two_js[j], two_λs′[j], two_λs[j], wj) *
+            wignerd_doublearg_sign(two_js[k], two_λs′[k], two_λs[k], wk)
     end
     return f * lineshape
 end
