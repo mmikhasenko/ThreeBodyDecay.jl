@@ -158,7 +158,7 @@ function amplitude(dc::DecayChain, σs, two_λs; refζs=(1, 2, 3, 1))
             wignerd_doublearg_sign(two_js[4], two_λs[4], two_λs′[4], cosζ0, ispositive(w0)) *
             # 
             amplitude(HRk, two_λs′[4] + two_λs′[k], two_λs′[k]) * phase(two_js[k] - two_λs′[k]) * # particle-2 convention
-            sqrt(two_s * T1 + 1) * wignerd_doublearg(two_s, two_λs′[4] + two_λs′[k], two_λs′[i] - two_λs′[j], cosθ) *
+            sqrt(two_s * T1 + 1) * wignerd_doublearg_sign(two_s, two_λs′[4] + two_λs′[k], two_λs′[i] - two_λs′[j], cosθ, true) *
             amplitude(Hij, two_λs′[i], two_λs′[j]) * phase(two_js[j] - two_λs′[j]) * # particle-2 convention
             # 
             wignerd_doublearg_sign(two_js[i], two_λs′[i], two_λs[i], cosζi, ispositive(wi)) *
