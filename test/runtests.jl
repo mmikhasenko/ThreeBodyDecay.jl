@@ -4,6 +4,7 @@ using ThreeBodyDecay
 # ThreeBodyDecay structure
 @safetestset "Test of the tbs structure" begin
     include("test_threebodymasses.jl")
+    include("test_border.jl")
     include("test_threebodyspins.jl")
     include("test_threebodyparities.jl")
     include("test_invariants.jl")
