@@ -45,6 +45,7 @@ include("wignerrotations.jl")
 
 
 export ThreeBodyMasses, ThreeBodySpins, ThreeBodyParities
+export MandestamTuple
 export ThreeBodySystem
 export DalitzPlotPoint
 export Invariants

@@ -122,7 +122,7 @@ function border(ms::MassTuple; Nx::Int=300)
             P(rborder(θ))
         end
     θs = range(-π, π, length=Nx)
-    return MandestamTuple.(σsborder.(θs))
+    return MandestamTuple{typeof(ms[1])}.(σsborder.(θs))
 end
 
 # border13, border12, border21, border23, border32
