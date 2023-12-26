@@ -7,6 +7,7 @@ using PartialWaveFunctions
 using Parameters
 using RecipesBase
 using Polynomials
+using PolynomialRoots
 
 export Kallen, sqrtKallenFact, Kibble,
         inphrange,

@@ -104,25 +104,44 @@ end
 #        _|
 #    _|_|
 
-polardalitz2invariants(θ, T0) =
-    Polynomial([T0 / 3, -cos(θ)]),
-    Polynomial([T0 / 3, cos(θ + π / 3)]),
-    Polynomial([T0 / 3, cos(θ - π / 3)])
+"""
+    polardalitz2invariants(θ, expansion_point)
 
-function border(ms::MassTuple; Nx::Int=300)
-    thresholds = ((ms.m2 + ms.m3), (ms.m3 + ms.m1), (ms.m1 + ms.m2))
-    T0 = sum(abs2, ms) .- sum(abs2, thresholds)
+For given polar angle θ, it returns an (σ1,σ2,σ3) Tuple of polynomials of radius r(θ) around the expansion point.
+The polynomial works as a function of the r coordinate.
+"""
+polardalitz2invariants(θ, expansion_point::Tuple) =
+    (Polynomial([0, -cos(θ)]),
+        Polynomial([0, cos(θ + π / 3)]),
+        Polynomial([0, cos(θ - π / 3)])) .+ expansion_point
 
+function border(ms::MassTuple{T}; Nx::Int=300) where {T}
+    # 
+    expansion_point = let
+        f = 0.5
+        z = 0.0
+        σ1 = (ms[2] + ms[3])^2 + f * ((ms[4] - ms[1])^2 - (ms[2] + ms[3])^2)
+        σ3 = σ3of1(z, σ1, ms^2)
+        Invariants(ms; σ1, σ3)
+    end
+    # 
+    σs(θ) = polardalitz2invariants(θ, expansion_point |> Tuple)
+    ϕ0 = Kibble(expansion_point, ms^2)
     ϕ(σs) = Kibble(σs, ms^2)
     # 
-    σs(θ) = thresholds .^ 2 .+ polardalitz2invariants(θ, T0)
-    rborder(θ) = minimum(filter(x -> x > 0, roots(ϕ(σs(θ)))))
-    σsborder(θ) = # evaluate the polynomials
-        map(σs(θ)) do P
-            P(rborder(θ))
-        end
-    θs = range(-π, π, length=Nx)
-    return MandestamTuple{typeof(ms[1])}.(σsborder.(θs))
+    function rborder(θ)
+        _roots = PolynomialRoots.roots(coeffs(ϕ(σs(θ))))
+        filter(_roots) do r
+            (abs(imag(r)) < 1e-10) && real(r) > 0.0
+        end |> real |> minimum
+    end
+    function σsborder(θ) # evaluate the polynomials
+        r = rborder(θ)
+        return map(P -> P(r), σs(θ))
+    end
+    θs = range(-π / 9, 2π - π / 9, length=Nx)
+    σs_tuple = σsborder.(θs)
+    return MandestamTuple{T}.(σs_tuple)
 end
 
 # border13, border12, border21, border23, border32
