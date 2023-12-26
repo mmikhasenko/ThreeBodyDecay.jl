@@ -38,13 +38,15 @@ function change_basis_3from1(σ1, cosθ1, ϕ1, cosθ23, ϕ23,
                 -st1 * p3_b[2] + 0 * p3_b[3] + ct1 * p3_b[4]]
 
         cosθ3 = -p3_rot[4] / sqrt(p3_b[2]^2 + p3_b[3]^2 + p3_b[4]^2)
-        ϕ3 = (p3_rot[2] != zero(p3_rot[2])) ? atan(-p3_rot[3], -p3_rot[2]) : rand() * one(p3_rot[2])
+        # 
+        ARBITRARY = 0.5
+        ϕ3 = (p3_rot[2] != zero(p3_rot[2])) ? atan(-p3_rot[3], -p3_rot[2]) : ARBITRARY * one(p3_rot[2])
 
         cosθ12_n = m2sq + m3sq + 2 * (σ3 + m2sq - m1sq) / (2 * sqrt(σ3)) * (s - m3sq - σ3) / (2 * sqrt(σ3)) - σ1
         m3 = sqrt(m3sq)
         sqrtλσ3 = sqrt((sqrts - m3)^2 - σ3) * sqrt((sqrts + m3)^2 - σ3)
         cosθ12_d = 2 * sqrt(Kallen(σ3, m1sq, m2sq) / (4 * (σ3))) * sqrtλσ3 / (2 * sqrt(σ3))
-        cosθ12 = cosθ12_d ≈ 0.0 + 0.0im ? 2.0 * rand() - 1.00 * one(σ1) : cosθ12_n / cosθ12_d
+        cosθ12 = cosθ12_d ≈ 0.0 + 0.0im ? 2.0 * ARBITRARY - 1.00 * one(σ1) : cosθ12_n / cosθ12_d
 
         n1 = [0.0,
                 -sqrt(1.0 - cosθ1^2) * cos(ϕ1),

@@ -2,6 +2,9 @@ using Test
 using ThreeBodyDecay
 using Statistics
 
+using Random
+Random.seed!(1234)
+
 ms = ThreeBodyMasses(1.1, 1.2, 1.3; m0=4.2)
 
 let
