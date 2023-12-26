@@ -7,6 +7,7 @@ using PartialWaveFunctions
 using Parameters
 using RecipesBase
 using Polynomials
+using PolynomialRoots
 
 export Kallen, sqrtKallenFact, Kibble,
         inphrange,
@@ -17,7 +18,7 @@ export ijk, ij_from_k
 export cosθij
 export cosθ12, cosθ23, cosθ31
 # 
-export σkofi, σkofj
+export σiofk, σjofk
 export σ1of2, σ2of3, σ3of1,
         σ1of3, σ2of1, σ3of2
 include("kinematics.jl")
