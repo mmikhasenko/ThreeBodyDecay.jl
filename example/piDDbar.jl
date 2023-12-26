@@ -2,37 +2,27 @@ using ThreeBodyDecay
 using LaTeXStrings
 using Plots
 
+theme(:wong, frame=:box, minorticks=true,
+    guidefontvalign=:top, guidefonthalign=:right)
+
+const mD = 1.86483
+const mπ0 = 0.13498
 const mDstar = 2.00685 # 2 GeV
 const ΓDstar = 30e-6 # 30 keV
-tbs = let mD = 1.86483, mπ0 = 0.13498
-    ThreeBodySystem(mD,mπ0,mD,mD+mDstar+0.01)
-end
+ms = ThreeBodyMasses(mD, mπ0, mD; m0=mD + mDstar + 0.01)
 
 # amplitude
 
-BWD(σ) = BW(σ,mDstar,100*ΓDstar)
-A(σ3,σ1) = BWD(σ1) + BWD(σ3)
-A(σ3,σ1,ν) = BWD(σ1) * wignerd(1, ν, 0, cosθ23(gσ2(σ3,σ1,tbs),σ3,tbs)) -
-             BWD(σ3) * sum(wignerd(1, ν, λ, cos_plus_θhat3(σ1,gσ2(σ3,σ1,tbs),tbs)) *
-                           wignerd(1, λ, 0, cosθ12(σ1,gσ2(σ3,σ1,tbs),tbs)) for λ=-1:1)
+BWD(σ) = BW(σ, mDstar, 100 * ΓDstar)
+A(σs) = BWD(σs.σ1) + BWD(σs.σ3)
+A(σs, ν) = BWD(σs.σ1) * wignerd(1, ν, 0, cosθ23(σs, ms^2)) -
+           BWD(σs.σ3) * sum(wignerd(1, ν, λ, cosζ31_for0(σs, ms^2)) *
+                            wignerd(1, λ, 0, cosθ12(σs, ms^2)) for λ = -1:1)
 
 # intensity
-
-I(σ3,σ1) = sum(abs2(A(σ3,σ1,ν)) for ν=-1:1)
+I(σs) = sum(abs2(A(σs, ν)) for ν = -1:1)
 
 let
-    σ1v = LinRange(tbs.mthsq[1], tbs.sthsq[1],200)
-    σ3v = LinRange(tbs.mthsq[3], tbs.sthsq[3],200)
-    cal = [Kibble31(σ3,σ1,tbs) < 0.0 ? I(σ3,σ1) : NaN for σ3 in σ3v, σ1 in σ1v]
-    heatmap(σ1v, σ3v, cal)
-end
-
-# sample density
-density2d = getbinned2dDensity(
-                (σ3,σ1) -> Kibble31(σ3,σ1,tbs) < 0.0 ? I(σ3,σ1) : 0.0,
-                    (tbs.mthsq[1], tbs.sthsq[1]),
-                    (tbs.mthsq[3], tbs.sthsq[3]), 100, 100);
-
-let r = hcat([rand(density2d) for _ in 1:100000]...)
-    histogram2d(r[2,:], r[1,:], bins=100)
+    plot(ms, I; iσx=1, iσy=3)
+    plot!(xlab=L"m(D)\,\,[\mathrm{GeV}]", ylab=L"m(Dπ)\,\,[\mathrm{GeV}]")
 end

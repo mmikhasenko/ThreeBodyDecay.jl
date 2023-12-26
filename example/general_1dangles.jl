@@ -6,9 +6,13 @@ using Plots
 using Plots.PlotMeasures: mm
 using LaTeXStrings
 
+theme(:wong, frame=:box, xlab="x", lab="", minorticks=true,
+    guidefontvalign=:top, guidefonthalign=:right,
+    xlim=(:auto, :auto), ylim=(0, :auto), grid=false)
+
 struct AngularBusiness
     k::Int
-    two_js::Union{ThreeBodySpins, SVector{4, Int}}
+    two_js::Union{SpinTuple,SVector{4,Int}}
     two_ls::Union{NamedTuple,Tuple}
     two_LS::Union{NamedTuple,Tuple}
     two_j::Int
@@ -18,58 +22,58 @@ function angular_ampitude(z, two_λs, ab::AngularBusiness)
     k = ab.k
     #
     @unpack k, two_ls, two_LS, two_js, two_j = ab
-    i,j = ij_from_k(k)
+    i, j = ij_from_k(k)
     #
     two_l, two_s = ab.two_ls
     two_L, two_S = ab.two_LS
     #
-    hR = jls_coupling(two_js[i], two_λs[i], two_js[j], two_λs[j], two_j, two_l, two_s)
-    h0 = jls_coupling(two_j, two_λs[4]+two_λs[k], two_js[k], two_λs[k], two_js[4], two_L, two_S)
+    hR = ThreeBodyDecay.jls_coupling(two_js[i], two_λs[i], two_js[j], two_λs[j], two_j, two_l, two_s)
+    h0 = ThreeBodyDecay.jls_coupling(two_j, two_λs[4] + two_λs[k], two_js[k], two_λs[k], two_js[4], two_L, two_S)
     #
-    return h0*wignerd_doublearg(two_j,two_λs[4]+two_λs[k],two_λs[i]-two_λs[j], z)*hR
+    return h0 * wignerd_doublearg(two_j, two_λs[4] + two_λs[k], two_λs[i] - two_λs[j], z) * hR
 end
 
-angular_intensity(z,ab::AngularBusiness) = 
-    sum(abs2, angular_ampitude(z,two_λs,ab) for two_λs in itr(ab.two_js))
+angular_intensity(z, ab::AngularBusiness) =
+    sum(abs2, angular_ampitude(z, two_λs, ab) for two_λs in itr(ab.two_js))
 #
 #
 function explore(k, jp::jp, jps::Vector)
-    i,j = ij_from_k(k)
-    lsv = possible_ls(jps[i], jps[j]; jp = jp)
-    LSv = possible_ls(jp,  jps[k]; jp = jps[4])
-    ABs = [AngularBusiness(k, SVector{4}(two_j.(jps)), x2.(ls), x2.(LS), two_j(jp))
-        for ls in lsv, LS in LSv]
+    i, j = ij_from_k(k)
+    lsv = possible_ls(jps[i], jps[j]; jp=jp)
+    LSv = possible_ls(jp, jps[k]; jp=jps[4])
+    ABs = [AngularBusiness(k, SVector{4}(getproperty.(jps, :j) .|> x2), x2.(ls), x2.(LS), jp.j |> x2)
+           for ls in lsv, LS in LSv]
     return ABs
 end
 # 
 #
 function vector_of_vector_of_plots(vov)
     l = max(length.(vov)...)
-    plot(layout=grid(3,l), size=(300*l,300*3))    
-    for (i,ab_all) in enumerate(vov)
+    plot(layout=grid(3, l), size=(300 * l, 300 * 3))
+    for (i, ab_all) in enumerate(vov)
         for k in 1:l
-            sp = (i-1)*l + k
+            sp = (i - 1) * l + k
             if k > length(ab_all)
                 plot!(sp=sp, xaxis=false, yaxis=false, grid=false)
                 continue
             end
             ab = ab_all[k]
             plot!(sp=sp, ab)
-        end        
+        end
     end
     plot!()
 end
 
 
-@recipe function f(vov::Vector{Vector{T}} where T)
+@recipe function f(vov::Vector{Vector{T}} where {T})
     l = max(length.(vov)...)
     # 
-    size --> (300*l,300*length(vov))
+    size --> (300 * l, 300 * length(vov))
     layout := grid(length(vov), l)
     # 
-    for (i,objects) in enumerate(vov)
+    for (i, objects) in enumerate(vov)
         for k in 1:l
-            sp = (i-1)*l + k
+            sp = (i - 1) * l + k
             if k > length(objects)
                 @series begin
                     label := ""
@@ -84,14 +88,18 @@ end
             ab = objects[k]
             @series begin
                 subplot := sp
+                fill_between := 0
+                alpha := 0.2
+                linealpha := 1.0
+                linewidth := 2
                 ab
             end
-        end        
+        end
     end
 end
 
 @recipe function f(ab::AngularBusiness)
-    xv = range(-1,1, length=100)
+    xv = range(-1, 1, length=100)
     calv = angular_intensity.(xv, Ref(ab))
 
     framestyle --> :origin

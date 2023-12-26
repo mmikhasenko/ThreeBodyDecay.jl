@@ -86,8 +86,10 @@ Invariants(σ1, σ2, σ3) = MandestamTuple{typeof(σ1)}((σ1, σ2, σ3))
 end
 #
 function randomPoint(ms::MassTuple)
-    σ1 = lims1(ms)[1] + rand() * (lims1(ms)[2] - lims1(ms)[1])
-    σ3 = σ3of1(2rand() - 1, σ1, ms^2)
+    x1, x2 = rand(2)
+    l, h = lims1(ms)
+    σ1 = l + x1 * (h - l)
+    σ3 = σ3of1(2x2 - 1, σ1, ms^2)
     return Invariants(ms; σ1=σ1, σ3=σ3)
 end
 
