@@ -19,7 +19,7 @@ over2(two) = _over2.(two)
 ⊗(p1::Char, p2::Char) = p1 == p2 ? '+' : '-'
 ⊗(jp1::jp, jp2::jp) = [jp(j, ⊗(jp1.p, jp2.p)) for j in abs(jp1.j - jp2.j):abs(jp1.j + jp2.j)]
 
-function str2jp(pin::String)
+function str2jp(pin::AbstractString)
     p = filter(x -> x != '^', pin)
     !(contains(p, '/')) && return jp(Meta.parse(p[1:end-1]), p[end])
     p[end-2:end-1] != "/2" && error("the string should be `x/2±`, while it is $(p)")
