@@ -1,11 +1,13 @@
-name: CI
+name: Julia package test
 on:
   push:
     branches:
-    - main
+      - main
+      - master
   pull_request:
     branches:
       - main
+      - master
 jobs:
   test:
     name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
@@ -14,8 +16,9 @@ jobs:
       fail-fast: false
       matrix:
         version:
-          - '1.7'
-          - 'nightly'
+          - "1.7"
+          - "1.9"
+          - "nightly"
         os:
           - ubuntu-latest
           - macOS-latest
