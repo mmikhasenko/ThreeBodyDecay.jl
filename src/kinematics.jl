@@ -6,48 +6,51 @@ Kibble(σs, msq) = Kallen(Kallen(msq[4], msq[1], σs[1]),
     Kallen(msq[4], msq[3], σs[3]))
 #
 """
-    σkofi(k,z,σi,msq)
+    σjofk(k,z,σi,msq)
 
-Computes invariant σk = (pi + pj)² from
-the scattering angle z=cosθjk in the rest from of (j,k),
-given the mass of the system m(j,k)² = σi
+Computes invariant σj = (p0-pj)² from
+the scattering angle z=cosθij in the rest from of (i,j),
+given the mass of the system m(i,j)² = σk
 
 Explicit forms: `σ3of1`, `σ1of2`, `σ2of3`.
 
 See also `σkofj(k,z,σj,msq)`
 """
-function σkofi(k, z, σi, msq)
+function σjofk(k, z, σk, msq)
     i, j, _ = ijk(k)
     #
     s = msq[4]
-    EE4σ = (σi + msq[j] - msq[k]) * (s - σi - msq[i])
-    p²q²4σ = Kallen(σi, msq[j], msq[k]) * Kallen(s, σi, msq[i])
+    # σj = (p0-pj)² in the rest frame of (i,j)
+    EE4σ = (σk + msq[j] - msq[i]) * (σk + s - msq[k])
+    p²q²4σ = Kallen(σk, msq[i], msq[j]) * Kallen(s, σk, msq[k])
     p²q²4σ = (p²q²4σ < 0) ? 0.0 : p²q²4σ # for numerical errors
-    σk = msq[i] + msq[j] + (EE4σ + sqrt(p²q²4σ) * z) / (2σi)
-    return σk
+    σi = s + msq[j] - (EE4σ - sqrt(p²q²4σ) * z) / (2σk)
+    return σi
 end
-σ3of1(z, σ1, msq) = σkofi(3, z, σ1, msq)
-σ1of2(z, σ2, msq) = σkofi(1, z, σ2, msq)
-σ2of3(z, σ3, msq) = σkofi(2, z, σ3, msq)
+σ3of1(z, σ1, msq) = σjofk(1, z, σ1, msq)
+σ1of2(z, σ2, msq) = σjofk(2, z, σ2, msq)
+σ2of3(z, σ3, msq) = σjofk(3, z, σ3, msq)
+
 
 """
-    σkofj(k,z,σj,msq)
+    σiofk(k,z,σj,msq)
 
-Computes invariant σk = (pi + pj)² from
-the scattering angle z=cosθki in the rest from of (k,i),
-given the mass of the system m(k,i)² = σj
+Computes invariant σi = (p0 - pi)² from
+the scattering angle z=cosθij in the rest from of (i,j),
+given the mass of the system m(i,j)² = σk
 
 Explicit forms: `σ3of2`, `σ1of3`, `σ2of1`.
  
-See also `σkofi(k,z,σi,msq)`
+See also `σjofj(k,z,σk,msq)`
 """
-function σkofj(k, z, σj, msq)
-    σi = σkofi(k, z, σj, msq)
-    sum(msq) - σi - σj
+function σiofk(k, z, σk, msq)
+    σj = σjofk(k, z, σk, msq)
+    sum(msq) - σj - σk
 end
-σ3of2(z, σ2, msq) = σkofj(3, z, σ2, msq)
-σ1of3(z, σ3, msq) = σkofj(1, z, σ3, msq)
-σ2of1(z, σ1, msq) = σkofj(2, z, σ1, msq)
+σ3of2(z, σ2, msq) = σiofk(2, z, σ2, msq)
+σ1of3(z, σ3, msq) = σiofk(3, z, σ3, msq)
+σ2of1(z, σ1, msq) = σiofk(1, z, σ1, msq)
+
 
 # Scattering angle
 

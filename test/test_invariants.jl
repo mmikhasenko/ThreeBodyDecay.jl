@@ -1,25 +1,23 @@
 using ThreeBodyDecay
 using Test
 
-rands = rand(3)
-σs = Invariants(rands...)
+
+ms = ThreeBodyMasses(1.1, 3.3, 5.5; m0=20.0)
+σs = Invariants(ms; σ3=4.5^2, σ2=10.1^2)
 
 @testset "Invariants structure" begin
     # 
-    @test σs.σ1 == σs[1] == rands[1]
-    @test σs.σ2 == σs[2] == rands[2]
-    @test σs.σ3 == σs[3] == rands[3]
+    @test σs.σ1 == σs[1]
+    @test σs.σ2 == σs[2]
+    @test σs.σ3 == σs[3]
     # 
     @test_throws BoundsError σs[5]
 end
 
 @testset "operations and interate" begin
-    @test sum(σs) == sum(rands)
+    @test sum(σs) == sum(ms^2)
     @test length(σs) == 3
 end
-
-ms = ThreeBodyMasses(1.1, 3.3, 5.5; m0=20.0)
-σs = Invariants(ms; σ3=4.5^2, σ2=10.1^2)
 
 @testset "Creation from two given" begin
     @test σs == Invariants(ms; σ1=σs.σ1, σ2=σs.σ2)
@@ -30,6 +28,22 @@ ms = ThreeBodyMasses(1.1, 3.3, 5.5; m0=20.0)
     # 
     @test Kibble(σs, ms^2) < 0
 end
+
+
+@testset "consistency of cosθij and σkofj, σkofj functions" begin
+    z23 = cosθ23(σs, ms^2)
+    @test σs.σ3 ≈ σ3of1(z23, σs.σ1, ms^2)
+    @test σs.σ2 ≈ σ2of1(z23, σs.σ1, ms^2)
+    # 
+    z12 = cosθ12(σs, ms^2)
+    @test σs.σ1 ≈ σ1of3(z12, σs.σ3, ms^2)
+    @test σs.σ2 ≈ σ2of3(z12, σs.σ3, ms^2)
+    # 
+    z31 = cosθ31(σs, ms^2)
+    @test σs.σ3 ≈ σ3of2(z31, σs.σ2, ms^2)
+    @test σs.σ1 ≈ σ1of2(z31, σs.σ2, ms^2)
+end
+
 
 @testset "Random points" begin
     σs = randomPoint(ms)
