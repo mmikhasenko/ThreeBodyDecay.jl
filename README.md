@@ -1,5 +1,11 @@
 # ThreeBodyDecay
 
+> [!NOTE]
+> soon depricated
+> use `ThreeBodyDecays.jl`
+> that is going to be a registered package shortly
+
+
 ![Build Status](https://github.com/mmikhasenko/ThreeBodyDecay.jl/actions/workflows/ci.yaml/badge.svg)
 [![Codecov](https://codecov.io/gh/mmikhasenko/ThreeBodyDecay.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/mmikhasenko/ThreeBodyDecay.jl)
 [![arXiv article](https://img.shields.io/badge/article-PRD%20101%2C%20034033-yellowgreen)](https://arxiv.org/abs/1910.04566)
