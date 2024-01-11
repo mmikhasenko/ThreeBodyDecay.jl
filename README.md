@@ -1,8 +1,10 @@
 # ThreeBodyDecay
 
 > [!NOTE]
-> soon depricated
-> use `ThreeBodyDecays.jl`
+> soon DEPRICATED
+>
+> use [`ThreeBodyDecays.jl`](https://github.com/mmikhasenko/ThreeBodyDecays.jl)
+> 
 > that is going to be a registered package shortly
 
 
